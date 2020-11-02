@@ -1,4 +1,4 @@
-;This is the code used in the rom1, used in sim1_tb
+;This is the code used in the rom1, used in sim1_tb. This should be compiled with asrmpasm
 ;What it does is it copies the 15 first pins of the GPI to the GPO and
 ;it make the 16th bit of the GPO blink. The base address for the GPIO is 0x80
 set 6  ;setting in 8 bit mode
@@ -40,7 +40,7 @@ set 9 ;we jump back to address 26
 cpy R9
 load R9
 jmp
-slp ;unaxessible
+slp ;inaccessible
 slp
 quit
 
