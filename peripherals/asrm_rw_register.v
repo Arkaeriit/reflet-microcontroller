@@ -28,7 +28,7 @@ module asrm_rw_register #(
         if(!reset)
         begin
             data_out = 0;
-            data = 0;
+            data = default_value;
         end
         else
         begin

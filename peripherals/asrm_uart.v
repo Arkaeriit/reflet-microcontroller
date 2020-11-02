@@ -7,7 +7,7 @@
 module asrm_uart #(
     parameter word_size = 16,
     base_addr_size = 16,
-    base_addr = 16'hFF05,
+    base_addr = 16'hFF04,
     clk_frec = 1000000
     )(
     input clk,
@@ -23,13 +23,13 @@ module asrm_uart #(
     output tx
     );
 
-    wire using_uart = enable && addr >= base_addr && addr <= base_addr + 4;
+    wire using_uart = enable && addr >= base_addr && addr <= base_addr + 3;
     wire [1:0] offset = addr - base_addr;
 
     //Frequency generator
     integer mult = clk_frec / 9600;
     wire uart_en;
-    asrm_counter uart_counter (clk, reset, enable, mult, uart_en);
+    asrm_counter uart_counter (clk, reset, 1'b1, mult, uart_en);
 
     //registers
     wire receive_done, end_transmit;
@@ -43,7 +43,7 @@ module asrm_uart #(
     wire [7:0] rx_data;
     asrm_rw_register #(2, 0, 1) reg_tx_cmd(
         clk,
-        reset | end_transmit,
+        reset & !end_transmit,
         using_uart,
         offset,
         write_en,
@@ -61,13 +61,13 @@ module asrm_uart #(
         tx_data);
     asrm_rw_register #(2, 2, 1) reg_rx_cmd(
         clk,
-        reset | receive_done,
+        reset & !receive_done,
         using_uart,
         offset,
         write_en,
         data_in[7:0],
-        dout_rx_data,
-        rx_data);
+        dout_rx_cmd,
+        rx_cmd);
     asrm_ro_register #(2, 3) reg_rx_data(
         clk,
         reset,
@@ -83,8 +83,8 @@ module asrm_uart #(
         reset,
         rx,
         tx,
-        data_tx,
-        data_rx,
+        tx_data,
+        rx_data,
         receive_done,
         !(|tx_cmd),
         end_transmit);

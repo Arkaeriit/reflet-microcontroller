@@ -21,7 +21,7 @@ module asrm_gpio #(
     output [15:0] gpo
     );
     
-    wire using_gpio = enable && addr >= base_addr && addr <= base_addr + 4;
+    wire using_gpio = enable && addr >= base_addr && addr <= base_addr + 3;
     wire [1:0] offset = addr - base_addr;
 
     //Registers
