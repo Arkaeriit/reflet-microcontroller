@@ -3,10 +3,10 @@
 ;it make the 16th bit of the GPO blink. The base address for the GPIO is 0x80
 set 6  ;setting in 8 bit mode
 cpy SR 
-set 10 ;Getting the value 0x80, 0x7F and ...
+set 10 ;Getting the value 0x7F and 26
 jmp
-or R15 ;compiles to 0x7F
-set 10 ;compiles to 0x1A = 26
+rawbyte 127 ;compiles to 0x7F
+rawbyte 26 ;compiles to 0x1A = 26
 set 8
 cpy R1
 load R1 ;getting 0x7F in the working register
