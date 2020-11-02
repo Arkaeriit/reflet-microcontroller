@@ -6,11 +6,12 @@
 module asrm_gpio_tb();
 
     reg clk = 0;
+    always #1 clk = !clk;
     reg reset = 0;
 
     //system bus
     reg [3:0] addr = 0;
-    reg write_en;
+    reg write_en = 0;
     reg [15:0] data_in = 0;
     wire [15:0] data_out;
 
@@ -26,16 +27,18 @@ module asrm_gpio_tb();
         reset = 1;
         data_in = 7;
         write_en = 1;
-        #1;
-        addr = 4;
-        #1;
+        #2;
+        addr = 2;
+        #2;
         write_en = 0;
-        #1;
+        #2;
+        addr = 3;
+        #2;
+        addr = 4;
+        #2;
         addr = 5;
-        #1;
+        #2;
         addr = 6;
-        #1;
-        addr = 7;
     end
 
 endmodule
