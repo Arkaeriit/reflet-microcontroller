@@ -22,7 +22,7 @@ module asrm_gpio #(
     );
     
     wire using_gpio = enable && addr >= base_addr && addr <= base_addr + 4;
-    wire [1:0] offset = addr[base_addr_size-1:0] - base_addr;
+    wire [1:0] offset = addr - base_addr;
 
     //Registers
     wire [7:0] dout_gpo1;
@@ -47,14 +47,14 @@ module asrm_gpio #(
         data_in[7:0],
         dout_gpo2,
         gpo[15:8]);
-    asrm_ro_register #(2, 2, 0) reg_pgi1(
+    asrm_ro_register #(2, 2) reg_pgi1(
         clk,
         reset,
         using_gpio,
         offset,
         dout_gpi1,
         gpi[7:0]);
-    asrm_ro_register #(2, 3, 0) reg_pgi2(
+    asrm_ro_register #(2, 3) reg_pgi2(
         clk,
         reset,
         using_gpio,
