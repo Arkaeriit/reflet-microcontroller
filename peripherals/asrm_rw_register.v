@@ -4,11 +4,11 @@
 |The data is stored on a single byte.    |
 \---------------------------------------*/
 
-module rw_register #(
+module asrm_rw_register #(
     parameter addr_size = 16,
     reg_addr = 0,
     default_value = 0
-)(
+    )(
     input clk,
     input reset,
     input enable,
