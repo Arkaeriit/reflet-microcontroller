@@ -4,7 +4,7 @@
 \-----------------*/
 
 module asrm_gpio #(
-    parameter word_size = 16,
+    parameter wordsize = 16,
     base_addr_size = 16,
     base_addr = 16'hFF00
     )(
@@ -14,8 +14,8 @@ module asrm_gpio #(
     //system bus
     input [base_addr_size-1:0] addr,
     input write_en,
-    input [word_size-1:0] data_in,
-    input [word_size-1:0] data_out,
+    input [wordsize-1:0] data_in,
+    input [wordsize-1:0] data_out,
     //GPIO acces
     input [15:0] gpi,
     output [15:0] gpo
@@ -29,38 +29,38 @@ module asrm_gpio #(
     wire [7:0] dout_gpo2;
     wire [7:0] dout_gpi1;
     wire [7:0] dout_gpi2;
-    asrm_rw_register #(2, 0, 0) reg_pgo1(
-        clk,
-        reset,
-        using_gpio,
-        offset,
-        write_en,
-        data_in[7:0],
-        dout_gpo1,
-        gpo[7:0]);
-    asrm_rw_register #(2, 1, 0) reg_pgo2(
-        clk,
-        reset,
-        using_gpio,
-        offset,
-        write_en,
-        data_in[7:0],
-        dout_gpo2,
-        gpo[15:8]);
-    asrm_ro_register #(2, 2) reg_pgi1(
-        clk,
-        reset,
-        using_gpio,
-        offset,
-        dout_gpi1,
-        gpi[7:0]);
-    asrm_ro_register #(2, 3) reg_pgi2(
-        clk,
-        reset,
-        using_gpio,
-        offset,
-        dout_gpi2,
-        gpi[15:8]);
+    asrm_rw_register #(.addr_size(2), .reg_addr(0), .default_value(0)) reg_pgo1(
+        .clk(clk),
+        .reset(reset),
+        .enable(using_gpio),
+        .addr(offset),
+        .write_en(write_en),
+        .data_in(data_in[7:0]),
+        .data_out(dout_gpo1),
+        .data(gpo[7:0]));
+    asrm_rw_register #(.addr_size(2), .reg_addr(1), .default_value(0)) reg_pgo2(
+        .clk(clk),
+        .reset(reset),
+        .enable(using_gpio),
+        .addr(offset),
+        .write_en(write_en),
+        .data_in(data_in[7:0]),
+        .data_out(dout_gpo2),
+        .data(gpo[15:8]));
+    asrm_ro_register #(.addr_size(2), .reg_addr(2)) reg_pgi1(
+        .clk(clk),
+        .reset(reset),
+        .enable(using_gpio),
+        .addr(offset),
+        .data_out(dout_gpi1),
+        .data(gpi[7:0]));
+    asrm_ro_register #(.addr_size(2), .reg_addr(3)) reg_pgi2(
+        .clk(clk),
+        .reset(reset),
+        .enable(using_gpio),
+        .addr(offset),
+        .data_out(dout_gpi2),
+        .data(gpi[15:8]));
 
     assign data_out = dout_gpi1 | dout_gpi2 | dout_gpo1 | dout_gpo2;
 

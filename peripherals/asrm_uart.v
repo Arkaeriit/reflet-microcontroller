@@ -29,7 +29,12 @@ module asrm_uart #(
     //Frequency generator
     integer mult = clk_frec / 9600;
     wire uart_en;
-    asrm_counter uart_counter (clk, reset, 1'b1, mult, uart_en);
+    asrm_counter uart_counter (
+        .clk(clk), 
+        .reset(reset), 
+        .enable(1'b1), 
+        .max(mult), 
+        .out(uart_en));
 
     //registers
     wire receive_done, end_transmit;
@@ -41,53 +46,53 @@ module asrm_uart #(
     wire [7:0] tx_data;
     wire [7:0] rx_cmd;
     wire [7:0] rx_data;
-    asrm_rw_register #(2, 0, 1) reg_tx_cmd(
-        clk,
-        reset & !end_transmit,
-        using_uart,
-        offset,
-        write_en,
-        data_in[7:0],
-        dout_tx_cmd,
-        tx_cmd);
-    asrm_rw_register #(2, 1, 0) reg_tx_data(
-        clk,
-        reset,
-        using_uart,
-        offset,
-        write_en,
-        data_in[7:0],
-        dout_tx_data,
-        tx_data);
-    asrm_rw_register #(2, 2, 1) reg_rx_cmd(
-        clk,
-        reset & !receive_done,
-        using_uart,
-        offset,
-        write_en,
-        data_in[7:0],
-        dout_rx_cmd,
-        rx_cmd);
-    asrm_ro_register #(2, 3) reg_rx_data(
-        clk,
-        reset,
-        using_uart,
-        offset,
-        dout_rx_data,
-        rx_data);
+    asrm_rw_register #(.base_addr_size(2), .base_addr(0), .default_value(1)) reg_tx_cmd(
+        .clk(clk),
+        .reset(reset & !end_transmit),
+        .enable(using_uart),
+        .addr(offset),
+        .write_en(write_en),
+        .data_in(data_in[7:0]),
+        .data_out(dout_tx_cmd),
+        .data(tx_cmd));
+    asrm_rw_register #(.base_addr_size(2), .base_addr(1), .defaut_value(0)) reg_tx_data(
+        .clk(clk),
+        .reset(reset),
+        .enable(using_uart),
+        .addr(offset),
+        .write_en(write_en),
+        .data_in(data_in[7:0]),
+        .data_out(dout_tx_data),
+        .data(tx_data));
+    asrm_rw_register #(.base_addr_size(2), .base_addr(2), .default_value(1)) reg_rx_cmd(
+        .clk(clk),
+        .reset(reset & !receive_done),
+        .enable(using_uart),
+        .addr(offset),
+        .write_en(write_en),
+        .data_in(data_in[7:0]),
+        .data_out(dout_rx_cmd),
+        .data(rx_cmd));
+    asrm_ro_register #(.base_addr_size(2), .base_addr(3)) reg_rx_data(
+        .clk(clk),
+        .reset(reset),
+        .enable(using_uart),
+        .addr(offset),
+        .data_out(dout_rx_data),
+        .data_(rx_data));
     assign data_out = dout_rx_cmd | dout_tx_cmd | dout_rx_data | dout_tx_data;
 
     asrm_uart_uart uart(
-        clk,
-        uart_en,
-        reset,
-        rx,
-        tx,
-        tx_data,
-        rx_data,
-        receive_done,
-        !(|tx_cmd),
-        end_transmit);
+        .clk(clk),
+        .enable(uart_en),
+        .reset(reset),
+        .rx(rx),
+        .tx(tx),
+        .data_tx(tx_data),
+        .data_rx(rx_data),
+        .receive_done(receive_done),
+        .start_transmit(!(|tx_cmd)),
+        .end_transmit(end_transmit));
 
 endmodule
     
