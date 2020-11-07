@@ -20,12 +20,39 @@ module simu2();
     wire [15:0] data_out_uart;
     wire [7:0] data_out_rom;
     wire [15:0] data_out_ram;
-    asrm_uart #(16, 15, 14'h00, 96000) uart (clk, reset, addr[15], addr[14:0], write_en, data_out_cpu, data_out_uart, rx, tx);
-    rom2 rom(clk, !addr[15], addr[7:0], data_out_rom);
+    asrm_uart #(.wordsize(16), .base_addr_size(15), .base_addr(14'h00), .clk_freq(96000)) uart (
+        .clk(clk), 
+        .reset(reset), 
+        .enable(addr[15]), 
+        .addr(addr[14:0]), 
+        .write_en(write_en), 
+        .data_in(data_out_cpu), 
+        .data_out(data_out_uart), 
+        .rx(rx), 
+        .tx(tx));
+    rom2 rom(
+        .clk(clk), 
+        .enable_out(!addr[15]), 
+        .addr(addr[7:0]),
+        .dataOut(data_out_rom));
     wire [15:0] addr_off = addr - 4;
-    ram16 #(15) ram(clk, reset, addr_off[15] & addr[15], addr_off[14:0], data_out_cpu, write_en, data_out_ram);
+    ram16 #(.addrSize(15)) ram(
+        .clk(clk), 
+        .reset(reset), 
+        .output_en(addr_off[15] & addr[15]), 
+        .addr(addr_off[14:0]), 
+        .data_in(data_out_cpu), 
+        .write_rq(write_en), 
+        .data_out(data_out_ram));
     assign data_in_cpu = {8'h0, data_out_rom} | data_out_uart | data_out_ram;
-    asrm_cpu #(16) cpu(clk, reset, quit, data_in_cpu, addr, data_out_cpu, write_en);
+    asrm_cpu #(.wordsize(16)) cpu(
+        .clk(clk), 
+        .reset(reset), 
+        .quit(quit), 
+        .data_in(data_in_cpu), 
+        .addr(addr), 
+        .data_out(data_out_cpu), 
+        .write_en(write_en));
 
     initial
     begin

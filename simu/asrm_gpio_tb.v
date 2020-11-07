@@ -19,7 +19,16 @@ module asrm_gpio_tb();
     wire [15:0] gpi = 16'hABCD;
     wire [15:0] gpo;
 
-    asrm_gpio #(16, 4, 2) gpio (clk, reset, 1'b1, addr, write_en, data_in, data_out, gpi, gpo);
+    asrm_gpio #(.wordsize(16), .base_addr_size(4), .base_addr(2)) gpio (
+        .clk(clk), 
+        .reset(reset), 
+        .enable(1'b1), 
+        .addr(addr), 
+        .write_en(write_en), 
+        .data_in(data_in), 
+        .data_out(data_out), 
+        .gpi(gpi), 
+        .gpo(gpo));
 
     initial
     begin

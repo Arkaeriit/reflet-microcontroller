@@ -5,7 +5,7 @@
 \-------------------------------*/
 
 module asrm_uart #(
-    parameter word_size = 16,
+    parameter wordsize = 16,
     base_addr_size = 16,
     base_addr = 16'hFF04,
     clk_frec = 1000000
@@ -16,8 +16,8 @@ module asrm_uart #(
     //sustem bus
     input [base_addr_size-1:0] addr,
     input write_en,
-    input [word_size-1:0] data_in,
-    input [word_size-1:0] data_out,
+    input [wordsize-1:0] data_in,
+    input [wordsize-1:0] data_out,
     //serial acces
     input rx,
     output tx
@@ -46,7 +46,7 @@ module asrm_uart #(
     wire [7:0] tx_data;
     wire [7:0] rx_cmd;
     wire [7:0] rx_data;
-    asrm_rw_register #(.base_addr_size(2), .base_addr(0), .default_value(1)) reg_tx_cmd(
+    asrm_rw_register #(.addr_size(2), .reg_addr(0), .default_value(1)) reg_tx_cmd(
         .clk(clk),
         .reset(reset & !end_transmit),
         .enable(using_uart),
@@ -55,7 +55,7 @@ module asrm_uart #(
         .data_in(data_in[7:0]),
         .data_out(dout_tx_cmd),
         .data(tx_cmd));
-    asrm_rw_register #(.base_addr_size(2), .base_addr(1), .defaut_value(0)) reg_tx_data(
+    asrm_rw_register #(.addr_size(2), .reg_addr(1), .default_value(0)) reg_tx_data(
         .clk(clk),
         .reset(reset),
         .enable(using_uart),
@@ -64,7 +64,7 @@ module asrm_uart #(
         .data_in(data_in[7:0]),
         .data_out(dout_tx_data),
         .data(tx_data));
-    asrm_rw_register #(.base_addr_size(2), .base_addr(2), .default_value(1)) reg_rx_cmd(
+    asrm_rw_register #(.addr_size(2), .reg_addr(2), .default_value(1)) reg_rx_cmd(
         .clk(clk),
         .reset(reset & !receive_done),
         .enable(using_uart),
@@ -73,13 +73,13 @@ module asrm_uart #(
         .data_in(data_in[7:0]),
         .data_out(dout_rx_cmd),
         .data(rx_cmd));
-    asrm_ro_register #(.base_addr_size(2), .base_addr(3)) reg_rx_data(
+    asrm_ro_register #(.addr_size(2), .reg_addr(3)) reg_rx_data(
         .clk(clk),
         .reset(reset),
         .enable(using_uart),
         .addr(offset),
         .data_out(dout_rx_data),
-        .data_(rx_data));
+        .data(rx_data));
     assign data_out = dout_rx_cmd | dout_tx_cmd | dout_rx_data | dout_tx_data;
 
     asrm_uart_uart uart(
