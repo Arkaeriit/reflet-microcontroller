@@ -30,7 +30,7 @@ module asrm_alu
     wire [wordsize-1:0] lsl_out = ( opperand == `opp_lsl ? working_register << other_register : defaultValue );
     wire [wordsize-1:0] lsr_out = ( opperand == `opp_lsr ? working_register >> other_register : defaultValue );
     //sleep, jmp, jif and cpy, we want to use the raw working register value. In the case of jif, when the condition is not met, the register selection will take care of the logic.
-    wire [wordsize-1:0] raw_out = ( instruction == `inst_slp || opperand == `opp_cpy || instruction == `inst_jif || instruction == `inst_jmp ? working_register : defaultValue );
+    wire [wordsize-1:0] raw_out = ( instruction == `inst_slp || opperand == `opp_cpy || instruction == `inst_jif || instruction == `inst_jmp || instruction == `inst_debug ? working_register : defaultValue );
     //set, jmp and jif we put the end of the instruction in wr. 
     wire [wordsize-1:0] set_out = ( opperand == `opp_set ? instruction[3:0] : defaultValue );
     //read, we put the raw value of the other register
@@ -47,13 +47,14 @@ module asrm_alu
     //comparaisons
     wire cmp_eq  = ( opperand == `opp_eq ? working_register == other_register : defaultValue );
     wire cmp_les = ( opperand == `opp_les ? working_register <  other_register : defaultValue );
-    wire cmp = cmp_eq | cmp_les;
+    wire cmp_cmpnot = ( instruction == `inst_cmpnot ? !status_register[0] : defaultValue );
+    wire cmp = cmp_eq | cmp_les | cmp_cmpnot;
     wire [wordsize-1:0] out_cmp = {status_register[wordsize-1:1], cmp};
 
     //wireing out and out_reg
     //We want to see if we are trying to change the working register or
     //the status register
-    wire cmp_opp = (opperand == `opp_eq) || (opperand == `opp_les);
+    wire cmp_opp = (opperand == `opp_eq) || (opperand == `opp_les) || (instruction == `inst_cmpnot);
     assign out = (cmp_opp ? out_cmp : out_nocmp);
     assign out_reg = (cmp_opp ? `sr_id : out_reg_nocmp);
 
