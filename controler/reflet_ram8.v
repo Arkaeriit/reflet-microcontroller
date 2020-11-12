@@ -11,9 +11,9 @@ module reflet_ram8 #(
     input reset,
     input enable,
     input [addrSize-1:0] addr,
-    input [contentSize-1:0] data_in,
+    input [7:0] data_in,
     input write_en,
-    output reg [contentSize-1:0] data_out
+    output reg [7:0] data_out
     );
 
 	// Declare memory 

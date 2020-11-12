@@ -6,6 +6,7 @@
 \-------------------------------------------*/
 
 module reflet_blink (
+    input clk,
     output out
     );
 
@@ -17,5 +18,5 @@ module reflet_blink (
 
     assign out = cnt != 2'b11;
 
-end
+endmodule
 

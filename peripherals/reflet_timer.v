@@ -68,7 +68,7 @@ module reflet_timer #(
         .enable(1'b1),
         .max(pre1),
         .out(pre1_out));
-    reflet_counter pre1_cnt(
+    reflet_counter pre2_cnt(
         .clk(clk),
         .reset(reset & timer_active),
         .enable(pre1_out),

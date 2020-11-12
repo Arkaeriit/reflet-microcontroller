@@ -12,7 +12,7 @@ module reflet_peripheral_minimal #(
     input clk,
     input reset,
     input enable,
-    output [3:0] exti,
+    output [3:0] ext_int,
     //system bus
     input [wordsize-1:0] addr,
     input [wordsize-1:0] data_in,
@@ -39,7 +39,7 @@ module reflet_peripheral_minimal #(
     wire using_peripherals = enable && addr >= base_addr && addr < base_addr + 17;
     wire [4:0] offset = addr - base_addr;
 
-    reflet_exti #(.wordsize(wordsize), .base_addr_size(5), .base_addr(0) exti (
+    reflet_exti #(.wordsize(wordsize), .base_addr_size(5), .base_addr(0)) exti (
         .clk(clk),
         .reset(reset),
         .enable(using_peripherals),
@@ -47,12 +47,12 @@ module reflet_peripheral_minimal #(
         .data_in(data_in),
         .data_out(dout_exti),
         .write_en(write_en),
-        .cpu_int(exti),
+        .cpu_int(ext_int),
         .gpio_int_in(int_gpio),
         .uart_int_in(int_uart),
         .timer_int_in(int_timer));
 
-    reflet_gpio #(.wordsize(wordsize), .base_addr_size(5), .base_addr(3) gpio (
+    reflet_gpio #(.wordsize(wordsize), .base_addr_size(5), .base_addr(3)) gpio (
         .clk(clk),
         .reset(reset),
         .enable(using_peripherals),
@@ -64,7 +64,7 @@ module reflet_peripheral_minimal #(
         .gpi(gpi),
         .gpo(gpo));
     
-    reflet_timer #(.wordsize(wordsize), .base_addr_size(5), .base_addr(11) timer (
+    reflet_timer #(.wordsize(wordsize), .base_addr_size(5), .base_addr(11)) timer (
         .clk(clk),
         .reset(reset),
         .enable(using_peripherals),
@@ -74,7 +74,7 @@ module reflet_peripheral_minimal #(
         .data_out(dout_timer),
         .write_en(write_en));
 
-    reflet_uart #(.wordsize(wordsize), .base_addr_size(5), .base_addr(14) uart (
+    reflet_uart #(.wordsize(wordsize), .base_addr_size(5), .base_addr(14)) uart (
         .clk(clk),
         .reset(reset),
         .enable(using_peripherals),
@@ -82,7 +82,7 @@ module reflet_peripheral_minimal #(
         .addr(addr),
         .data_in(data_in),
         .data_out(dout_uart),
-        .write_en(write_en)
+        .write_en(write_en),
         .rx(rx),
         .tx(tx));
 

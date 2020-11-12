@@ -14,8 +14,8 @@ module reflet_8bit_controler (
 
     //reset control
     wire reset, blink;
-    asrm_blink blink(.clk(clk), .out(blink));
-    assign reset = reset & !blink;
+    reflet_blink reset_bootstrap(.clk(clk), .out(blink));
+    assign reset = reset_in & !blink;
 
     //system bus and exti
     wire [7:0] addr;
@@ -25,7 +25,7 @@ module reflet_8bit_controler (
     wire [3:0] exti;
 
     //cpu
-    asrm_cpu #(.wordsize(8)) cpu (
+    reflet_cpu #(.wordsize(8)) cpu (
         .clk(clk),
         .reset(reset),
         .data_in(data_in_cpu),
@@ -52,7 +52,7 @@ module reflet_8bit_controler (
         .write_en(write_en));
 
     //0x80 to 0xED: data. Should stay as a regular RAM
-    reflet_ram8 #(.addrSize(7), .size(109)) mem_inst (
+    reflet_ram8 #(.addrSize(7), .size(109)) mem_data (
         .clk(clk),
         .reset(reset),
         .enable(addr[7]),
@@ -70,7 +70,7 @@ module reflet_8bit_controler (
         .clk(clk),
         .reset(reset),
         .enable(addr[7]),
-        .exti(exti),
+        .ext_int(exti),
         .addr(addr),
         .data_in(data_out_cpu),
         .data_out(dout_periph),
