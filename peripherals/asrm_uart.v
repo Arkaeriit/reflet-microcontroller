@@ -7,12 +7,13 @@
 module asrm_uart #(
     parameter wordsize = 16,
     base_addr_size = 16,
-    base_addr = 16'hFF04,
+    base_addr = 16'hFF08,
     clk_frec = 1000000
     )(
     input clk,
     input reset,
     input enable,
+    output interrupt,
     //sustem bus
     input [base_addr_size-1:0] addr,
     input write_en,
@@ -23,7 +24,7 @@ module asrm_uart #(
     output tx
     );
 
-    wire using_uart = enable && addr >= base_addr && addr <= base_addr + 3;
+    wire using_uart = enable && addr >= base_addr && addr < base_addr + 4;
     wire [1:0] offset = addr - base_addr;
 
     //Frequency generator
@@ -93,6 +94,15 @@ module asrm_uart #(
         .receive_done(receive_done),
         .start_transmit(!(|tx_cmd)),
         .end_transmit(end_transmit));
+
+    //Interrupt
+    reg save_receive;
+    assign interrupt = receive_done & !save_receive;
+    always @ (posedge clk)
+        if(!reset)
+            save_receive = 0;
+        else
+            save_receive = receive_done;
 
 endmodule
     
