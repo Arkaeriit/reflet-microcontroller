@@ -1,4 +1,4 @@
-//The code used to make this rom is in software/simuGPIO.asa
+//The code used to make this rom is in software/simuGPIO.rasm
 module rom1(input clk, input enable_out,input [5:0] addr, output [7:0] dataOut);
 reg [7:0] ret; assign dataOut = (enable_out ? ret : 6'h0);
 always @ (posedge clk)

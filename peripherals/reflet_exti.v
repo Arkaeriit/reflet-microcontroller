@@ -5,11 +5,10 @@
 |the various interruptions.                                |
 \---------------------------------------------------------*/
 
-module asrm_exti #(
+module reflet_exti #(
     parameter wordsize = 16,
     base_addr_size = 16,
-    base_addr = 16'hFF0C,
-    number_of_periph = 2
+    base_addr = 16'hFF0C
     )(
     input clk,
     input reset,
@@ -22,9 +21,9 @@ module asrm_exti #(
     //interrupts to the CPU
     output [3:0] cpu_int,
     //interrupts from the peripherals
-    input gpio_int_out,
-    input uart_int_out,
-    input timer_int_out
+    input gpio_int_in,
+    input uart_int_in,
+    input timer_int_in
     );
 
     wire using_exti = enable && addr >= base_addr && addr < base_addr + 3;
@@ -35,22 +34,24 @@ module asrm_exti #(
     wire gpio_int_en;
     wire [1:0] gpio_int_level;
     wire [3:0] gpio_int_exti;
-    asrm_int_mapper gpio_mapper(.enable(gpio_int_en & gpio_int), .level(gpio_int_level), .out(gpio_int_exti));
+    reflet_int_mapper gpio_mapper(.enable(gpio_int_en & gpio_int), .level(gpio_int_level), .out(gpio_int_exti));
     wire uart_int_en;
     wire [1:0] uart_int_level;
     wire [3:0] uart_int_exti;
-    asrm_int_mapper uart_mapper(.enable(uart_int_en & uart_int), .level(uart_int_level), .out(uart_int_exti));
+    reflet_int_mapper uart_mapper(.enable(uart_int_en & uart_int), .level(uart_int_level), .out(uart_int_exti));
     wire timer_int_en;
     wire [1:0] timer_int_level;
     wire [3:0] timer_int_exti;
-    asrm_int_mapper timer_mapper(.enable(timer_int_en & timer_int), .level(timer_int_level), .out(timer_int_exti));
+    reflet_int_mapper timer_mapper(.enable(timer_int_en & timer_int), .level(timer_int_level), .out(timer_int_exti));
+    assign cpu_int = gpio_int_exti | uart_int_exti | timer_int_exti;
 
     //gestion of status register
-    wire [7:0] int_list = {5'h0, timer_int_out, uart_int_out, gpio_int_out}
+    wire [7:0] int_list = {5'h0, timer_int_in, uart_int_in, gpio_int_in};
     wire int_updating = |int_list;
     wire [7:0] status_register;
     assign gpio_int = status_register[0];
     assign uart_int = status_register[1];
+    assign timer_int = status_register[2];
      
     //registers
     //the first register is the enable register. bit 0 enable the gpio
@@ -65,7 +66,7 @@ module asrm_exti #(
     wire [7:0] int_en;
     wire [7:0] int_level;
     assign data_out = dout_enable | dout_status | dout_level;
-    asrm_rw_register #(.addr_size(2), .reg_addr(0), .default_value(0)) reg_en(
+    reflet_rw_register #(.addr_size(2), .reg_addr(0), .default_value(0)) reg_en(
         .clk(clk),
         .reset(reset),
         .enable(using_exti),
@@ -74,7 +75,7 @@ module asrm_exti #(
         .data_in(data_in[7:0]),
         .data_out(dout_enable),
         .data(int_en));
-    asrm_rw_register #(.addr_size(2), .reg_addr(1), .default_value(0)) reg_level(
+    reflet_rw_register #(.addr_size(2), .reg_addr(1), .default_value(0)) reg_level(
         .clk(clk),
         .reset(reset),
         .enable(using_exti),
@@ -83,7 +84,7 @@ module asrm_exti #(
         .data_in(data_in[7:0]),
         .data_out(dout_level),
         .data(int_level));
-    asrm_rwe_register #(.addr_size(2), .reg_addr(0), .default_value(0)) reg_status(
+    reflet_rwe_register #(.addr_size(2), .reg_addr(2), .default_value(0)) reg_status(
         .clk(clk),
         .reset(reset),
         .enable(using_exti),
@@ -91,8 +92,8 @@ module asrm_exti #(
         .write_en(write_en),
         .data_in(data_in[7:0]),
         .data_out(dout_status),
-        .data(status_register)
-        .data_override(status_register & int_list),
+        .data(status_register),
+        .data_override(status_register | int_list),
         .override(int_updating));
     assign gpio_int_en = int_en[0];
     assign gpio_int_level = int_level[1:0];
@@ -110,17 +111,17 @@ endmodule
 |on the level of the interrupt.                |
 \---------------------------------------------*/
 
-module asrm_int_mapper(
+module reflet_int_mapper(
     input enable,
     input [1:0] level,
     output [3:0] out
     );
 
-    wire map = ( level == 0 ? 4'b0001 :
+    wire [3:0] map = ( level == 0 ? 4'b0001 :
                 ( level == 1 ? 4'b0010 :
                  ( level == 2 ? 4'b0100 :
                   4'b1000 )));
-    assign out = ( enable : map ? 4'b0000 );
+    assign out = ( enable ? map : 4'b0000 );
 
 endmodule
 

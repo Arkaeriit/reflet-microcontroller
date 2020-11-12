@@ -3,7 +3,7 @@
 |tests the GPIO|
 \-------------*/
 
-module asrm_gpio_tb();
+module reflet_gpio_tb();
 
     reg clk = 0;
     always #1 clk = !clk;
@@ -19,7 +19,7 @@ module asrm_gpio_tb();
     wire [15:0] gpi = 16'hABCD;
     wire [15:0] gpo;
 
-    asrm_gpio #(.wordsize(16), .base_addr_size(4), .base_addr(2)) gpio (
+    reflet_gpio #(.wordsize(16), .base_addr_size(4), .base_addr(2)) gpio (
         .clk(clk), 
         .reset(reset), 
         .enable(1'b1), 

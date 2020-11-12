@@ -5,7 +5,7 @@
 |(pre1 + 1) * (pre2 + 1) * (arr)      |
 \------------------------------------*/
 
-module asrm_timer #(
+module reflet_timer #(
     parameter wordsize = 16,
     base_addr_size = 16,
     base_addr = 16'hFF10
@@ -31,7 +31,7 @@ module asrm_timer #(
     wire [7:0] pre1;
     wire [7:0] pre2;
     wire [7:0] arr;
-    asrm_rw_register #(.addr_size(2), .reg_addr(0), .default_value(0)) reg_pre1(
+    reflet_rw_register #(.addr_size(2), .reg_addr(0), .default_value(0)) reg_pre1(
         .clk(clk),
         .reset(reset),
         .enable(using_timer),
@@ -40,7 +40,7 @@ module asrm_timer #(
         .data_in(data_in[7:0]),
         .data_out(dout_pre1),
         .data(pre1));
-    asrm_rw_register #(.addr_size(2), .reg_addr(1), .default_value(0)) reg_pre2(
+    reflet_rw_register #(.addr_size(2), .reg_addr(1), .default_value(0)) reg_pre2(
         .clk(clk),
         .reset(reset),
         .enable(using_timer),
@@ -49,7 +49,7 @@ module asrm_timer #(
         .data_in(data_in[7:0]),
         .data_out(dout_pre2),
         .data(pre2));
-    asrm_rw_register #(.addr_size(2), .reg_addr(2), .default_value(0)) reg_arr(
+    reflet_rw_register #(.addr_size(2), .reg_addr(2), .default_value(0)) reg_arr(
         .clk(clk),
         .reset(reset),
         .enable(using_timer),
@@ -62,19 +62,19 @@ module asrm_timer #(
     //Chain of counter
     wire timer_active = |arr;
     wire pre1_out, pre2_out;
-    asrm_counter pre1_cnt(
+    reflet_counter pre1_cnt(
         .clk(clk),
         .reset(reset & timer_active),
         .enable(1'b1),
         .max(pre1),
         .out(pre1_out));
-    asrm_counter pre1_cnt(
+    reflet_counter pre1_cnt(
         .clk(clk),
         .reset(reset & timer_active),
         .enable(pre1_out),
         .max(pre2),
         .out(pre2_out));
-    asrm_counter arr_cnt(
+    reflet_counter arr_cnt(
         .clk(clk),
         .reset(reset & timer_active),
         .enable(pre2_out),

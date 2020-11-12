@@ -20,7 +20,7 @@ module simu2();
     wire [15:0] data_out_uart;
     wire [7:0] data_out_rom;
     wire [15:0] data_out_ram;
-    asrm_uart #(.wordsize(16), .base_addr_size(15), .base_addr(14'h00), .clk_freq(96000)) uart (
+    reflet_uart #(.wordsize(16), .base_addr_size(15), .base_addr(14'h00), .clk_freq(96000)) uart (
         .clk(clk), 
         .reset(reset), 
         .enable(addr[15]), 
@@ -45,7 +45,7 @@ module simu2();
         .write_rq(write_en), 
         .data_out(data_out_ram));
     assign data_in_cpu = {8'h0, data_out_rom} | data_out_uart | data_out_ram;
-    asrm_cpu #(.wordsize(16)) cpu(
+    reflet_cpu #(.wordsize(16)) cpu(
         .clk(clk), 
         .reset(reset), 
         .quit(quit), 

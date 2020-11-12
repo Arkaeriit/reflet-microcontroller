@@ -5,7 +5,7 @@
 |and send a pulse.                          |
 \------------------------------------------*/
 
-module asrm_counter (
+module reflet_counter (
     input clk,
     input reset,
     input enable,

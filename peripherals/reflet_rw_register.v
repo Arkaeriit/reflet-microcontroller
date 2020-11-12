@@ -4,7 +4,7 @@
 |The data is stored on a single byte.    |
 \---------------------------------------*/
 
-module asrm_rw_register #(
+module reflet_rw_register #(
     parameter addr_size = 16,
     reg_addr = 0,
     default_value = 0

@@ -3,7 +3,7 @@
 |16 GPO and 16 GPI.|
 \-----------------*/
 
-module asrm_gpio #(
+module reflet_gpio #(
     parameter wordsize = 16,
     base_addr_size = 16,
     base_addr = 16'hFF00
@@ -47,7 +47,7 @@ module asrm_gpio #(
     wire [7:0] dout_intmap_r2;
     wire [7:0] dout_intmap_f1;
     wire [7:0] dout_intmap_f2;
-    asrm_rw_register #(.addr_size(2), .reg_addr(0), .default_value(0)) reg_pgo1(
+    reflet_rw_register #(.addr_size(3), .reg_addr(0), .default_value(0)) reg_pgo1(
         .clk(clk),
         .reset(reset),
         .enable(using_gpio),
@@ -56,7 +56,7 @@ module asrm_gpio #(
         .data_in(data_in[7:0]),
         .data_out(dout_gpo1),
         .data(gpo[7:0]));
-    asrm_rw_register #(.addr_size(2), .reg_addr(1), .default_value(0)) reg_pgo2(
+    reflet_rw_register #(.addr_size(3), .reg_addr(1), .default_value(0)) reg_pgo2(
         .clk(clk),
         .reset(reset),
         .enable(using_gpio),
@@ -65,21 +65,21 @@ module asrm_gpio #(
         .data_in(data_in[7:0]),
         .data_out(dout_gpo2),
         .data(gpo[15:8]));
-    asrm_ro_register #(.addr_size(2), .reg_addr(2)) reg_pgi1(
+    reflet_ro_register #(.addr_size(3), .reg_addr(2)) reg_pgi1(
         .clk(clk),
         .reset(reset),
         .enable(using_gpio),
         .addr(offset),
         .data_out(dout_gpi1),
         .data(gpi[7:0]));
-    asrm_ro_register #(.addr_size(2), .reg_addr(3)) reg_pgi2(
+    reflet_ro_register #(.addr_size(3), .reg_addr(3)) reg_pgi2(
         .clk(clk),
         .reset(reset),
         .enable(using_gpio),
         .addr(offset),
         .data_out(dout_gpi2),
         .data(gpi[15:8]));
-    asrm_rw_register #(.addr_size(2), .reg_addr(4), .default_value(0)) reg_intmap_r1(
+    reflet_rw_register #(.addr_size(3), .reg_addr(4), .default_value(0)) reg_intmap_r1(
         .clk(clk),
         .reset(reset),
         .enable(using_gpio),
@@ -88,7 +88,7 @@ module asrm_gpio #(
         .data_in(data_in[7:0]),
         .data_out(dout_intmap_r1),
         .data(intmap_rising[7:0]));
-    asrm_rw_register #(.addr_size(2), .reg_addr(5), .default_value(0)) reg_intmap_r2(
+    reflet_rw_register #(.addr_size(3), .reg_addr(5), .default_value(0)) reg_intmap_r2(
         .clk(clk),
         .reset(reset),
         .enable(using_gpio),
@@ -97,7 +97,7 @@ module asrm_gpio #(
         .data_in(data_in[7:0]),
         .data_out(dout_intmap_r2),
         .data(intmap_rising[15:8]));
-    asrm_rw_register #(.addr_size(2), .reg_addr(6), .default_value(0)) reg_intmap_f1(
+    reflet_rw_register #(.addr_size(3), .reg_addr(6), .default_value(0)) reg_intmap_f1(
         .clk(clk),
         .reset(reset),
         .enable(using_gpio),
@@ -106,7 +106,7 @@ module asrm_gpio #(
         .data_in(data_in[7:0]),
         .data_out(dout_intmap_f1),
         .data(intmap_falling[7:0]));
-    asrm_rw_register #(.addr_size(2), .reg_addr(5), .default_value(0)) reg_intmap_f2(
+    reflet_rw_register #(.addr_size(3), .reg_addr(7), .default_value(0)) reg_intmap_f2(
         .clk(clk),
         .reset(reset),
         .enable(using_gpio),

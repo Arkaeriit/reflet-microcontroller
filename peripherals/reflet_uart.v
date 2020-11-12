@@ -1,10 +1,10 @@
 /*-------------------------------\
-|This is the asrm UART module.   |
+|This is the reflet UART module.   |
 |The baud rate is locked at      |
 |9600 bauds.                     |
 \-------------------------------*/
 
-module asrm_uart #(
+module reflet_uart #(
     parameter wordsize = 16,
     base_addr_size = 16,
     base_addr = 16'hFF08,
@@ -30,7 +30,7 @@ module asrm_uart #(
     //Frequency generator
     integer mult = clk_frec / 9600;
     wire uart_en;
-    asrm_counter uart_counter (
+    reflet_counter uart_counter (
         .clk(clk), 
         .reset(reset), 
         .enable(1'b1), 
@@ -47,7 +47,7 @@ module asrm_uart #(
     wire [7:0] tx_data;
     wire [7:0] rx_cmd;
     wire [7:0] rx_data;
-    asrm_rw_register #(.addr_size(2), .reg_addr(0), .default_value(1)) reg_tx_cmd(
+    reflet_rw_register #(.addr_size(2), .reg_addr(0), .default_value(1)) reg_tx_cmd(
         .clk(clk),
         .reset(reset & !end_transmit),
         .enable(using_uart),
@@ -56,7 +56,7 @@ module asrm_uart #(
         .data_in(data_in[7:0]),
         .data_out(dout_tx_cmd),
         .data(tx_cmd));
-    asrm_rw_register #(.addr_size(2), .reg_addr(1), .default_value(0)) reg_tx_data(
+    reflet_rw_register #(.addr_size(2), .reg_addr(1), .default_value(0)) reg_tx_data(
         .clk(clk),
         .reset(reset),
         .enable(using_uart),
@@ -65,7 +65,7 @@ module asrm_uart #(
         .data_in(data_in[7:0]),
         .data_out(dout_tx_data),
         .data(tx_data));
-    asrm_rw_register #(.addr_size(2), .reg_addr(2), .default_value(1)) reg_rx_cmd(
+    reflet_rw_register #(.addr_size(2), .reg_addr(2), .default_value(1)) reg_rx_cmd(
         .clk(clk),
         .reset(reset & !receive_done),
         .enable(using_uart),
@@ -74,7 +74,7 @@ module asrm_uart #(
         .data_in(data_in[7:0]),
         .data_out(dout_rx_cmd),
         .data(rx_cmd));
-    asrm_ro_register #(.addr_size(2), .reg_addr(3)) reg_rx_data(
+    reflet_ro_register #(.addr_size(2), .reg_addr(3)) reg_rx_data(
         .clk(clk),
         .reset(reset),
         .enable(using_uart),
@@ -83,7 +83,7 @@ module asrm_uart #(
         .data(rx_data));
     assign data_out = dout_rx_cmd | dout_tx_cmd | dout_rx_data | dout_tx_data;
 
-    asrm_uart_uart uart(
+    reflet_uart_uart uart(
         .clk(clk),
         .enable(uart_en),
         .reset(reset),
@@ -116,7 +116,7 @@ endmodule
 |and a pulse of at least a UART clock cycle must be send to start_transmit. |
 \--------------------------------------------------------------------------*/
 
-module asrm_uart_uart(
+module reflet_uart_uart(
     input clk,
     input enable,                 //Should have a one tick pulse at the same frequency as the UART
     input reset,
