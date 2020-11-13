@@ -28,6 +28,7 @@ module reflet_timer #(
     wire [7:0] dout_pre1;
     wire [7:0] dout_pre2;
     wire [7:0] dout_arr;
+    assign data_out = dout_arr | dout_pre1 | dout_pre2;
     wire [7:0] pre1;
     wire [7:0] pre2;
     wire [7:0] arr;

@@ -14,7 +14,7 @@ module reflet_peripheral_minimal #(
     input enable,
     output [3:0] ext_int,
     //system bus
-    input [wordsize-1:0] addr,
+    input [base_addr_size-1:0] addr,
     input [wordsize-1:0] data_in,
     output [wordsize-1:0] data_out,
     input write_en,
@@ -28,7 +28,7 @@ module reflet_peripheral_minimal #(
     //data_out
     wire [7:0] dout_exti;
     wire [7:0] dout_gpio;
-    wire [7:9] dout_timer;
+    wire [7:0] dout_timer;
     wire [7:0] dout_uart;
     assign data_out = dout_exti | dout_gpio | dout_timer | dout_uart;
 
@@ -36,14 +36,14 @@ module reflet_peripheral_minimal #(
     wire int_gpio, int_timer, int_uart;
 
     //access control
-    wire using_peripherals = enable && addr >= base_addr && addr < base_addr + 17;
+    wire using_peripherals = enable && addr >= base_addr && addr < base_addr + 18;
     wire [4:0] offset = addr - base_addr;
 
     reflet_exti #(.wordsize(wordsize), .base_addr_size(5), .base_addr(0)) exti (
         .clk(clk),
         .reset(reset),
         .enable(using_peripherals),
-        .addr(addr),
+        .addr(offset),
         .data_in(data_in),
         .data_out(dout_exti),
         .write_en(write_en),
@@ -57,7 +57,7 @@ module reflet_peripheral_minimal #(
         .reset(reset),
         .enable(using_peripherals),
         .interrupt(int_gpio),
-        .addr(addr),
+        .addr(offset),
         .data_in(data_in),
         .data_out(dout_gpio),
         .write_en(write_en),
@@ -69,7 +69,7 @@ module reflet_peripheral_minimal #(
         .reset(reset),
         .enable(using_peripherals),
         .interrupt(int_timer),
-        .addr(addr),
+        .addr(offset),
         .data_in(data_in),
         .data_out(dout_timer),
         .write_en(write_en));
@@ -79,7 +79,7 @@ module reflet_peripheral_minimal #(
         .reset(reset),
         .enable(using_peripherals),
         .interrupt(int_uart),
-        .addr(addr),
+        .addr(offset),
         .data_in(data_in),
         .data_out(dout_uart),
         .write_en(write_en),
