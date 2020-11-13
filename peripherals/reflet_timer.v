@@ -60,26 +60,31 @@ module reflet_timer #(
         .data_out(dout_arr),
         .data(arr));
 
+    //checking the configuration
+    wire timer_active = arr != 8'h0 && pre1 != 8'hFF && pre2 != 8'hFF; //checking for invalid values
+    wire [31:0] pre1_max = {24'h0, pre1+1};
+    wire [31:0] pre2_max = {24'h0, pre2+1};
+    wire [31:0] arr_max = {24'h0, arr};
+
     //Chain of counter
-    wire timer_active = |arr;
     wire pre1_out, pre2_out;
     reflet_counter pre1_cnt(
         .clk(clk),
         .reset(reset & timer_active),
         .enable(1'b1),
-        .max(pre1),
+        .max(pre1_max),
         .out(pre1_out));
     reflet_counter pre2_cnt(
         .clk(clk),
         .reset(reset & timer_active),
         .enable(pre1_out),
-        .max(pre2),
+        .max(pre2_max),
         .out(pre2_out));
     reflet_counter arr_cnt(
         .clk(clk),
         .reset(reset & timer_active),
         .enable(pre2_out),
-        .max(arr),
+        .max(arr_max),
         .out(interrupt));
 
 endmodule
