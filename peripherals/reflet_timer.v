@@ -18,7 +18,7 @@ module reflet_timer #(
     input [base_addr_size-1:0] addr,
     input write_en,
     input [wordsize-1:0] data_in,
-    input [wordsize-1:0] data_out
+    output [wordsize-1:0] data_out
     );
 
     wire using_timer = enable && addr >= base_addr && addr < base_addr + 3;

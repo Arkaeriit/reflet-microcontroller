@@ -17,7 +17,7 @@ module reflet_exti #(
     input [base_addr_size-1:0] addr,
     input write_en,
     input [wordsize-1:0] data_in,
-    input [wordsize-1:0] data_out,
+    output [wordsize-1:0] data_out,
     //interrupts to the CPU
     output [3:0] cpu_int,
     //interrupts from the peripherals

@@ -8,7 +8,7 @@ module reflet_uart #(
     parameter wordsize = 16,
     base_addr_size = 16,
     base_addr = 16'hFF08,
-    clk_frec = 1000000
+    clk_freq = 1000000
     )(
     input clk,
     input reset,
@@ -18,7 +18,7 @@ module reflet_uart #(
     input [base_addr_size-1:0] addr,
     input write_en,
     input [wordsize-1:0] data_in,
-    input [wordsize-1:0] data_out,
+    output [wordsize-1:0] data_out,
     //serial acces
     input rx,
     output tx
@@ -28,7 +28,7 @@ module reflet_uart #(
     wire [1:0] offset = addr - base_addr;
 
     //Frequency generator
-    integer mult = clk_frec / 9600;
+    integer mult = clk_freq / 9600;
     wire uart_en;
     reflet_counter uart_counter (
         .clk(clk), 
