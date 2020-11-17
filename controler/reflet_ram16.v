@@ -5,7 +5,7 @@
 |byte can be addressed.                |
 \-------------------------------------*/
 
-module ram16
+module reflet_ram16
     #(parameter addrSize = 9
     )(
     input clk,
@@ -13,7 +13,7 @@ module ram16
     input output_en,
     input [addrSize-1:0] addr,
     input [15:0] data_in,
-    input write_rq,
+    input write_en,
     output [15:0] data_out
     );
     

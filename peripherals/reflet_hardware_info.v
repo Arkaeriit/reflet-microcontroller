@@ -18,7 +18,7 @@ module reflet_hardware_info #(
     clk_freq=1000000
     )(
     input [base_addr_size-1:0] addr,
-    output [wordsize-1:0] data_out;
+    output [wordsize-1:0] data_out
     );
 
     wire using_hwi = enable && addr >= base_addr && addr < base_addr + 4;
@@ -54,7 +54,7 @@ module reflet_hardware_info #(
        .enable(using_hwi),
        .addr(offset),
        .data_out(dout_info1),
-       .data({|enable_pwm, |enable_uart, |enable_timer, |enable_gpio, |enable_exti, wordsize_info });
+       .data({|enable_pwm, |enable_uart, |enable_timer, |enable_gpio, |enable_exti, wordsize_info }));
    reflet_ro_register #(.addr_size(2), .reg_addr(3)) reg_info2 (
        .enable(using_hwi),
        .addr(offset),
