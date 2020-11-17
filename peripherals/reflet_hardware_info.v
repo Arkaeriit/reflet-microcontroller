@@ -17,6 +17,7 @@ module reflet_hardware_info #(
     enable_pwm = 1,
     clk_freq=1000000
     )(
+    input enable,
     input [base_addr_size-1:0] addr,
     output [wordsize-1:0] data_out
     );
@@ -26,8 +27,8 @@ module reflet_hardware_info #(
 
     //Info parameters
     integer clk_freq_MHz = clk_freq/1000000;
-    wire [7:0] clk_freq_lsb = clk_freq_mhz & 32'h000000FF;
-    wire [7:0] clk_freq_msb = (clk_freq_mhz & 32'h0000FF00) >> 8;
+    wire [7:0] clk_freq_lsb = clk_freq_MHz & 32'h000000FF;
+    wire [7:0] clk_freq_msb = (clk_freq_MHz & 32'h0000FF00) >> 8;
     wire [2:0] wordsize_info = ( wordsize == 8 ? 1 :
                                ( wordsize == 16 ? 2 : 
                                ( wordsize == 32 ? 3 :
@@ -39,7 +40,7 @@ module reflet_hardware_info #(
     wire [7:0] dout_clk2;
     wire [7:0] dout_info1;
     wire [7:0] dout_info2;
-    assign data_out = dout_clk1 | data_out_clk2 | dout_info1 | dout_info2;
+    assign data_out = dout_clk1 | dout_clk2 | dout_info1 | dout_info2;
     reflet_ro_register #(.addr_size(2), .reg_addr(0)) reg_clk_lsb (
        .enable(using_hwi),
        .addr(offset),

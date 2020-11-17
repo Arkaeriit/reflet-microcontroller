@@ -4,10 +4,29 @@
 |use them in a microcontroler.           |
 \---------------------------------------*/
 
+//memory map
+//number of registers in each peripherals
+`define hwi_size   4
+`define exti_size  3
+`define gpio_size  8
+`define timer_size 3
+`define uart_size  4
+`define pwm_size   2
+//assigning addresses
+`define hwi_off   0
+`define exti_off  (`hwi_off + `hwi_size)
+`define gpio_off  (`exti_off + `exti_size)
+`define timer_off (`gpio_off + `gpio_size)
+`define uart_off  (`timer_off + `timer_size)
+`define pwm_off   (`uart_off + `uart_size)
+//sizes
+`define total_size (`hwi_size + `exti_size + `gpio_size + `timer_size + `uart_size + `pwm_size)
+`define offset_size ($clog2(`total_size))
+
 module reflet_peripheral #(
     parameter wordsize = 16,
     base_addr_size = 16,
-    base_addr = 8'hFF00,
+    base_addr = 16'hFF00,
     clk_freq = 1000000,
     enable_exti = 1,
     enable_gpio = 1,
@@ -43,34 +62,15 @@ module reflet_peripheral #(
 
     //interrupts signals
     wire int_gpio, int_timer, int_uart;
-
-    //memory map
-    //number of registers in each peripherals
-    integer hwi_size = 4;
-    integer exti_size = 3;
-    integer gpio_size = 8;
-    integer timer_size = 3;
-    integer uart_size = 4;
-    integer pwm_size = 2;
-    integer total_size = hwi_size + exti_size + gpio_size + timer_size + uart_size + pwm_size;
-    integer offset_size = $clog2(total_size);
-    //assigning addresses
-    integer hwi_off = 0;
-    integer exti_off = hwi_off + hwi_size;
-    integer gpio_off = exti_off + exti_size;
-    integer timer_off = gpio_off + gpio_size;
-    integer uart_off = timer_off + timer_size;
-    integer pwm_off = uart_off + uart_size;
-
     //access control
-    wire using_peripherals = enable && addr >= base_addr && addr < base_addr + total_size;
-    wire [offset_size-1:0] offset = addr - base_addr;
+    wire using_peripherals = enable && addr >= base_addr && addr < base_addr + `total_size;
+    wire [`offset_size-1:0] offset = addr - base_addr;
 
     //peripherals
     reflet_hardware_info #(
         .wordsize(wordsize), 
-        .base_addr_size(offset_size), 
-        .base_addr(hwi_off), 
+        .base_addr_size(`offset_size), 
+        .base_addr(`hwi_off), 
         .clk_freq(clk_freq),
         .enable_exti(enable_exti),
         .enable_gpio(enable_gpio),
@@ -78,11 +78,12 @@ module reflet_peripheral #(
         .enable_uart(enable_uart),
         .enable_pwm(enable_pwm))
     hwi (
+        .enable(using_peripherals),
         .addr(offset),
         .data_out(dout_hwi)); 
     
     if(enable_exti)
-        reflet_exti #(.wordsize(wordsize), .base_addr_size(offset_size), .base_addr(exti_off)) exti (
+        reflet_exti #(.wordsize(wordsize), .base_addr_size(`offset_size), .base_addr(`exti_off)) exti (
             .clk(clk),
             .reset(reset),
             .enable(using_peripherals),
@@ -101,7 +102,7 @@ module reflet_peripheral #(
     end
 
     if(enable_gpio)
-        reflet_gpio #(.wordsize(wordsize), .base_addr_size(offset_size), .base_addr(gpio_off)) gpio (
+        reflet_gpio #(.wordsize(wordsize), .base_addr_size(`offset_size), .base_addr(`gpio_off)) gpio (
             .clk(clk),
             .reset(reset),
             .enable(using_peripherals),
@@ -121,7 +122,7 @@ module reflet_peripheral #(
 
         
     if(enable_timer)
-        reflet_timer #(.wordsize(wordsize), .base_addr_size(offset_size), .base_addr(timer_off)) timer (
+        reflet_timer #(.wordsize(wordsize), .base_addr_size(`offset_size), .base_addr(`timer_off)) timer (
             .clk(clk),
             .reset(reset),
             .enable(using_peripherals),
@@ -137,7 +138,7 @@ module reflet_peripheral #(
     end
 
     if(enable_uart)
-        reflet_uart #(.wordsize(wordsize), .base_addr_size(offset_size), .base_addr(uart_off), .clk_freq(clk_freq)) uart (
+        reflet_uart #(.wordsize(wordsize), .base_addr_size(`offset_size), .base_addr(`uart_off), .clk_freq(clk_freq)) uart (
             .clk(clk),
             .reset(reset),
             .enable(using_peripherals),
