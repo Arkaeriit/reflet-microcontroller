@@ -42,7 +42,7 @@ module reflet_rwe_register #(
             end
         end
 
-    assign data_out = ( read_en ? data : 0 )
+    assign data_out = ( read_en ? data : 0 );
 
 endmodule
 

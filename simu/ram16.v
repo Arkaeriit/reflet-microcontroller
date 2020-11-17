@@ -37,7 +37,7 @@ module ram16
             end
         end
 
-    assign data_out = ( output_en ? {memory_ram[addr+1], memory_ram[addr]} ? 0 );
+    assign data_out = ( output_en ? {memory_ram[addr+1], memory_ram[addr]} : 0 );
 
 endmodule
 

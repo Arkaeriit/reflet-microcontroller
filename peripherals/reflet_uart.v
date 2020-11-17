@@ -1,5 +1,5 @@
 /*-------------------------------\
-|This is the reflet UART module.   |
+|This is the reflet UART module. |
 |The baud rate is locked at      |
 |9600 bauds.                     |
 \-------------------------------*/
