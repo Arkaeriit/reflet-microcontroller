@@ -16,7 +16,7 @@ module reflet_rwe_register #(
     input [addr_size-1:0] addr,
     input write_en,
     input [7:0] data_in,
-    output reg [7:0] data_out,
+    output [7:0] data_out,
     //peripheral control
     input [7:0] data_override,
     input override,
@@ -29,26 +29,20 @@ module reflet_rwe_register #(
     always @ (posedge clk)
         if(!reset)
         begin
-            data_out = 0;
             data = default_value;
         end
         else
+        begin
             if(override)
                 data = data_override;
             else
             begin
                 if(wr_en)
                     data = data_in;
-                if(read_en)
-                begin
-                    if(wr_en)
-                        data_out = data_in;
-                    else
-                        data_out = data;
-                end
-                else
-                    data_out = 0;
             end
+        end
+
+    assign data_out = ( read_en ? data : 0 )
 
 endmodule
 

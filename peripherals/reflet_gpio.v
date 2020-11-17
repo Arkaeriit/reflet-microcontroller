@@ -66,15 +66,11 @@ module reflet_gpio #(
         .data_out(dout_gpo2),
         .data(gpo[15:8]));
     reflet_ro_register #(.addr_size(3), .reg_addr(2)) reg_pgi1(
-        .clk(clk),
-        .reset(reset),
         .enable(using_gpio),
         .addr(offset),
         .data_out(dout_gpi1),
         .data(gpi[7:0]));
     reflet_ro_register #(.addr_size(3), .reg_addr(3)) reg_pgi2(
-        .clk(clk),
-        .reset(reset),
         .enable(using_gpio),
         .addr(offset),
         .data_out(dout_gpi2),

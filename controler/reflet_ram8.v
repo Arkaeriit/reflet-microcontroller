@@ -13,7 +13,7 @@ module reflet_ram8 #(
     input [addrSize-1:0] addr,
     input [7:0] data_in,
     input write_en,
-    output reg [7:0] data_out
+    output [7:0] data_out
     );
 
 	// Declare memory 
@@ -27,17 +27,14 @@ module reflet_ram8 #(
         begin
 			for (integer i=0;i<size; i=i+1)
 				memory_ram[i] = 0;
-            data_out = 0;
         end
 		else
         begin
             if(usable && write_en)
                 memory_ram[addr] = data_in;
-            if(usable)
-                data_out = memory_ram[addr];
-            else 
-                data_out = 0;
         end
+
+    assign data_out = ( usable ? memory_ram[addr] : 0 );
         
 endmodule
 

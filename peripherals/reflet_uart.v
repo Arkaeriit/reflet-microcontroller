@@ -75,8 +75,6 @@ module reflet_uart #(
         .data_out(dout_rx_cmd),
         .data(rx_cmd));
     reflet_ro_register #(.addr_size(2), .reg_addr(3)) reg_rx_data(
-        .clk(clk),
-        .reset(reset),
         .enable(using_uart),
         .addr(offset),
         .data_out(dout_rx_data),
