@@ -1,3 +1,66 @@
+/*--------------------------\
+|This module integrate a pwm|
+|as a reflet peripheral.    |
+\--------------------------*/
+
+module reflet_pwm #(
+    wordsize = 16,
+    base_addr_size = 16,
+    base_addr= 16'hFF13
+    )(
+    input clk,
+    input reset,
+    input enable,
+    //system bus
+    input [base_addr_size-1:0] addr,
+    input [wordsize-1:0] data_in,
+    output [wordsize-1:0] data_out,
+    input write_en,
+    //output
+    output out
+    );
+
+    //acces control
+    wire using_pwm = enable && addr >= base_addr && addr < base_addr + 2;
+    wire offset = addr - base_addr;
+
+    //registers
+    wire [7:0] dout_freq;
+    wire [7:0] dout_duty;
+    wire [7:0] freq;
+    wire [7:0] duty;
+    assign data_out = dout_duty | dout_freq;
+    reflet_rw_register #(.addr_size(1), .reg_addr(0), .default_value(0)) reg_freq (
+        .clk(clk),
+        .reset(reset),
+        .enable(using_pwm),
+        .addr(offset),
+        .write_en(write_en),
+        .data_in(data_in[7:0]),
+        .data_out(dout_freq),
+        .data(freq));
+    reflet_rw_register #(.addr_size(1), .reg_addr(1), .default_value(0)) reg_duty (
+        .clk(clk),
+        .reset(reset),
+        .enable(using_pwm),
+        .addr(offset),
+        .write_en(write_en),
+        .data_in(data_in[7:0]),
+        .data_out(dout_duty),
+        .data(duty));
+
+    //The actual pwm
+    reflet_pwm_pwm pwm (
+        .clk(clk),
+        .reset(reset),
+        .duty_cycle(duty),
+        .max(freq),
+        .out(out));
+
+endmodule
+
+
+
 /*---------\
 |This is an|
 |8-bit pwm.|

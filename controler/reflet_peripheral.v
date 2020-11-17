@@ -52,12 +52,12 @@ module reflet_peripheral #(
     );
 
     //data_out
-    wire [7:0] dout_hwi;
-    wire [7:0] dout_exti;
-    wire [7:0] dout_gpio;
-    wire [7:0] dout_timer;
-    wire [7:0] dout_uart;
-    wire [7:0] dout_pwm;
+    wire [15:0] dout_hwi;
+    wire [15:0] dout_exti;
+    wire [15:0] dout_gpio;
+    wire [15:0] dout_timer;
+    wire [15:0] dout_uart;
+    wire [15:0] dout_pwm;
     assign data_out = dout_hwi | dout_exti | dout_gpio | dout_timer | dout_uart | dout_pwm;
 
     //interrupts signals
@@ -155,9 +155,21 @@ module reflet_peripheral #(
         assign int_uart = 0;
     end
 
-    //pwm todo
-    assign dout_pwm = 0;
-    assign pwm = 0;
+    if(enable_pwm)
+        reflet_pwm #(.wordsize(wordsize), .base_addr_size(`offset_size), .base_addr(`pwm_off)) pwm (
+            .clk(clk),
+            .reset(reset),
+            .enable(using_peripherals),
+            .addr(offset),
+            .data_in(data_in),
+            .data_out(dout_timer),
+            .write_en(write_en),
+            .out(pwm));
+    else
+    begin
+        assign dout_pwm = 0;
+        assign pwm = 0;
+    end
 
 endmodule
 
