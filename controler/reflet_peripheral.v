@@ -12,15 +12,17 @@
 `define timer_size 3
 `define uart_size  4
 `define pwm_size   2
+`define seg_size   3
 //assigning addresses
 `define hwi_off   0
-`define exti_off  (`hwi_off + `hwi_size)
-`define gpio_off  (`exti_off + `exti_size)
-`define timer_off (`gpio_off + `gpio_size)
+`define exti_off  (`hwi_off   + `hwi_size)
+`define gpio_off  (`exti_off  + `exti_size)
+`define timer_off (`gpio_off  + `gpio_size)
 `define uart_off  (`timer_off + `timer_size)
-`define pwm_off   (`uart_off + `uart_size)
+`define pwm_off   (`uart_off  + `uart_size)
+`define seg_off   (`pwm_off   + `pwm_size)
 //sizes
-`define total_size (`hwi_size + `exti_size + `gpio_size + `timer_size + `uart_size + `pwm_size)
+`define total_size (`hwi_size + `exti_size + `gpio_size + `timer_size + `uart_size + `pwm_size + `seg_size)
 `define offset_size ($clog2(`total_size))
 
 module reflet_peripheral #(
@@ -32,7 +34,8 @@ module reflet_peripheral #(
     enable_gpio = 1,
     enable_timer = 1,
     enable_uart = 1,
-    enable_pwm = 1
+    enable_pwm = 1,
+    enable_segments = 1
     )(
     input clk,
     input reset,
@@ -43,22 +46,30 @@ module reflet_peripheral #(
     input [wordsize-1:0] data_in,
     output [wordsize-1:0] data_out,
     input write_en,
-    //External world connections
+    //GPIO
     input [15:0] gpi,
     output [15:0] gpo,
+    //UART
     input rx,
     output tx,
-    output pwm
+    //PWM
+    output pwm,
+    //Seven segments
+    output [6:0] segments,
+    output [3:0] seg_select,
+    output seg_dot,
+    output seg_colon
     );
 
     //data_out
-    wire [15:0] dout_hwi;
-    wire [15:0] dout_exti;
-    wire [15:0] dout_gpio;
-    wire [15:0] dout_timer;
-    wire [15:0] dout_uart;
-    wire [15:0] dout_pwm;
-    assign data_out = dout_hwi | dout_exti | dout_gpio | dout_timer | dout_uart | dout_pwm;
+    wire [wordsize-1:0] dout_hwi;
+    wire [wordsize-1:0] dout_exti;
+    wire [wordsize-1:0] dout_gpio;
+    wire [wordsize-1:0] dout_timer;
+    wire [wordsize-1:0] dout_uart;
+    wire [wordsize-1:0] dout_pwm;
+    wire [wordsize-1:0] dout_segments;
+    assign data_out = dout_hwi | dout_exti | dout_gpio | dout_timer | dout_uart | dout_pwm | dout_segments;
 
     //interrupts signals
     wire int_gpio, int_timer, int_uart;
@@ -76,7 +87,8 @@ module reflet_peripheral #(
         .enable_gpio(enable_gpio),
         .enable_timer(enable_timer),
         .enable_uart(enable_uart),
-        .enable_pwm(enable_pwm))
+        .enable_pwm(enable_pwm),
+        .enable_segments(enable_segments))
     hwi (
         .enable(using_peripherals),
         .addr(offset),
@@ -162,13 +174,34 @@ module reflet_peripheral #(
             .enable(using_peripherals),
             .addr(offset),
             .data_in(data_in),
-            .data_out(dout_timer),
+            .data_out(dout_pwm),
             .write_en(write_en),
             .out(pwm));
     else
     begin
         assign dout_pwm = 0;
         assign pwm = 0;
+    end
+
+    if(enable_segments)
+        reflet_seven_segments #(.wordsize(wordsize), .base_addr_size(`offset_size), .base_addr(`seg_off)) seg7 (
+            .clk(clk),
+            .reset(reset),
+            .enable(using_peripherals),
+            .addr(offset),
+            .data_in(data_in),
+            .data_out(dout_segments),
+            .write_en(write_en),
+            .segments(segments),
+            .selection(seg_select),
+            .dot(seg_dot),
+            .colon(seg_colon));
+    else
+    begin
+        assign segments = 0;
+        assign seg_select = 0;
+        assign seg_dot = 0;
+        assign seg_colon = 0;
     end
 
 endmodule

@@ -15,6 +15,7 @@ module reflet_hardware_info #(
     enable_timer = 1,
     enable_uart = 1,
     enable_pwm = 1,
+    enable_segments = 1,
     clk_freq=1000000
     )(
     input enable,
@@ -60,7 +61,7 @@ module reflet_hardware_info #(
        .enable(using_hwi),
        .addr(offset),
        .data_out(dout_info2),
-       .data(8'h0)); //data will be used when more peripherals will be made
+       .data({7'h0, |enable_segments}));
 
 endmodule
     

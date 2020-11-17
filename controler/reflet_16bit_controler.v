@@ -5,18 +5,27 @@ module reflet_16bit_controler #(
     enable_gpio = 1,
     enable_timer = 1,
     enable_uart = 1,
-    enable_pwm = 1
+    enable_pwm = 1,
+    enable_segments = 1
     )(
     input clk,
     input reset_in,
     //CPU monitoring
     output debug,
     output quit,
-    //peripheral IO
+    //GPIO
     input [15:0] gpi,
+    //UART
     output [15:0] gpo,
     input rx,
-    output tx
+    output tx,
+    //PWM
+    output pwm,
+    //Seven segments
+    output [6:0] segments,
+    output [3:0] seg_select,
+    output seg_colon,
+    output seg_dot
     );
 
     //reset control
@@ -78,7 +87,8 @@ module reflet_16bit_controler #(
         .enable_gpio(enable_gpio),
         .enable_timer(enable_timer),
         .enable_uart(enable_uart),
-        .enable_pwm(enable_pwm)) 
+        .enable_pwm(enable_pwm),
+        .enable_segments(enable_segments)) 
     periph (
         .clk(clk),
         .reset(reset),
@@ -91,7 +101,12 @@ module reflet_16bit_controler #(
         .gpi(gpi),
         .gpo(gpo),
         .rx(rx),
-        .tx(tx));
+        .tx(tx),
+        .pwm(pwm),
+        .segments(segments),
+        .seg_select(seg_select),
+        .seg_dot(seg_dot),
+        .seg_colon(seg_colon));
 
 endmodule
 
