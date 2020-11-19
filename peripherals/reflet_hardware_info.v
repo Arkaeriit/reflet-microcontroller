@@ -13,6 +13,7 @@ module reflet_hardware_info #(
     enable_exti = 1,
     enable_gpio = 1,
     enable_timer = 1,
+    enable_timer2 = 1,
     enable_uart = 1,
     enable_pwm = 1,
     enable_segments = 1,
@@ -56,12 +57,12 @@ module reflet_hardware_info #(
        .enable(using_hwi),
        .addr(offset),
        .data_out(dout_info1),
-       .data({|enable_pwm, |enable_uart, |enable_timer, |enable_gpio, |enable_exti, wordsize_info }));
+       .data({|enable_uart, |enable_timer2, |enable_timer, |enable_gpio, |enable_exti, wordsize_info }));
    reflet_ro_register #(.addr_size(2), .reg_addr(3)) reg_info2 (
        .enable(using_hwi),
        .addr(offset),
        .data_out(dout_info2),
-       .data({7'h0, |enable_segments}));
+       .data({6'h0, |enable_segments, |enable_pwm}));
 
 endmodule
     

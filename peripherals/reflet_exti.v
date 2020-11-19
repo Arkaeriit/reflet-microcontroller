@@ -22,14 +22,15 @@ module reflet_exti #(
     //interrupts from the peripherals
     input gpio_int_in,
     input uart_int_in,
-    input timer_int_in
+    input timer_int_in,
+    input timer_2_int_in
     );
 
     wire using_exti = enable && addr >= base_addr && addr < base_addr + 3;
     wire [1:0] offset = addr - base_addr;
 
     //Controling interrupts
-    wire gpio_int, uart_int, timer_int;
+    wire gpio_int, uart_int, timer_int, timer_2_int;
     wire gpio_int_en;
     wire [1:0] gpio_int_level;
     wire [3:0] gpio_int_exti;
@@ -42,15 +43,19 @@ module reflet_exti #(
     wire [1:0] timer_int_level;
     wire [3:0] timer_int_exti;
     reflet_int_mapper timer_mapper(.enable(timer_int_en & timer_int), .level(timer_int_level), .out(timer_int_exti));
-    assign cpu_int = gpio_int_exti | uart_int_exti | timer_int_exti;
+    wire [1:0] timer_2_int_level;
+    wire [3:0] timer_2_int_exti;
+    reflet_int_mapper timer_2_mapper(.enable(timer_2_int_en & timer_2_int), .level(timer_2_int_level), .out(timer_2_int_exti));
+    assign cpu_int = gpio_int_exti | uart_int_exti | timer_int_exti | timer_2_int_exti;
 
     //gestion of status register
-    wire [7:0] int_list = {5'h0, timer_int_in, uart_int_in, gpio_int_in};
+    wire [7:0] int_list = {4'h0, timer_2_int_in, timer_int_in, uart_int_in, gpio_int_in};
     wire int_updating = |int_list;
     wire [7:0] status_register;
     assign gpio_int = status_register[0];
     assign uart_int = status_register[1];
     assign timer_int = status_register[2];
+    assign timer_2_int = status_register[3];
      
     //registers
     //the first register is the enable register. bit 0 enable the gpio
@@ -100,6 +105,8 @@ module reflet_exti #(
     assign uart_int_level = int_level[3:2];
     assign timer_int_en = int_en[2];
     assign timer_int_level = int_level[5:4];
+    assign timer_2_int_en = int_en[3];
+    assign timer_2_int_level = int_level[7:6];
 
 endmodule
 

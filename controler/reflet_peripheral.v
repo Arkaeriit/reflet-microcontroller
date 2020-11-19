@@ -83,13 +83,14 @@ module reflet_peripheral #(
 
     //peripherals
     reflet_hardware_info #(
-        .wordsize(wordsize), 
+        .wordsize(wordsize),
         .base_addr_size(`offset_size), 
         .base_addr(`hwi_off), 
         .clk_freq(clk_freq),
         .enable_exti(enable_exti),
         .enable_gpio(enable_gpio),
         .enable_timer(enable_timer),
+        .enable_timer2(enable_timer2),
         .enable_uart(enable_uart),
         .enable_pwm(enable_pwm),
         .enable_segments(enable_segments))
@@ -99,7 +100,7 @@ module reflet_peripheral #(
         .data_out(dout_hwi)); 
     
     if(enable_exti)
-        reflet_exti #(.wordsize(wordsize), .base_addr_size(`offset_size), .base_addr(`exti_off)) exti (
+        reflet_exti #(.base_addr_size(`offset_size), .base_addr(`exti_off)) exti (
             .clk(clk),
             .reset(reset),
             .enable(using_peripherals),
@@ -110,7 +111,8 @@ module reflet_peripheral #(
             .cpu_int(ext_int),
             .gpio_int_in(int_gpio),
             .uart_int_in(int_uart),
-            .timer_int_in(int_timer));
+            .timer_int_in(int_timer),
+            .timer_2_int_in(int_timer2));
     else
     begin
         assign dout_exti = 0;
@@ -118,7 +120,7 @@ module reflet_peripheral #(
     end
 
     if(enable_gpio)
-        reflet_gpio #(.wordsize(wordsize), .base_addr_size(`offset_size), .base_addr(`gpio_off)) gpio (
+        reflet_gpio #(.base_addr_size(`offset_size), .base_addr(`gpio_off)) gpio (
             .clk(clk),
             .reset(reset),
             .enable(using_peripherals),
@@ -138,7 +140,7 @@ module reflet_peripheral #(
 
         
     if(enable_timer)
-        reflet_timer #(.wordsize(wordsize), .base_addr_size(`offset_size), .base_addr(`timer_off)) timer (
+        reflet_timer #(.base_addr_size(`offset_size), .base_addr(`timer_off)) timer (
             .clk(clk),
             .reset(reset),
             .enable(using_peripherals),
@@ -154,7 +156,7 @@ module reflet_peripheral #(
     end
 
     if(enable_timer2)
-        reflet_timer #(.wordsize(wordsize), .base_addr_size(`offset_size), .base_addr(`timer2off)) timer (
+        reflet_timer_2 #(.base_addr_size(`offset_size), .base_addr(`timer2off)) timer2 (
             .clk(clk),
             .reset(reset),
             .enable(using_peripherals),
@@ -171,7 +173,7 @@ module reflet_peripheral #(
     end
 
     if(enable_uart)
-        reflet_uart #(.wordsize(wordsize), .base_addr_size(`offset_size), .base_addr(`uart_off), .clk_freq(clk_freq)) uart (
+        reflet_uart #(.base_addr_size(`offset_size), .base_addr(`uart_off), .clk_freq(clk_freq)) uart (
             .clk(clk),
             .reset(reset),
             .enable(using_peripherals),
@@ -189,7 +191,7 @@ module reflet_peripheral #(
     end
 
     if(enable_pwm)
-        reflet_pwm #(.wordsize(wordsize), .base_addr_size(`offset_size), .base_addr(`pwm_off)) pwm (
+        reflet_pwm #(.base_addr_size(`offset_size), .base_addr(`pwm_off)) pwm (
             .clk(clk),
             .reset(reset),
             .enable(using_peripherals),
@@ -205,7 +207,7 @@ module reflet_peripheral #(
     end
 
     if(enable_segments)
-        reflet_seven_segments #(.wordsize(wordsize), .base_addr_size(`offset_size), .base_addr(`seg_off)) seg7 (
+        reflet_seven_segments #(.base_addr_size(`offset_size), .base_addr(`seg_off)) seg7 (
             .clk(clk),
             .reset(reset),
             .enable(using_peripherals),

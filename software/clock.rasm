@@ -11,7 +11,7 @@ set 3
 str R1 ;enable it and activate the colon
 set+ 65295 ;0xFF0F, the base address for the timer
 cpy R2
-set+ 20 ; need to be changed to the correct value ;getting a division of 1 000 000 with the two prescalers
+set+ 99 ; need to be changed to the correct value ;getting a division of 1 000 000 with the three prescalers
 str R2
 push
 set 1
@@ -19,18 +19,33 @@ add R2
 cpy R2
 pop
 str R2
+push
 set 1
 add R2
 cpy R2 ;R2 now contain the last register of the timer
 set+ 65280 ;0xFF00, base address of the hadware info
 cpy R3
 load R3
-str R2 ;set the last timer value to the clock. The timer 1 now ticks each seconds
+str R2 ;set the last timer value to the clock. The timer 1 now ticks 1/100 of a seconds
+set 1
+add R2
+cpy R2 ;R2 now contain the first register of timer2
+set 1
+str R2 ;We enabled the chaining of timers
+add R2
+cpy R2
+pop
+str R2
+set 1
+add R2
+cpy R2
+set 1
+str R2 ;Timer 2 is now active, ticking once a second
 set 4 
 add R3 ;We now have 0xFF04, the base address of the exti
 cpy R3
-set 4
-str R3 ;We ennabled the timer interrupt
+set 8
+str R3 ;We ennabled the timer 2 interrupt
 set 2
 add R3
 cpy R3 ;R3 now have the address of the status register of exti
