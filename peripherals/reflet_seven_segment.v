@@ -1,7 +1,7 @@
 /*--------------------------------------\
 |This module integrate the seven segment|
 |display into a reflet peripheral. It is|
-|assumed that a value of 1 in the output|
+|assumed that a value of 0 in the output|
 |value means that the segment is on.    |
 \--------------------------------------*/
 
@@ -63,7 +63,7 @@ module reflet_seven_segments #(
         .write_en(write_en),
         .data_in(data_in[7:0]),
         .data_out(dout_num23),
-        .data(dout_num23));
+        .data(num23));
 
     //The actual driver
     reflet_7seg seg7 (
@@ -122,13 +122,13 @@ module reflet_7seg (
 
     assign segments = num_segments[cnt];
     assign selection = 
-        ( enable   ? 4'b0000 :
+        ( !enable  ? 4'b0000 :
         ( cnt == 0 ? 4'b0001 :
         ( cnt == 1 ? 4'b0010 :
         ( cnt == 2 ? 4'b0100 :
         /*3*/        4'b1000))));
-    assign colon = using_colon;
-    assign dot = dots[cnt];
+    assign colon = !using_colon;
+    assign dot = !dots[cnt];
 
 endmodule
                     
@@ -138,7 +138,7 @@ endmodule
 |This module convert a number |
 |in its base 16 representation|
 |on a seven sement display.   |
-|Output = 1 means the segment |
+|Output = 0 means the segment |
 |is on.                       |
 \----------------------------*/
 
@@ -158,21 +158,22 @@ module reflet_number_to_segment (
     );
 
     assign segments =
-        ( number == 4'h0 ? 7'b1111110 :
-        ( number == 4'h1 ? 7'b0110000 :
-        ( number == 4'h2 ? 7'b1101101 :
-        ( number == 4'h3 ? 7'b1111001 :
-        ( number == 4'h4 ? 7'b0110011 :
-        ( number == 4'h5 ? 7'b1011011 :
-        ( number == 4'h6 ? 7'b1011111 :
-        ( number == 4'h7 ? 7'b1110000 :
-        ( number == 4'h8 ? 7'b1111111 :
-        ( number == 4'h9 ? 7'b1111011 :
-        ( number == 4'hA ? 7'b1110111 :
-        ( number == 4'hB ? 7'b0011111 :
-        ( number == 4'hC ? 7'b1001111 :
-        ( number == 4'hD ? 7'b0111101 :
-        ( number == 4'hE ? 7'b1001111 :
-          /* 4'hF*/        7'b1001111 )))))))))))))));
+        ( number == 4'h0 ? 7'b1000000 :
+        ( number == 4'h1 ? 7'b1111001 :
+        ( number == 4'h2 ? 7'b0100100 :
+        ( number == 4'h3 ? 7'b0110000 :
+        ( number == 4'h4 ? 7'b0011001 :
+        ( number == 4'h5 ? 7'b0010010 :
+        ( number == 4'h6 ? 7'b0000010 :
+        ( number == 4'h7 ? 7'b1111000 :
+        ( number == 4'h8 ? 7'b0000000 :
+        ( number == 4'h9 ? 7'b0010000 :
+        ( number == 4'hA ? 7'b0001000 :
+        ( number == 4'hB ? 7'b0000011 :
+        ( number == 4'hC ? 7'b1000110 :
+        ( number == 4'hD ? 7'b0100001 :
+        ( number == 4'hE ? 7'b0000110 :
+          /* 4'hF*/        7'b0001110 )))))))))))))));
+		  
 endmodule
 

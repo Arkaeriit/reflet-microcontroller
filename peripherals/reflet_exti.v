@@ -99,7 +99,7 @@ module reflet_exti #(
     assign gpio_int_level = int_level[1:0];
     assign uart_int_en = int_en[1];
     assign uart_int_level = int_level[3:2];
-    assign timer_int_en = int_en[3];
+    assign timer_int_en = int_en[2];
     assign timer_int_level = int_level[5:4];
 
 endmodule

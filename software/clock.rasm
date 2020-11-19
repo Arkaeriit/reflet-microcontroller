@@ -1,0 +1,106 @@
+wordsize 16
+
+label start
+set+ 32768 ;0x8000, the beguining of the RAM
+cpy SP
+set+ 65304 ;0xFF18, the base address for the seven segment
+cpy R1
+set 3
+str R1 ;enable it and activate the colon
+set+ 65295 ;0xFF0F, the base address for the timer
+cpy R2
+set+ 15 ; need to be changed to the correct value ;getting a division of 1 000 000 with the two prescalers
+str R2
+push
+set 1
+add R2
+cpy R2
+pop
+str R2
+set 1
+add R2
+cpy R2 ;R2 now contain the last register of the timer
+set+ 65280 ;0xFF00, base address of the hadware info
+cpy R3
+load R3
+str R2 ;set the last timer value to the clock. The timer 1 now ticks each seconds
+set 4 
+add R3 ;We now have 0xFF04, the base address of the exti
+cpy R3
+set 4
+str R3 ;We ennabled the timer interrupt
+set 2
+add R3
+cpy R3 ;R3 now have the address of the status register of exti
+setlab updateTime
+setint 0
+set 8
+cpy SR ;We enable int0 with updateTime as the routine
+set 4
+cpy R2 ;R2 contain 4
+setlab loop
+label loop
+slp
+slp
+jmp
+
+
+label updateTime
+push
+set 0 ;we clear the interrupt
+str R3
+set 1
+add R1 ;address for the 2 first digits
+cpy R4
+callf editNum
+load R4 
+cpy R5 
+set+ 97 ;x60 Test if we need to update the minutes
+eq R5
+setlab editMin
+jif 
+label retTime
+pop
+retint
+
+label editMin
+set 0
+str R4
+set 1
+add R4
+cpy R4
+callf editNum
+goto retTime
+
+
+;This function edits the value of the number stored at address in R4 and update it in a decimal format compatible withe the seven segment display driver
+label editNum
+load R4
+cpy R5
+set 1
+add R5
+cpy R5 ;R5 contain the updated units of seconds
+set 15
+and R5
+cpy R6 ;Test if got to 10 
+set 10
+eq R6
+setlab edit10
+jif
+label retUnit
+read R5
+str R4
+ret
+
+label edit10
+set 4
+cpy R6
+load R4
+lsr R6
+cpy R5
+set 1 
+add R5
+lsl R6
+cpy R5
+goto retUnit
+

@@ -45,7 +45,7 @@ module reflet_counter (
         end
 
         assign out = ( max == 0 ? 0 :
-                        ( max == 1 ? 1 :
+                        ( max == 1 ? enable :
                            reached_max & !reached_max_ark));
 
 endmodule

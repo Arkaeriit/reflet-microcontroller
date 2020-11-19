@@ -1,5 +1,5 @@
 
-module reflet_16bit_controler #(
+module clock_cpu #(
     parameter clk_freq = 1000000,
     enable_exti = 1,
     enable_gpio = 1,
@@ -53,19 +53,16 @@ module reflet_16bit_controler #(
         .ext_int(exti));
 
     //memory map
-    wire [15:0] dout_inst;
+    wire [7:0] dout_inst;
     wire [15:0] dout_data;
     wire [15:0] dout_periph;
-    assign data_in_cpu = dout_inst | dout_data | dout_periph;
+    assign data_in_cpu = {8'h0, dout_inst} | dout_data | dout_periph;
     //0x00 to 0x7FFF: instruction. Should be replaced with a ROM for real use
-    reflet_ram16 #(.addrSize(15), .size(128)) mem_inst (
+    rom5 rom (
         .clk(clk),
-        .reset(reset),
-        .enable(!addr[15]),
+        .enable_out(!addr[15]),
         .addr(addr[14:0]),
-        .data_in(data_out_cpu),
-        .data_out(dout_inst),
-        .write_en(write_en));
+        .dataOut(dout_inst));
 
     //0x8000 to 0xFEFF: data. Should stay as a regular RAM
     reflet_ram16 #(.addrSize(15), .size(100)) mem_data (
@@ -78,13 +75,6 @@ module reflet_16bit_controler #(
         .write_en(write_en));
 
     //0xFF00 to 0xFFFF: peripherals
-    //0x00 to 0x03 : hardware info
-    //0x04 to 0x06 : exti
-    //0x07 to 0x0E : gpio
-    //0x0F to 0x11 : timer
-    //0x12 to 0x15 : uart
-    //0x16 to 0x17 : pwm
-    //0x18 to 0x1A : seven segments
     reflet_peripheral #(
         .wordsize(16), 
         .base_addr_size(15), 
