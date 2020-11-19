@@ -115,11 +115,11 @@ case(addr)
   9'h6e : ret = 8'h7b;
   9'h6f : ret = 8'hac;
   9'h70 : ret = 8'h3b;
-  9'h71 : ret = 8'h10;
+  9'h71 : ret = 8'h11;
   9'h72 : ret = 8'h7b;
   9'h73 : ret = 8'hac;
   9'h74 : ret = 8'h3b;
-  9'h75 : ret = 8'h1f;
+  9'h75 : ret = 8'h14;
   9'h76 : ret = 8'h7b;
   9'h77 : ret = 8'he2;
   9'h78 : ret = 8'hb;

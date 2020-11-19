@@ -6,17 +6,16 @@
 \--------------------------------------*/
 
 module reflet_seven_segments #(
-    parameter wordsize = 16,
-    base_addr_size = 16,
+    parameter base_addr_size = 16,
     base_addr = 16'hFF10
-)(
+    )(
     input clk,
     input reset,
     input enable,
     //system bus
     input [base_addr_size-1:0] addr,
-    input [wordsize-1:0] data_in,
-    output [wordsize-1:0] data_out,
+    input [7:0] data_in,
+    output [7:0] data_out,
     input write_en,
     //display connection
     output [6:0] segments,

@@ -5,8 +5,7 @@
 \-------------------------------*/
 
 module reflet_uart #(
-    parameter wordsize = 16,
-    base_addr_size = 16,
+    parameter base_addr_size = 16,
     base_addr = 16'hFF08,
     clk_freq = 1000000
     )(
@@ -17,8 +16,8 @@ module reflet_uart #(
     //system bus
     input [base_addr_size-1:0] addr,
     input write_en,
-    input [wordsize-1:0] data_in,
-    output [wordsize-1:0] data_out,
+    input [7:0] data_in,
+    output [7:0] data_out,
     //serial acces
     input rx,
     output tx

@@ -62,13 +62,13 @@ module reflet_peripheral #(
     );
 
     //data_out
-    wire [wordsize-1:0] dout_hwi;
-    wire [wordsize-1:0] dout_exti;
-    wire [wordsize-1:0] dout_gpio;
-    wire [wordsize-1:0] dout_timer;
-    wire [wordsize-1:0] dout_uart;
-    wire [wordsize-1:0] dout_pwm;
-    wire [wordsize-1:0] dout_segments;
+    wire [7:0] dout_hwi;
+    wire [7:0] dout_exti;
+    wire [7:0] dout_gpio;
+    wire [7:0] dout_timer;
+    wire [7:0] dout_uart;
+    wire [7:0] dout_pwm;
+    wire [7:0] dout_segments;
     assign data_out = dout_hwi | dout_exti | dout_gpio | dout_timer | dout_uart | dout_pwm | dout_segments;
 
     //interrupts signals

@@ -20,7 +20,7 @@ module reflet_hardware_info #(
     )(
     input enable,
     input [base_addr_size-1:0] addr,
-    output [wordsize-1:0] data_out
+    output [7:0] data_out
     );
 
     wire using_hwi = enable && addr >= base_addr && addr < base_addr + 4;

@@ -4,8 +4,7 @@
 \-----------------*/
 
 module reflet_gpio #(
-    parameter wordsize = 16,
-    base_addr_size = 16,
+    parameter base_addr_size = 16,
     base_addr = 16'hFF00
     )(
     input clk,
@@ -15,8 +14,8 @@ module reflet_gpio #(
     //system bus
     input [base_addr_size-1:0] addr,
     input write_en,
-    input [wordsize-1:0] data_in,
-    output [wordsize-1:0] data_out,
+    input [7:0] data_in,
+    output [7:0] data_out,
     //GPIO acces
     input [15:0] gpi,
     output [15:0] gpo

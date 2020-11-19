@@ -9,7 +9,7 @@ set 3
 str R1 ;enable it and activate the colon
 set+ 65295 ;0xFF0F, the base address for the timer
 cpy R2
-set+ 15 ; need to be changed to the correct value ;getting a division of 1 000 000 with the two prescalers
+set+ 20 ; need to be changed to the correct value ;getting a division of 1 000 000 with the two prescalers
 str R2
 push
 set 1
