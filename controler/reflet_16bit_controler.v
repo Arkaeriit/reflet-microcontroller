@@ -82,9 +82,10 @@ module reflet_16bit_controler #(
     //0x04 to 0x06 : exti
     //0x07 to 0x0E : gpio
     //0x0F to 0x11 : timer
-    //0x12 to 0x15 : uart
-    //0x16 to 0x17 : pwm
-    //0x18 to 0x1A : seven segments
+    //0x12 to 0x14 : timer2
+    //0x15 to 0x18 : uart
+    //0x19 to 0x1A : pwm
+    //0x1B to 0x1D : seven segments
     reflet_peripheral #(
         .wordsize(16), 
         .base_addr_size(15), 

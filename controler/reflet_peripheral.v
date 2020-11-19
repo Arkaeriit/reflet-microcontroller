@@ -10,6 +10,7 @@
 `define exti_size  3
 `define gpio_size  8
 `define timer_size 3
+`define timer2size 3
 `define uart_size  4
 `define pwm_size   2
 `define seg_size   3
@@ -18,11 +19,12 @@
 `define exti_off  (`hwi_off   + `hwi_size)
 `define gpio_off  (`exti_off  + `exti_size)
 `define timer_off (`gpio_off  + `gpio_size)
-`define uart_off  (`timer_off + `timer_size)
+`define timer2off (`timer_off + `timer_size)
+`define uart_off  (`timer2off + `timer2size)
 `define pwm_off   (`uart_off  + `uart_size)
 `define seg_off   (`pwm_off   + `pwm_size)
 //sizes
-`define total_size (`hwi_size + `exti_size + `gpio_size + `timer_size + `uart_size + `pwm_size + `seg_size)
+`define total_size (`hwi_size + `exti_size + `gpio_size + `timer_size + `uart_size + `pwm_size + `seg_size + `timer2size)
 `define offset_size ($clog2(`total_size))
 
 module reflet_peripheral #(
@@ -33,6 +35,7 @@ module reflet_peripheral #(
     enable_exti = 1,
     enable_gpio = 1,
     enable_timer = 1,
+    enable_timer2 = 1,
     enable_uart = 1,
     enable_pwm = 1,
     enable_segments = 1
@@ -66,13 +69,14 @@ module reflet_peripheral #(
     wire [7:0] dout_exti;
     wire [7:0] dout_gpio;
     wire [7:0] dout_timer;
+    wire [7:0] dout_timer2;
     wire [7:0] dout_uart;
     wire [7:0] dout_pwm;
     wire [7:0] dout_segments;
     assign data_out = dout_hwi | dout_exti | dout_gpio | dout_timer | dout_uart | dout_pwm | dout_segments;
 
     //interrupts signals
-    wire int_gpio, int_timer, int_uart;
+    wire int_gpio, int_timer, int_uart, int_timer2;
     //access control
     wire using_peripherals = enable && addr >= base_addr && addr < base_addr + `total_size;
     wire [`offset_size-1:0] offset = addr - base_addr;
@@ -147,6 +151,23 @@ module reflet_peripheral #(
     begin
         assign dout_timer = 0;
         assign int_timer = 0;
+    end
+
+    if(enable_timer2)
+        reflet_timer #(.wordsize(wordsize), .base_addr_size(`offset_size), .base_addr(`timer2off)) timer (
+            .clk(clk),
+            .reset(reset),
+            .enable(using_peripherals),
+            .interrupt(int_timer2),
+            .addr(offset),
+            .data_in(data_in),
+            .data_out(dout_timer2),
+            .write_en(write_en),
+            .timer_input(int_timer));
+    else
+    begin
+        assign dout_timer2 = 0;
+        assign int_timer2 = 0;
     end
 
     if(enable_uart)

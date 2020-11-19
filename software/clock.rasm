@@ -1,9 +1,11 @@
 wordsize 16
-
+;This file is ment to be compiled with reflet-masm
+;It is used to make a stopwatch out of a reflet processor
+;hooked up to a seven segment display
 label start
 set+ 32768 ;0x8000, the beguining of the RAM
 cpy SP
-set+ 65304 ;0xFF18, the base address for the seven segment
+set+ 65307 ;0xFF1B, the base address for the seven segment
 cpy R1
 set 3
 str R1 ;enable it and activate the colon
