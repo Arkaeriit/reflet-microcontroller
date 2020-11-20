@@ -44,78 +44,86 @@ module reflet_peripheral_minimal #(
     wire using_peripherals = enable && addr >= base_addr && addr < base_addr + 18;
     wire [4:0] offset = addr - base_addr;
 
-    if(enable_exti)
-        reflet_exti #(.wordsize(wordsize), .base_addr_size(5), .base_addr(0)) exti (
-            .clk(clk),
-            .reset(reset),
-            .enable(using_peripherals),
-            .addr(offset),
-            .data_in(data_in),
-            .data_out(dout_exti),
-            .write_en(write_en),
-            .cpu_int(ext_int),
-            .gpio_int_in(int_gpio),
-            .uart_int_in(int_uart),
-            .timer_int_in(int_timer));
-    else
-    begin
-        assign dout_exti = 0;
-        assign ext_int = 0;
-    end
+    generate
+        if(enable_exti)
+            reflet_exti #(.wordsize(wordsize), .base_addr_size(5), .base_addr(0)) exti (
+                .clk(clk),
+                .reset(reset),
+                .enable(using_peripherals),
+                .addr(offset),
+                .data_in(data_in),
+                .data_out(dout_exti),
+                .write_en(write_en),
+                .cpu_int(ext_int),
+                .gpio_int_in(int_gpio),
+                .uart_int_in(int_uart),
+                .timer_int_in(int_timer));
+        else
+        begin
+            assign dout_exti = 0;
+            assign ext_int = 0;
+        end
+    endgenerate
 
-    if(enable_gpio)
-        reflet_gpio #(.wordsize(wordsize), .base_addr_size(5), .base_addr(3)) gpio (
-            .clk(clk),
-            .reset(reset),
-            .enable(using_peripherals),
-            .interrupt(int_gpio),
-            .addr(offset),
-            .data_in(data_in),
-            .data_out(dout_gpio),
-            .write_en(write_en),
-            .gpi(gpi),
-            .gpo(gpo));
-    else
-    begin
-        assign dout_gpio = 0;
-        assign int_gpio = 0;
-        assign gpo = 0;
-    end
+    generate
+        if(enable_gpio)
+            reflet_gpio #(.wordsize(wordsize), .base_addr_size(5), .base_addr(3)) gpio (
+                .clk(clk),
+                .reset(reset),
+                .enable(using_peripherals),
+                .interrupt(int_gpio),
+                .addr(offset),
+                .data_in(data_in),
+                .data_out(dout_gpio),
+                .write_en(write_en),
+                .gpi(gpi),
+                .gpo(gpo));
+        else
+        begin
+            assign dout_gpio = 0;
+            assign int_gpio = 0;
+            assign gpo = 0;
+        end
+    endgenerate
 
         
-    if(enable_timer)
-        reflet_timer #(.wordsize(wordsize), .base_addr_size(5), .base_addr(11)) timer (
-            .clk(clk),
-            .reset(reset),
-            .enable(using_peripherals),
-            .interrupt(int_timer),
-            .addr(offset),
-            .data_in(data_in),
-            .data_out(dout_timer),
-            .write_en(write_en));
-    else
-    begin
-        assign dout_timer = 0;
-        assign int_timer = 0;
-    end
+    generate
+        if(enable_timer)
+            reflet_timer #(.wordsize(wordsize), .base_addr_size(5), .base_addr(11)) timer (
+                .clk(clk),
+                .reset(reset),
+                .enable(using_peripherals),
+                .interrupt(int_timer),
+                .addr(offset),
+                .data_in(data_in),
+                .data_out(dout_timer),
+                .write_en(write_en));
+        else
+        begin
+            assign dout_timer = 0;
+            assign int_timer = 0;
+        end
+    endgenerate
 
-    if(enable_uart)
-        reflet_uart #(.wordsize(wordsize), .base_addr_size(5), .base_addr(14), .clk_freq(clk_freq)) uart (
-            .clk(clk),
-            .reset(reset),
-            .enable(using_peripherals),
-            .interrupt(int_uart),
-            .addr(offset),
-            .data_in(data_in),
-            .data_out(dout_uart),
-            .write_en(write_en),
-            .rx(rx),
-            .tx(tx));
-    else
-    begin
-        assign dout_uart = 0;
-        assign int_uart = 0;
-    end
+    generate
+        if(enable_uart)
+            reflet_uart #(.wordsize(wordsize), .base_addr_size(5), .base_addr(14), .clk_freq(clk_freq)) uart (
+                .clk(clk),
+                .reset(reset),
+                .enable(using_peripherals),
+                .interrupt(int_uart),
+                .addr(offset),
+                .data_in(data_in),
+                .data_out(dout_uart),
+                .write_en(write_en),
+                .rx(rx),
+                .tx(tx));
+        else
+        begin
+            assign dout_uart = 0;
+            assign int_uart = 0;
+        end
+    endgenerate
 
 endmodule
 

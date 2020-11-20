@@ -99,133 +99,147 @@ module reflet_peripheral #(
         .addr(offset),
         .data_out(dout_hwi)); 
     
-    if(enable_exti)
-        reflet_exti #(.base_addr_size(`offset_size), .base_addr(`exti_off)) exti (
-            .clk(clk),
-            .reset(reset),
-            .enable(using_peripherals),
-            .addr(offset),
-            .data_in(data_in),
-            .data_out(dout_exti),
-            .write_en(write_en),
-            .cpu_int(ext_int),
-            .gpio_int_in(int_gpio),
-            .uart_int_in(int_uart),
-            .timer_int_in(int_timer),
-            .timer_2_int_in(int_timer2));
-    else
-    begin
-        assign dout_exti = 0;
-        assign ext_int = 0;
-    end
+    generate
+        if(enable_exti)
+            reflet_exti #(.base_addr_size(`offset_size), .base_addr(`exti_off)) exti (
+                .clk(clk),
+                .reset(reset),
+                .enable(using_peripherals),
+                .addr(offset),
+                .data_in(data_in),
+                .data_out(dout_exti),
+                .write_en(write_en),
+                .cpu_int(ext_int),
+                .gpio_int_in(int_gpio),
+                .uart_int_in(int_uart),
+                .timer_int_in(int_timer),
+                .timer_2_int_in(int_timer2));
+        else
+        begin
+            assign dout_exti = 0;
+            assign ext_int = 0;
+        end
+    endgenerate
 
-    if(enable_gpio)
-        reflet_gpio #(.base_addr_size(`offset_size), .base_addr(`gpio_off)) gpio (
-            .clk(clk),
-            .reset(reset),
-            .enable(using_peripherals),
-            .interrupt(int_gpio),
-            .addr(offset),
-            .data_in(data_in),
-            .data_out(dout_gpio),
-            .write_en(write_en),
-            .gpi(gpi),
-            .gpo(gpo));
-    else
-    begin
-        assign dout_gpio = 0;
-        assign int_gpio = 0;
-        assign gpo = 0;
-    end
+    generate
+        if(enable_gpio)
+            reflet_gpio #(.base_addr_size(`offset_size), .base_addr(`gpio_off)) gpio (
+                .clk(clk),
+                .reset(reset),
+                .enable(using_peripherals),
+                .interrupt(int_gpio),
+                .addr(offset),
+                .data_in(data_in),
+                .data_out(dout_gpio),
+                .write_en(write_en),
+                .gpi(gpi),
+                .gpo(gpo));
+        else
+        begin
+            assign dout_gpio = 0;
+            assign int_gpio = 0;
+            assign gpo = 0;
+        end
+    endgenerate
 
         
-    if(enable_timer)
-        reflet_timer #(.base_addr_size(`offset_size), .base_addr(`timer_off)) timer (
-            .clk(clk),
-            .reset(reset),
-            .enable(using_peripherals),
-            .interrupt(int_timer),
-            .addr(offset),
-            .data_in(data_in),
-            .data_out(dout_timer),
-            .write_en(write_en));
-    else
-    begin
-        assign dout_timer = 0;
-        assign int_timer = 0;
-    end
+    generate
+        if(enable_timer)
+            reflet_timer #(.base_addr_size(`offset_size), .base_addr(`timer_off)) timer (
+                .clk(clk),
+                .reset(reset),
+                .enable(using_peripherals),
+                .interrupt(int_timer),
+                .addr(offset),
+                .data_in(data_in),
+                .data_out(dout_timer),
+                .write_en(write_en));
+        else
+        begin
+            assign dout_timer = 0;
+            assign int_timer = 0;
+        end
+    endgenerate
 
-    if(enable_timer2)
-        reflet_timer_2 #(.base_addr_size(`offset_size), .base_addr(`timer2off)) timer2 (
-            .clk(clk),
-            .reset(reset),
-            .enable(using_peripherals),
-            .interrupt(int_timer2),
-            .addr(offset),
-            .data_in(data_in),
-            .data_out(dout_timer2),
-            .write_en(write_en),
-            .timer_input(int_timer));
-    else
-    begin
-        assign dout_timer2 = 0;
-        assign int_timer2 = 0;
-    end
+    generate
+        if(enable_timer2)
+            reflet_timer_2 #(.base_addr_size(`offset_size), .base_addr(`timer2off)) timer2 (
+                .clk(clk),
+                .reset(reset),
+                .enable(using_peripherals),
+                .interrupt(int_timer2),
+                .addr(offset),
+                .data_in(data_in),
+                .data_out(dout_timer2),
+                .write_en(write_en),
+                .timer_input(int_timer));
+        else
+        begin
+            assign dout_timer2 = 0;
+            assign int_timer2 = 0;
+        end
+    endgenerate
 
-    if(enable_uart)
-        reflet_uart #(.base_addr_size(`offset_size), .base_addr(`uart_off), .clk_freq(clk_freq)) uart (
-            .clk(clk),
-            .reset(reset),
-            .enable(using_peripherals),
-            .interrupt(int_uart),
-            .addr(offset),
-            .data_in(data_in),
-            .data_out(dout_uart),
-            .write_en(write_en),
-            .rx(rx),
-            .tx(tx));
-    else
-    begin
-        assign dout_uart = 0;
-        assign int_uart = 0;
-    end
+    generate
+        if(enable_uart)
+            reflet_uart #(.base_addr_size(`offset_size), .base_addr(`uart_off), .clk_freq(clk_freq)) uart (
+                .clk(clk),
+                .reset(reset),
+                .enable(using_peripherals),
+                .interrupt(int_uart),
+                .addr(offset),
+                .data_in(data_in),
+                .data_out(dout_uart),
+                .write_en(write_en),
+                .rx(rx),
+                .tx(tx));
+        else
+        begin
+            assign dout_uart = 0;
+            assign int_uart = 0;
+        end
+    endgenerate
 
-    if(enable_pwm)
-        reflet_pwm #(.base_addr_size(`offset_size), .base_addr(`pwm_off)) pwm (
-            .clk(clk),
-            .reset(reset),
-            .enable(using_peripherals),
-            .addr(offset),
-            .data_in(data_in),
-            .data_out(dout_pwm),
-            .write_en(write_en),
-            .out(pwm));
-    else
-    begin
-        assign dout_pwm = 0;
-        assign pwm = 0;
-    end
+    generate
+        if(enable_pwm)
+            reflet_pwm #(.base_addr_size(`offset_size), .base_addr(`pwm_off)) pwm (
+                .clk(clk),
+                .reset(reset),
+                .enable(using_peripherals),
+                .addr(offset),
+                .data_in(data_in),
+                .data_out(dout_pwm),
+                .write_en(write_en),
+                .out(pwm));
+        else
+        begin
+            assign dout_pwm = 0;
+            assign pwm = 0;
+        end
+    endgenerate
 
-    if(enable_segments)
-        reflet_seven_segments #(.base_addr_size(`offset_size), .base_addr(`seg_off)) seg7 (
-            .clk(clk),
-            .reset(reset),
-            .enable(using_peripherals),
-            .addr(offset),
-            .data_in(data_in),
-            .data_out(dout_segments),
-            .write_en(write_en),
-            .segments(segments),
-            .selection(seg_select),
-            .dot(seg_dot),
-            .colon(seg_colon));
-    else
-    begin
-        assign segments = 0;
-        assign seg_select = 0;
-        assign seg_dot = 0;
-        assign seg_colon = 0;
-    end
+    generate
+        if(enable_segments)
+            reflet_seven_segments #(.base_addr_size(`offset_size), .base_addr(`seg_off)) seg7 (
+                .clk(clk),
+                .reset(reset),
+                .enable(using_peripherals),
+                .addr(offset),
+                .data_in(data_in),
+                .data_out(dout_segments),
+                .write_en(write_en),
+                .segments(segments),
+                .selection(seg_select),
+                .dot(seg_dot),
+                .colon(seg_colon));
+        else
+        begin
+            assign segments = 0;
+            assign seg_select = 0;
+            assign seg_dot = 0;
+            assign seg_colon = 0;
+        end
+    endgenerate
 
 endmodule
 
