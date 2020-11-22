@@ -65,10 +65,6 @@ module reflet_8bit_ctrl_with_rom #(
         .write_en(write_en));
 
     //0xEE to 0xFF: peripherals
-    //0xED to 0xF0: exti
-    //0xF1 to 0xF8: GPIO
-    //0xF9 to 0xFB: timer
-    //0xFC to 0xFF: UART
     reflet_peripheral_minimal #(
         .wordsize(8), 
         .base_addr_size(7), 
