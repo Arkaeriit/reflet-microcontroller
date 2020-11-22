@@ -1,4 +1,4 @@
-module clock.rbin_rom(input clk, input enable_out,input [8:0] addr, output [7:0] dataOut);
+module rom5(input clk, input enable_out,input [8:0] addr, output [7:0] dataOut);
 reg [7:0] ret; assign dataOut = (enable_out ? ret : 9'h0);
 always @ (posedge clk)
 case(addr)
@@ -115,11 +115,11 @@ case(addr)
   9'h6e : ret = 8'h7b;
   9'h6f : ret = 8'hac;
   9'h70 : ret = 8'h3b;
-  9'h71 : ret = 8'h10;
+  9'h71 : ret = 8'h16;
   9'h72 : ret = 8'h7b;
   9'h73 : ret = 8'hac;
   9'h74 : ret = 8'h3b;
-  9'h75 : ret = 8'h17;
+  9'h75 : ret = 8'h13;
   9'h76 : ret = 8'h7b;
   9'h77 : ret = 8'he2;
   9'h78 : ret = 8'hb;

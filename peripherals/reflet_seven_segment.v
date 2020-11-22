@@ -111,13 +111,14 @@ module reflet_7seg (
     reflet_number_to_segment seg1(num1, num_segments[1]);
     reflet_number_to_segment seg2(num2, num_segments[2]);
     reflet_number_to_segment seg3(num3, num_segments[3]);
-
-    reg [1:0] cnt;
+    
+    reg [10:0] cnt_r;
+    wire [1:0] cnt = cnt_r[10:9];
     always @ (posedge clk)
         if(!reset)
-            cnt = 0;
+            cnt_r = 0;
         else
-            cnt = cnt + 1;
+            cnt_r = cnt_r + 1;
 
     assign segments = num_segments[cnt];
     assign selection = 

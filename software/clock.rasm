@@ -72,7 +72,7 @@ cpy R4
 callf editNum
 load R4 
 cpy R5 
-set+ 97 ;x60 Test if we need to update the minutes
+set+ 96 ;x59 Test if we need to update the minutes
 eq R5
 setlab editMin
 jif 
