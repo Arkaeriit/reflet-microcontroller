@@ -7,7 +7,7 @@
 
 module reflet_exti #(
     parameter base_addr_size = 16,
-    base_addr = 16'hFF0C
+    base_addr = 16'hFF04
     )(
     input clk,
     input reset,

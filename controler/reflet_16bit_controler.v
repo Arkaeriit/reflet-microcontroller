@@ -4,6 +4,7 @@ module reflet_16bit_controler #(
     enable_exti = 1,
     enable_gpio = 1,
     enable_timer = 1,
+    enable_timer2 = 1,
     enable_uart = 1,
     enable_pwm = 1,
     enable_segments = 1
@@ -94,6 +95,7 @@ module reflet_16bit_controler #(
         .enable_exti(enable_exti),
         .enable_gpio(enable_gpio),
         .enable_timer(enable_timer),
+        .enable_timer2(enable_timer2),
         .enable_uart(enable_uart),
         .enable_pwm(enable_pwm),
         .enable_segments(enable_segments)) 

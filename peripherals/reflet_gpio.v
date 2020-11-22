@@ -5,7 +5,7 @@
 
 module reflet_gpio #(
     parameter base_addr_size = 16,
-    base_addr = 16'hFF00
+    base_addr = 16'hFF07
     )(
     input clk,
     input reset,
