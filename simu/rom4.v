@@ -1,3 +1,4 @@
+//The code used to make this rom is in software/uartLoopBack.rasm
 module rom4(input clk, input enable_out,input [6:0] addr, output [7:0] dataOut);
 reg [7:0] ret; assign dataOut = (enable_out ? ret : 7'h0);
 always @ (posedge clk)
@@ -41,7 +42,7 @@ case(addr)
   7'h24 : ret = 8'he5;
   7'h25 : ret = 8'h10;
   7'h26 : ret = 8'he2;
-  7'h27 : ret = 8'h12;
+  7'h27 : ret = 8'h13;
   7'h28 : ret = 8'h41;
   7'h29 : ret = 8'h33;
   7'h2a : ret = 8'h10;
@@ -56,7 +57,7 @@ case(addr)
   7'h33 : ret = 8'h7b;
   7'h34 : ret = 8'hac;
   7'h35 : ret = 8'h3b;
-  7'h36 : ret = 8'h1e;
+  7'h36 : ret = 8'h1d;
   7'h37 : ret = 8'h7b;
   7'h38 : ret = 8'h31;
   7'h39 : ret = 8'h12;

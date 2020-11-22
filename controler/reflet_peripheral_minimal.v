@@ -4,6 +4,21 @@
 |them in a 8-bit micro-controler.    |
 \-----------------------------------*/
 
+//memory map
+//number of registers in each peripherals
+`define exti_size  4
+`define gpio_size  8
+`define timer_size 3
+`define uart_size  4
+//assigning addresses
+`define exti_off  0
+`define gpio_off  (`exti_off  + `exti_size)
+`define timer_off (`gpio_off  + `gpio_size)
+`define uart_off  (`timer_off + `timer_size)
+//sizes
+`define total_size (`exti_size + `gpio_size + `timer_size + `uart_size)
+`define offset_size ($clog2(`total_size))
+
 module reflet_peripheral_minimal #(
     parameter wordsize = 8,
     base_addr_size = 8,
@@ -41,12 +56,12 @@ module reflet_peripheral_minimal #(
     wire int_gpio, int_timer, int_uart;
 
     //access control
-    wire using_peripherals = enable && addr >= base_addr && addr < base_addr + 18;
-    wire [4:0] offset = addr - base_addr;
+    wire using_peripherals = enable && addr >= base_addr && addr < base_addr + `total_size;
+    wire [`offset_size-1:0] offset = addr - base_addr;
 
     generate
         if(enable_exti)
-            reflet_exti #(.wordsize(wordsize), .base_addr_size(5), .base_addr(0)) exti (
+            reflet_exti #(.wordsize(wordsize), .base_addr_size(`offset_size), .base_addr(`exti_off)) exti (
                 .clk(clk),
                 .reset(reset),
                 .enable(using_peripherals),
@@ -57,7 +72,8 @@ module reflet_peripheral_minimal #(
                 .cpu_int(ext_int),
                 .gpio_int_in(int_gpio),
                 .uart_int_in(int_uart),
-                .timer_int_in(int_timer));
+                .timer_int_in(int_timer),
+                .timer_2_int_in(1'b0));
         else
         begin
             assign dout_exti = 0;
@@ -67,7 +83,7 @@ module reflet_peripheral_minimal #(
 
     generate
         if(enable_gpio)
-            reflet_gpio #(.wordsize(wordsize), .base_addr_size(5), .base_addr(3)) gpio (
+            reflet_gpio #(.wordsize(wordsize), .base_addr_size(`offset_size), .base_addr(`gpio_off)) gpio (
                 .clk(clk),
                 .reset(reset),
                 .enable(using_peripherals),
@@ -89,7 +105,7 @@ module reflet_peripheral_minimal #(
         
     generate
         if(enable_timer)
-            reflet_timer #(.wordsize(wordsize), .base_addr_size(5), .base_addr(11)) timer (
+            reflet_timer #(.wordsize(wordsize), .base_addr_size(`offset_size), .base_addr(`timer_off)) timer (
                 .clk(clk),
                 .reset(reset),
                 .enable(using_peripherals),
@@ -107,7 +123,7 @@ module reflet_peripheral_minimal #(
 
     generate
         if(enable_uart)
-            reflet_uart #(.wordsize(wordsize), .base_addr_size(5), .base_addr(14), .clk_freq(clk_freq)) uart (
+            reflet_uart #(.wordsize(wordsize), .base_addr_size(`offset_size), .base_addr(`uart_off), .clk_freq(clk_freq)) uart (
                 .clk(clk),
                 .reset(reset),
                 .enable(using_peripherals),

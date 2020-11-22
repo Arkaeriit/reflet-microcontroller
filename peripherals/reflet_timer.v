@@ -7,7 +7,7 @@
 
 module reflet_timer #(
     parameter base_addr_size = 16,
-    base_addr = 16'hFF0F
+    base_addr = 16'hFF10
     )(
     input clk,
     input reset,

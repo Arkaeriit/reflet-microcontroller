@@ -1,4 +1,3 @@
-//The file used to make this rom is software/clock.rasm
 module rom5(input clk, input enable_out,input [8:0] addr, output [7:0] dataOut);
 reg [7:0] ret; assign dataOut = (enable_out ? ret : 9'h0);
 always @ (posedge clk)
@@ -23,7 +22,7 @@ case(addr)
   9'h11 : ret = 8'h7b;
   9'h12 : ret = 8'hac;
   9'h13 : ret = 8'h3b;
-  9'h14 : ret = 8'h14;
+  9'h14 : ret = 8'h13;
   9'h15 : ret = 8'h7b;
   9'h16 : ret = 8'h3f;
   9'h17 : ret = 8'h14;
@@ -80,7 +79,7 @@ case(addr)
   9'h4a : ret = 8'h7b;
   9'h4b : ret = 8'hac;
   9'h4c : ret = 8'h3b;
-  9'h4d : ret = 8'h1b;
+  9'h4d : ret = 8'h1c;
   9'h4e : ret = 8'h7b;
   9'h4f : ret = 8'h31;
   9'h50 : ret = 8'h13;
@@ -97,11 +96,11 @@ case(addr)
   9'h5b : ret = 8'h7b;
   9'h5c : ret = 8'hac;
   9'h5d : ret = 8'h3b;
-  9'h5e : ret = 8'h10;
+  9'h5e : ret = 8'h11;
   9'h5f : ret = 8'h7b;
   9'h60 : ret = 8'hac;
   9'h61 : ret = 8'h3b;
-  9'h62 : ret = 8'h1f;
+  9'h62 : ret = 8'h10;
   9'h63 : ret = 8'h7b;
   9'h64 : ret = 8'h32;
   9'h65 : ret = 8'h14;
@@ -120,7 +119,7 @@ case(addr)
   9'h72 : ret = 8'h7b;
   9'h73 : ret = 8'hac;
   9'h74 : ret = 8'h3b;
-  9'h75 : ret = 8'h17;
+  9'h75 : ret = 8'h13;
   9'h76 : ret = 8'h7b;
   9'h77 : ret = 8'he2;
   9'h78 : ret = 8'hb;
@@ -173,7 +172,7 @@ case(addr)
   9'ha7 : ret = 8'h33;
   9'ha8 : ret = 8'h18;
   9'ha9 : ret = 8'he3;
-  9'haa : ret = 8'h12;
+  9'haa : ret = 8'h13;
   9'hab : ret = 8'h43;
   9'hac : ret = 8'h33;
   9'had : ret = 8'h14;
@@ -263,7 +262,7 @@ case(addr)
   9'h101 : ret = 8'h7b;
   9'h102 : ret = 8'hac;
   9'h103 : ret = 8'h3b;
-  9'h104 : ret = 8'h11;
+  9'h104 : ret = 8'h10;
   9'h105 : ret = 8'h7b;
   9'h106 : ret = 8'hc5;
   9'h107 : ret = 8'h14;
@@ -390,7 +389,6 @@ case(addr)
   9'h180 : ret = 8'h14;
   9'h181 : ret = 8'h7b;
   9'h182 : ret = 8'h8;
-  9'h183 : ret = 8'h0;
   default: ret = 0;
 endcase
 endmodule

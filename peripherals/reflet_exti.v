@@ -26,7 +26,7 @@ module reflet_exti #(
     input timer_2_int_in
     );
 
-    wire using_exti = enable && addr >= base_addr && addr < base_addr + 3;
+    wire using_exti = enable && addr >= base_addr && addr < base_addr + 4;
     wire [1:0] offset = addr - base_addr;
 
     //Controling interrupts
@@ -66,10 +66,11 @@ module reflet_exti #(
     //for timer: bit 2 of en and 4 and 5 of level
     wire [7:0] dout_enable;
     wire [7:0] dout_level;
+    wire [7:0] dout_reserved;
     wire [7:0] dout_status;
     wire [7:0] int_en;
     wire [7:0] int_level;
-    assign data_out = dout_enable | dout_status | dout_level;
+    assign data_out = dout_enable | dout_status | dout_reserved | dout_level;
     reflet_rw_register #(.addr_size(2), .reg_addr(0), .default_value(0)) reg_en(
         .clk(clk),
         .reset(reset),
@@ -88,7 +89,12 @@ module reflet_exti #(
         .data_in(data_in[7:0]),
         .data_out(dout_level),
         .data(int_level));
-    reflet_rwe_register #(.addr_size(2), .reg_addr(2), .default_value(0)) reg_status(
+    reflet_ro_register #(.addr_size(2), .reg_addr(2)) reg_reserved (
+        .enable(using_exti),
+        .addr(offset),
+        .data_out(dout_reserved),
+        .data(8'h0));
+    reflet_rwe_register #(.addr_size(2), .reg_addr(3), .default_value(0)) reg_status(
         .clk(clk),
         .reset(reset),
         .enable(using_exti),

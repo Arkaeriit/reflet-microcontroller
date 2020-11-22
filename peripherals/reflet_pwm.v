@@ -5,7 +5,7 @@
 
 module reflet_pwm #(
     parameter base_addr_size = 16,
-    base_addr= 16'hFF13
+    base_addr= 16'hFF1A
     )(
     input clk,
     input reset,

@@ -2,14 +2,15 @@ wordsize 16
 ;This file is ment to be compiled with reflet-masm
 ;It is used to make a stopwatch out of a reflet processor
 ;hooked up to a seven segment display
+
 label start
 set+ 32768 ;0x8000, the beguining of the RAM
 cpy SP
-set+ 65307 ;0xFF1B, the base address for the seven segment
+set+ 65308 ;0xFF1C, the base address for the seven segment
 cpy R1
 set 3
 str R1 ;enable it and activate the colon
-set+ 65295 ;0xFF0F, the base address for the timer
+set+ 65296 ;0xFF10, the base address for the timer
 cpy R2
 set+ 99 ; need to be changed to the correct value ;getting a division of 1 000 000 with the three prescalers
 str R2
@@ -46,7 +47,7 @@ add R3 ;We now have 0xFF04, the base address of the exti
 cpy R3
 set 8
 str R3 ;We ennabled the timer 2 interrupt
-set 2
+set 3
 add R3
 cpy R3 ;R3 now have the address of the status register of exti
 setlab updateTime

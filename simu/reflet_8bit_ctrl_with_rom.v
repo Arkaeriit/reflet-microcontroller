@@ -54,8 +54,8 @@ module reflet_8bit_ctrl_with_rom #(
         .addr(addr[6:0]),
         .dataOut(dout_inst));
 
-    //0x80 to 0xED: data. Should stay as a regular RAM
-    reflet_ram8 #(.addrSize(7), .size(109)) mem_data (
+    //0x80 to 0xEC: data. Should stay as a regular RAM
+    reflet_ram8 #(.addrSize(7), .size(108)) mem_data (
         .clk(clk),
         .reset(reset),
         .enable(addr[7]),
@@ -65,14 +65,14 @@ module reflet_8bit_ctrl_with_rom #(
         .write_en(write_en));
 
     //0xEE to 0xFF: peripherals
-    //0xEE to 0xF0: exti
+    //0xED to 0xF0: exti
     //0xF1 to 0xF8: GPIO
     //0xF9 to 0xFB: timer
     //0xFC to 0xFF: UART
     reflet_peripheral_minimal #(
         .wordsize(8), 
         .base_addr_size(7), 
-        .base_addr(7'h6E), 
+        .base_addr(7'h6D), 
         .clk_freq(clk_freq),
         .enable_exti(enable_exti),
         .enable_gpio(enable_gpio),

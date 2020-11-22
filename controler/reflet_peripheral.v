@@ -7,7 +7,7 @@
 //memory map
 //number of registers in each peripherals
 `define hwi_size   4
-`define exti_size  3
+`define exti_size  4
 `define gpio_size  8
 `define timer_size 3
 `define timer2size 3

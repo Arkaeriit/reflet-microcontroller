@@ -6,7 +6,7 @@
 
 module reflet_uart #(
     parameter base_addr_size = 16,
-    base_addr = 16'hFF08,
+    base_addr = 16'hFF16,
     clk_freq = 1000000
     )(
     input clk,

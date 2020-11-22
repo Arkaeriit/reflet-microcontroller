@@ -37,6 +37,9 @@ add R1
 cpy R1
 set 2
 str R1
+set 1
+add R1
+cpy R1 ;setting the status register in R1
 
 ;configuring the interruption on the cpu side
 set 1

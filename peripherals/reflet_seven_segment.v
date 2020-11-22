@@ -7,7 +7,7 @@
 
 module reflet_seven_segments #(
     parameter base_addr_size = 16,
-    base_addr = 16'hFF10
+    base_addr = 16'hFF1C
     )(
     input clk,
     input reset,
