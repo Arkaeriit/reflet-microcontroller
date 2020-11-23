@@ -7,15 +7,17 @@
 |disabled; if it is 1, it output a constant 1.|
 \--------------------------------------------*/
 
-module reflet_counter (
+module reflet_counter #(
+    parameter size = 32
+    )(
     input clk,
     input reset,
     input enable,
-    input [31:0] max,
+    input [size-1:0] max,
     output out
     );
 
-    reg [31:0] counter = 0;
+    reg [size-1:0] counter = 0;
     reg reached_max;
     reg reached_max_ark;
 

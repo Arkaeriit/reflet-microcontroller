@@ -29,7 +29,7 @@ module reflet_uart #(
     //Frequency generator
     integer mult = clk_freq / 9600;
     wire uart_en;
-    reflet_counter uart_counter (
+    reflet_counter #(.size(32)) uart_counter (
         .clk(clk), 
         .reset(reset), 
         .enable(1'b1), 

@@ -35,7 +35,7 @@ module reflet_pwm #(
         .enable(using_pwm),
         .addr(offset),
         .write_en(write_en),
-        .data_in(data_in[7:0]),
+        .data_in(data_in),
         .data_out(dout_freq),
         .data(freq));
     reflet_rw_register #(.addr_size(1), .reg_addr(1), .default_value(0)) reg_duty (
@@ -44,12 +44,12 @@ module reflet_pwm #(
         .enable(using_pwm),
         .addr(offset),
         .write_en(write_en),
-        .data_in(data_in[7:0]),
+        .data_in(data_in),
         .data_out(dout_duty),
         .data(duty));
 
     //The actual pwm
-    reflet_pwm_pwm pwm (
+    reflet_pwm_pwm #(.size(8)) pwm (
         .clk(clk),
         .reset(reset),
         .duty_cycle(duty),
@@ -65,11 +65,13 @@ endmodule
 |8-bit pwm.|
 \---------*/
 
-module reflet_pwm_pwm (
+module reflet_pwm_pwm #(
+    parameter size = 8
+    )(
     input clk,
     input reset,
-    input [7:0] duty_cycle,
-    input [7:0] max,
+    input [size-1:0] duty_cycle,
+    input [size-1:0] max,
     output out
     );
 
@@ -80,14 +82,14 @@ module reflet_pwm_pwm (
     wire using_count_base = using_count_off | duty_cycle == 1;
 
     wire base_freq, switch_off;
-    wire [7:0] duty_cycle_late = duty_cycle - 1; //cf .max() in count_off
-    reflet_counter count_base (
+    wire [size-1:0] duty_cycle_late = duty_cycle - 1; //cf .max() in count_off
+    reflet_counter #(.size(size)) count_base (
         .clk(clk),
         .reset(reset & !update),
         .enable(using_count_base),
         .max({24'h0, max}),
         .out(base_freq));
-    reflet_counter count_off (
+    reflet_counter #(.size(size)) count_off (
         .clk(clk),
         .reset(reset & !update & !base_freq), //This counter should start a clk cycle after the other counter, it should thus be reset by uate_late
         .enable(using_count_off & out_normal),
@@ -106,7 +108,7 @@ module reflet_pwm_pwm (
         end
 
     //resseting in case of sudden changes
-    reg [15:0] old_values;
+    reg [2 * size - 1:0] old_values;
     always @ (posedge clk)
         old_values = {max, duty_cycle};
     assign update = |(old_values ^ {max, duty_cycle});
