@@ -28,7 +28,7 @@ The CPU got only 7 interrupt lines, but more than 4 peripherals can raise interr
 |------------------------|----|-------------|------|
 |0|r/w|int\_en|Bit 0 control if the interrupt from the GPIO is enabled. Bit 1 control if the interrupt from the UART is enabled. Bit 2 control if the interrupt from the timer is enabled. Bit 3 control if the interrupt from timer 2 is enabled.|
 |1|r/w|int\_level|Bits 0 and 1 control the priority of the GPIO interrupt. Bits 2 and 3 control the priority of the UART interrupt. Bits 4 and 5 control the priority of the timer interrupt. Bits 6 and 7 control the priority of the timer 2 interrupt.|
-|2|ro |reserved|Reserved for future used. Locked to 0 for now.|
+|2|ro |reserved|Reserved for future use. Locked to 0 for now.|
 |3|r/w|status|This register tells which interrupts are currently raised. Whenever a new interrupt appends, the related bit is raised to 1. To acknowledge the interrupt, its bit must be switched back to 0. Bit 0 tell the state of the GPIO interrupt. Bit 1 tells the state of the UART interrupt. Bit 2 tells the state of the timer interrupt. Bit 3 tells the state of the timer 2 interrupt.|
 
 
