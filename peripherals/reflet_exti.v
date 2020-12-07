@@ -49,7 +49,7 @@ module reflet_exti #(
     assign cpu_int = gpio_int_exti | uart_int_exti | timer_int_exti | timer_2_int_exti;
 
     //gestion of status register
-    wire [7:0] int_list = {4'h0, timer_2_int_in, timer_int_in, uart_int_in, gpio_int_in};
+    wire [7:0] int_list = {4'h0, timer_2_int_in & timer_2_int_en, timer_int_in & timer_int_en, uart_int_in & uart_int_en, gpio_int_in & gpio_int_en};
     wire int_updating = |int_list;
     wire [7:0] status_register;
     assign gpio_int = status_register[0];
