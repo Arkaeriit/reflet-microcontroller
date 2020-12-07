@@ -35,49 +35,55 @@ add R3
 cpy R3 ;base addr for timer 1
 set+ 99
 str R3
-cpy R6
+cpy R6 ;pre1 is set to 99
 set 1
-add R3
+add R3 
 cpy R3
 read R6
-str R3
+str R3 ;pre2 is set to 99
 set 1
 add R3
 cpy R3
-
+set 1
+str R3 ; mcnt is set to 1
 set 0
 eq R5
+cmpnot
 setlab timerHF ;if there is a high frequency clock
 jif
+
+;low freq clock
+set 1
+add R3
+cpy R3
+set 1
+str R3 ;enable timer links
+set 2
+add R3
+cpy R3
 read R4
-cpy R3
-set+ 65284 ;0xFF04, exti
-cpy R3
-set 6
-str R3 ;enable timer int and uart int
-set 1
-add R3
-cpy R3
-set+ 16
-str R3 ;set the interupt lever for timer to 1
-set 1
-add R3
-cpy R3
+str R3
 goto endTimer
 
 label timerHF
-read R6
-str R3
 set 1
 add R3
 cpy R3 ; timer2
 set 1
-str R3
-set 2
+str R3 ;enable timer linking
+set 1
+add R3
+cpy R3
+set+ 255
+str R3 ;pre2 is now 255 to divide the clock speed by 256
+set 1
 add R3
 cpy R3
 read R5
 str R3
+
+label endTimer
+; interupt manager config
 set+ 65284 ;0xFF04, exti
 cpy R3
 set 10
@@ -87,11 +93,10 @@ add R3
 cpy R3
 set+ 64
 str R3 ;set tim2 int to level 1
-set 1
+set 2
 add R3
-cpy R3
+cpy R3 ;R3 is now the status register
 
-label endTimer
 ;here, we configure the interrupt on the CPU level
 set+ 400
 cpy R6

@@ -1,3 +1,4 @@
+//This rom is made with a sloghly modified vertion of ../software/clock.rasm
 module rom5(input clk, input enable_out,input [8:0] addr, output [7:0] dataOut);
 reg [7:0] ret; assign dataOut = (enable_out ? ret : 9'h0);
 always @ (posedge clk)
