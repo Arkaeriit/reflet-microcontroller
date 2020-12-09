@@ -125,7 +125,7 @@ The ports of this module are the following:
 |gpi| 16-bit input | The input of the GPIO.|
 |gpo| 16-bit output | The output of the GPIO.|
 |rx|input| The rx line of the UART.|
-|tx|output The tx line of the UART.|
+|tx|output| The tx line of the UART.|
 
 ## 16 bits controller
 The 16 bits controller is equipped with all the peripherals and its bigger addressable space makes it way easier to program for.
@@ -175,7 +175,7 @@ The ports of this module are the following:
 |gpi| 16-bit input | The input of the GPIO.|
 |gpo| 16-bit output | The output of the GPIO.|
 |rx|input| The rx line of the UART.|
-|tx|output The tx line of the UART.|
+|tx|output| The tx line of the UART.|
 |pwm|output|Output of the PWM.|
 |segments|7-bit output| Seven-segment control, an output value of 0 means that the segment is on. |
 |seg\_select| 4-bit output | Seven segments digit selection, an output value of 1 means that the digit is selected. |
@@ -184,3 +184,4 @@ The ports of this module are the following:
 
 ### Using the bootloader
 The bootloader is very easy to use. After the processor started, transmit the program through the UART connection and wait 4 seconds for the program to start.
+
