@@ -1,4 +1,4 @@
-# Reflet microcontroler
+# Reflet microcontroller
 A micro-controller based on a Reflet CPU.
 
 # The CPU
@@ -28,7 +28,7 @@ The CPU got only 7 interrupt lines, but more than 4 peripherals can raise interr
 |------------------------|----|-------------|------|
 |0|r/w|int\_en|Bit 0 control if the interrupt from the GPIO is enabled. Bit 1 control if the interrupt from the UART is enabled. Bit 2 control if the interrupt from the timer is enabled. Bit 3 control if the interrupt from timer 2 is enabled.|
 |1|r/w|int\_level|Bits 0 and 1 control the priority of the GPIO interrupt. Bits 2 and 3 control the priority of the UART interrupt. Bits 4 and 5 control the priority of the timer interrupt. Bits 6 and 7 control the priority of the timer 2 interrupt.|
-|2|ro |reserved|Reserved for future use. Locked to 0 for now.|
+|2|ro |reserved|Reserved for future used. Locked to 0 for now.|
 |3|r/w|status|This register tells which interrupts are currently raised. Whenever a new interrupt appends, the related bit is raised to 1. To acknowledge the interrupt, its bit must be switched back to 0. Bit 0 tell the state of the GPIO interrupt. Bit 1 tells the state of the UART interrupt. Bit 2 tells the state of the timer interrupt. Bit 3 tells the state of the timer 2 interrupt.|
 
 
@@ -86,7 +86,7 @@ Even if this could be done with GPIO and a timer, a controller for seven segment
 |2|r/w|num23|Bits 0 to 3 are used to set the value of the third number. Bits 4 to 7 are used to set the value of the fourth number.|
 
 # Controllers
-The folder controller contains files used to make 8 bits or a 16 bits microcontroller with a Reflet CPU. As of now, you must copy the `reflet_?bits_controler.c` file and replace the data memory with a ROM with a valid Reflet program. In the future, some bootloaders will be made to program the controller on the fly.
+The folder controller contains files used to make 8 bits or a 16 bits microcontroller with a Reflet CPU. As of now, for the 8-bit controller, you must copy the `reflet\_?bits\_controller.c` file and replace the data memory with a ROM with a valid Reflet program. For the 16-bit one, you can do so or choose to use the included bootloader instead.
 
 ## 8 bits controller
 The 8 bits controller is very limited by its addressable space and thus, is only equipped with a limited amount of peripherals.
@@ -103,13 +103,38 @@ The memory map is the following
 |0xF9 |0xFB|Timer|
 |0xFC |0xFF|UART|
 
-## 16 bits controler
+### Top-level module
+The top-level module is in the `controller` folder and is named reflet\_8bit\_controller. It can not be used as-is because there is no way to fill its instruction memory. To use it, you must copy the top-level module and replace the mem_inst module with a ROM.
+
+The parameters for this module are the following:
+|Name | Description | Default value|
+|------|------|-------| 
+|clk\_freq|The frequency of the main clock in Hertz.|1 000 000|
+|enable\_exti|If equal to 0, the interrupt manager is disabled. |1|
+|enable\_gpio|If equal to 0, the GPIOs are disabled. |1|
+|enable\_timer|If equal to 0, the timer is disabled. |1|
+|enable\_uart|If equal to 0, the UART is disabled. |1|
+
+The ports of this module are the following:
+|Name |Type   |Description|
+|------|------|-------|
+|clk     |input|The main clock.|
+|reset |input|Reset the controller when flipped to low.|
+|debug|output|Turned on for a clock cycle when the CPU executes a `debug` instruction.|
+|quit|output|Is turned on from the moment the CPU executes a quit instruction and stops itself.|
+|gpi| 16-bit input | The input of the GPIO.|
+|gpo| 16-bit output | The output of the GPIO.|
+|rx|input| The rx line of the UART.|
+|tx|output The tx line of the UART.|
+
+## 16 bits controller
 The 16 bits controller is equipped with all the peripherals and its bigger addressable space makes it way easier to program for.
 
 The memory map is the following
 |Start |End   |Content|
 |------|------|-------|
-|0x0000|0x7FFF|Instructions|
+|0x0000|0x7DFF|Instructions|
+|9x7E00|0x7FFF|Bootloader|
 |0x8000|0xFEFF|Data|
 |0xFF00|0xFFFF|Peripherals|
 |------|------|-------|
@@ -120,5 +145,42 @@ The memory map is the following
 |0xFF12|0xFF12|Timer 2|
 |0xFF16|0xFF19|UART|
 |0xFF1A|0xFF1B|PWM|
-|0xFF1C|0xFF1E|Seven segments controler|
+|0xFF1C|0xFF1E|Seven segments controller|
 
+### Top-level module
+The top-level module is in the `controller` folder and is named reflet\_16bit\_controller. Unlike its 8-bit counterpart, it can be used on its own as it is equipped with a bootloader which can be used to load a program in the data memory. Of course, if it is needed to only use a single program with an implementation, the mem_inst module can be replaced with a ROM.
+
+The parameters for this module are the following:
+|Name | Description | Default value|
+|------|------|-------| 
+|clk\_freq|The frequency of the main clock in Hertz.|1 000 000|
+|enable\_exti|If equal to 0, the interrupt manager is disabled. |1|
+|enable\_gpio|If equal to 0, the GPIOs are disabled. |1|
+|enable\_timer|If equal to 0, the timer is disabled. |1|
+|enable\_timer2|If equal to 0, the timer2 is disabled. |1|
+|enable\_uart|If equal to 0, the UART is disabled. |1|
+|enable\_pwm|If equal to 0, the PWM is disabled. |1|
+|enable\_segments|If equal to 0, the seven segments display controller is disabled. |1|
+|data\_size| Size in bytes of the data memory.|100| 
+|inst\_size| Size in bytes of the instruction memory.|128|
+
+The ports of this module are the following:
+|Name |Type   |Description|
+|------|------|-------|
+|clk     |input|The main clock.|
+|reset |input|Reset the controller when flipped to low.|
+|reset\_limited|input|Reset the CPU, peripherals, and data memory but preserves the instruction memory.|
+|debug|output|Turned on for a clock cycle when the CPU executes a `debug` instruction.|
+|quit|output|Is turned on from the moment the CPU executes a quit instruction and stops itself.|
+|gpi| 16-bit input | The input of the GPIO.|
+|gpo| 16-bit output | The output of the GPIO.|
+|rx|input| The rx line of the UART.|
+|tx|output The tx line of the UART.|
+|pwm|output|Output of the PWM.|
+|segments|7-bit output| Seven-segment control, an output value of 0 means that the segment is on. |
+|seg\_select| 4-bit output | Seven segments digit selection, an output value of 1 means that the digit is selected. |
+|seg\_colon| output | Control of the colon indicator of the seven-segment display, a value of 0 means that the colon is turned on. |
+|seg\_dot| output | Control of the decimal dot indicator of the seven-segment display, a value of 0 means that the dot is turned on. |
+
+### Using the bootloader
+The bootloader is very easy to use. After the processor started, transmit the program through the UART connection and wait 4 seconds for the program to start.

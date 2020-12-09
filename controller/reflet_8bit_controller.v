@@ -7,7 +7,7 @@ module reflet_8bit_controller #(
     enable_uart = 1
     )(
     input clk,
-    input reset_in,
+    input reset,
     //CPU monitoring
     output debug,
     output quit,
@@ -21,7 +21,7 @@ module reflet_8bit_controller #(
     //reset control
     wire reset, blink;
     reflet_blink reset_bootstrap(.clk(clk), .out(blink));
-    assign reset = reset_in & !blink;
+    assign reset_used = reset & !blink;
 
     //system bus and exti
     wire [7:0] addr;
@@ -33,7 +33,7 @@ module reflet_8bit_controller #(
     //cpu
     reflet_cpu #(.wordsize(8)) cpu (
         .clk(clk),
-        .reset(reset),
+        .reset(reset_used),
         .data_in(data_in_cpu),
         .data_out(data_out_cpu),
         .addr(addr),
@@ -50,7 +50,7 @@ module reflet_8bit_controller #(
     //0x00 to 0x7F: instruction. Should be replaced with a ROM for real use
     reflet_ram8 #(.addrSize(7), .size(128)) mem_inst (
         .clk(clk),
-        .reset(reset),
+        .reset(reset_used),
         .enable(!addr[7]),
         .addr(addr[6:0]),
         .data_in(data_out_cpu),
@@ -60,7 +60,7 @@ module reflet_8bit_controller #(
     //0x80 to 0xEC: data. Should stay as a regular RAM
     reflet_ram8 #(.addrSize(7), .size(108)) mem_data (
         .clk(clk),
-        .reset(reset),
+        .reset(reset_used),
         .enable(addr[7]),
         .addr(addr[6:0]),
         .data_in(data_out_cpu),
@@ -83,7 +83,7 @@ module reflet_8bit_controller #(
         .enable_uart(enable_uart)) 
     periph (
         .clk(clk),
-        .reset(reset),
+        .reset(reset_used),
         .enable(addr[7]),
         .ext_int(exti),
         .addr(addr[6:0]),
