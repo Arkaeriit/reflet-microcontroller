@@ -1,3 +1,9 @@
+/*------------------------------------\
+|This is the top module for a 16 bit  |
+|reflet controler. The module mem_inst|
+|can be replaced with a ROM to make is|
+|usable from the start.               |
+\------------------------------------*/
 
 module reflet_16bit_controler #(
     parameter clk_freq = 1000000,
@@ -10,7 +16,8 @@ module reflet_16bit_controler #(
     enable_segments = 1
     )(
     input clk,
-    input reset_in,
+    input reset, //Resets the all system
+    input reset_limited, //does not resets the instruction memory
     //CPU monitoring
     output debug,
     output quit,
@@ -30,9 +37,10 @@ module reflet_16bit_controler #(
     );
 
     //reset control
-    wire reset, blink;
+    wire reset_full, blink, reset_smol;
     reflet_blink reset_bootstrap(.clk(clk), .out(blink));
-    assign reset = reset_in & !blink;
+    assign reset_full = reset & !blink;
+    assign reset_smol = reset_full & reset_limited;
 
     //system bus and exti
     wire [15:0] addr;
@@ -44,7 +52,7 @@ module reflet_16bit_controler #(
     //cpu
     reflet_cpu #(.wordsize(16)) cpu (
         .clk(clk),
-        .reset(reset),
+        .reset(reset_smol),
         .data_in(data_in_cpu),
         .data_out(data_out_cpu),
         .addr(addr),
@@ -58,10 +66,10 @@ module reflet_16bit_controler #(
     wire [15:0] dout_data;
     wire [15:0] dout_periph;
     assign data_in_cpu = dout_inst | dout_data | dout_periph;
-    //0x00 to 0x7FFF: instruction. Should be replaced with a ROM for real use
-    reflet_ram16 #(.addrSize(15), .size(128)) mem_inst (
+    //0x00 to 0x7FFF: instruction. Can be replaced with a ROM
+    reflet_inst16 #(.size(128)) mem_inst (
         .clk(clk),
-        .reset(reset),
+        .reset(reset_full),
         .enable(!addr[15]),
         .addr(addr[14:0]),
         .data_in(data_out_cpu),
@@ -71,7 +79,7 @@ module reflet_16bit_controler #(
     //0x8000 to 0xFEFF: data. Should stay as a regular RAM
     reflet_ram16 #(.addrSize(15), .size(100)) mem_data (
         .clk(clk),
-        .reset(reset),
+        .reset(reset_smol),
         .enable(addr[15]),
         .addr(addr[14:0]),
         .data_in(data_out_cpu),
@@ -101,7 +109,7 @@ module reflet_16bit_controler #(
         .enable_segments(enable_segments)) 
     periph (
         .clk(clk),
-        .reset(reset),
+        .reset(reset_smol),
         .enable(addr[15]),
         .ext_int(exti),
         .addr(addr[14:0]),

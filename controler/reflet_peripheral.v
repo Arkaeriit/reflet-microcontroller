@@ -238,6 +238,7 @@ module reflet_peripheral #(
             assign seg_select = 0;
             assign seg_dot = 0;
             assign seg_colon = 0;
+            assign dout_segments = 0;
         end
     endgenerate
 

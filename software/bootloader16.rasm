@@ -12,7 +12,6 @@ wordsize 16
 ;R8 contain the endBoot label
 ;R9 is ised as a scratch register for timHandle
 
-label start
 label init ;The label will probabely be unused...
 set 0 ;init registers
 cpy R2
