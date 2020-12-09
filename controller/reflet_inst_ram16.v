@@ -1,6 +1,6 @@
 /*-------------------------------------\
 |This module is the RAM ment to be used|
-|in a 16 bit Reflet microcontroler. At |
+|in a 16 bit Reflet microcontroller. At|
 |the begining, there is a small chunk  |
 |of RAM whose default value is not all |
 |0 but the instructions to jump to the |

@@ -1,7 +1,7 @@
 /*---------------------------------------\
 |This module combines all the peripherals|
 |made for a reflet processor in order to |
-|use them in a microcontroler.           |
+|use them in a microcontroller.          |
 \---------------------------------------*/
 
 //memory map

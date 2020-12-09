@@ -1,13 +1,13 @@
-/*------------------------------\
-|This module is ment to test the|
-|booting of a 16 bits controler.|
-\------------------------------*/
+/*-------------------------------\
+|This module is ment to test the |
+|booting of a 16 bits contromler.|
+\-------------------------------*/
 
 module reflet_16bit_ctrl_tb ();
     
     reg clk = 0;
     always #1 clk = !clk;
-    reflet_16bit_controler #(
+    reflet_16bit_controller #(
         .clk_freq(1000000),
         .enable_exti(1),
         .enable_gpio(0),

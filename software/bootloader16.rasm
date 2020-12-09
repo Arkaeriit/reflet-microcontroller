@@ -1,5 +1,5 @@
 wordsize 16
-;This program is ment to be a bootloader for the 16 bits microcontroler
+;This program is ment to be a bootloader for the 16 bits microcontroller
 ;It wait for 4 seconds for an UART message and if there is, it load it in RAM.
 ;This bootloader never uses the RAM, only peripherals (uart, exti, timer, timer2) and registers
 

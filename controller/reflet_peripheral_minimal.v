@@ -1,7 +1,7 @@
 /*-----------------------------------\
 |This module combines a small ammount|
 |of reflet peripheral in order to use|
-|them in a 8-bit micro-controler.    |
+|them in a 8-bit micro-controller.   |
 \-----------------------------------*/
 
 //memory map

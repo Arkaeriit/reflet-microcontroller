@@ -1,5 +1,5 @@
 
-module reflet_8bit_controler #(
+module reflet_8bit_controller #(
     parameter clk_freq = 1000000,
     enable_exti = 1,
     enable_gpio = 1,

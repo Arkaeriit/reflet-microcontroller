@@ -1,11 +1,11 @@
-/*------------------------------------\
-|This is the top module for a 16 bit  |
-|reflet controler. The module mem_inst|
-|can be replaced with a ROM to make is|
-|usable from the start.               |
-\------------------------------------*/
+/*-------------------------------------\
+|This is the top module for a 16 bit   |
+|reflet controller. The module mem_inst|
+|can be replaced with a ROM to make is |
+|usable from the start.                |
+\-------------------------------------*/
 
-module reflet_16bit_controler #(
+module reflet_16bit_controller #(
     parameter clk_freq = 1000000,
     enable_exti = 1,
     enable_gpio = 1,
@@ -13,7 +13,9 @@ module reflet_16bit_controler #(
     enable_timer2 = 1,
     enable_uart = 1,
     enable_pwm = 1,
-    enable_segments = 1
+    enable_segments = 1,
+    data_size = 100,
+    inst_size = 128
     )(
     input clk,
     input reset, //Resets the all system
@@ -67,7 +69,7 @@ module reflet_16bit_controler #(
     wire [7:0] dout_periph;
     assign data_in_cpu = dout_inst | dout_data | {8'h0, dout_periph};
     //0x00 to 0x7FFF: instruction. Can be replaced with a ROM
-    reflet_inst16 #(.size(128)) mem_inst (
+    reflet_inst16 #(.size(inst_size)) mem_inst (
         .clk(clk),
         .reset(reset_full),
         .enable(!addr[15]),
@@ -77,7 +79,7 @@ module reflet_16bit_controler #(
         .write_en(write_en));
 
     //0x8000 to 0xFEFF: data. Should stay as a regular RAM
-    reflet_ram16 #(.addrSize(15), .size(100)) mem_data (
+    reflet_ram16 #(.addrSize(15), .size(data_size)) mem_data (
         .clk(clk),
         .reset(reset_smol),
         .enable(addr[15]),
