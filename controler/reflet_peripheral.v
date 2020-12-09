@@ -46,8 +46,8 @@ module reflet_peripheral #(
     output [3:0] ext_int,
     //system bus
     input [base_addr_size-1:0] addr,
-    input [wordsize-1:0] data_in,
-    output [wordsize-1:0] data_out,
+    input [7:0] data_in,
+    output [7:0] data_out,
     input write_en,
     //GPIO
     input [15:0] gpi,
@@ -106,7 +106,7 @@ module reflet_peripheral #(
                 .reset(reset),
                 .enable(using_peripherals),
                 .addr(offset),
-                .data_in(data_in),
+                .data_in(data_in[7:0]),
                 .data_out(dout_exti),
                 .write_en(write_en),
                 .cpu_int(ext_int),
@@ -129,7 +129,7 @@ module reflet_peripheral #(
                 .enable(using_peripherals),
                 .interrupt(int_gpio),
                 .addr(offset),
-                .data_in(data_in),
+                .data_in(data_in[7:0]),
                 .data_out(dout_gpio),
                 .write_en(write_en),
                 .gpi(gpi),
@@ -151,7 +151,7 @@ module reflet_peripheral #(
                 .enable(using_peripherals),
                 .interrupt(int_timer),
                 .addr(offset),
-                .data_in(data_in),
+                .data_in(data_in[7:0]),
                 .data_out(dout_timer),
                 .write_en(write_en));
         else
@@ -169,7 +169,7 @@ module reflet_peripheral #(
                 .enable(using_peripherals),
                 .interrupt(int_timer2),
                 .addr(offset),
-                .data_in(data_in),
+                .data_in(data_in[7:0]),
                 .data_out(dout_timer2),
                 .write_en(write_en),
                 .timer_input(int_timer));
@@ -188,7 +188,7 @@ module reflet_peripheral #(
                 .enable(using_peripherals),
                 .interrupt(int_uart),
                 .addr(offset),
-                .data_in(data_in),
+                .data_in(data_in[7:0]),
                 .data_out(dout_uart),
                 .write_en(write_en),
                 .rx(rx),
@@ -207,7 +207,7 @@ module reflet_peripheral #(
                 .reset(reset),
                 .enable(using_peripherals),
                 .addr(offset),
-                .data_in(data_in),
+                .data_in(data_in[7:0]),
                 .data_out(dout_pwm),
                 .write_en(write_en),
                 .out(pwm));
@@ -225,7 +225,7 @@ module reflet_peripheral #(
                 .reset(reset),
                 .enable(using_peripherals),
                 .addr(offset),
-                .data_in(data_in),
+                .data_in(data_in[7:0]),
                 .data_out(dout_segments),
                 .write_en(write_en),
                 .segments(segments),

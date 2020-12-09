@@ -55,8 +55,8 @@ module clock_cpu #(
     //memory map
     wire [7:0] dout_inst;
     wire [15:0] dout_data;
-    wire [15:0] dout_periph;
-    assign data_in_cpu = {8'h0, dout_inst} | dout_data | dout_periph;
+    wire [7:0] dout_periph;
+    assign data_in_cpu = {8'h0, dout_inst} | dout_data | {8'h0, dout_periph};
     //0x00 to 0x7FFF: instruction. Should be replaced with a ROM for real use
     rom5 rom (
         .clk(clk),
@@ -92,7 +92,7 @@ module clock_cpu #(
         .enable(addr[15]),
         .ext_int(exti),
         .addr(addr[14:0]),
-        .data_in(data_out_cpu),
+        .data_in(data_out_cpu[7:0]),
         .data_out(dout_periph),
         .write_en(write_en),
         .gpi(gpi),

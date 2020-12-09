@@ -87,13 +87,13 @@ module reflet_pwm_pwm #(
         .clk(clk),
         .reset(reset & !update),
         .enable(using_count_base),
-        .max({24'h0, max}),
+        .max(max),
         .out(base_freq));
     reflet_counter #(.size(size)) count_off (
         .clk(clk),
         .reset(reset & !update & !base_freq), //This counter should start a clk cycle after the other counter, it should thus be reset by uate_late
         .enable(using_count_off & out_normal),
-        .max({24'h0, duty_cycle_late}), //As the counter is reset each cycles, we need to put a -1 because this counter is a clock cycle late
+        .max(duty_cycle_late), //As the counter is reset each cycles, we need to put a -1 because this counter is a clock cycle late
         .out(switch_off));
 
     always @ (posedge clk)

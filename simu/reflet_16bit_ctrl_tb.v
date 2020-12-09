@@ -18,9 +18,10 @@ module reflet_16bit_ctrl_tb ();
         .enable_segments(0))
     ctrl (
         .clk(clk),
-        .reset(1),
-        .reset_limited(1),
-        .rx(1));
+        .reset(1'h1),
+        .reset_limited(1'h1),
+        .rx(1'h1),
+        .gpi(16'h0));
 
 endmodule    
     
