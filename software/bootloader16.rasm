@@ -11,6 +11,7 @@ wordsize 16
 ;R7 contain 0xFF15, the rx_data register
 ;R8 contain the endBoot label
 ;R9 is ised as a scratch register for timHandle
+;R10 contain the addr of the infinite loop
 
 label init ;The label will probabely be unused...
 set 0 ;init registers
@@ -99,6 +100,7 @@ cpy R3 ;R3 is now the status register
 ;here, we configure the interrupt on the CPU level
 set+ 400
 cpy R6
+cpy R1
 set+ 65301
 cpy R7
 setlab endBoot
@@ -110,8 +112,14 @@ setint 1
 set+ 24
 cpy SR ;we enable int 0 and 1
 setlab bootLoop
+cpy R10
 label bootLoop
 slp
+set 0 ;Testing for the end of the timeout
+eq R1
+read R8
+jif
+read R10 ;going back up
 jmp
 
 label endBoot
@@ -195,15 +203,13 @@ retint
 
 label timHandle
 cpy R5 ;protect WR
+set 0
+str R3 ;clear int
 set 1 ;sub 1 from the timeout
 cpy R9
 read R1
 sub R9
 cpy R1
-set 0 ;test for 0 and if is true, jump to the end
-eq R1
-read R8
-jif
 read R5
 retint
 
