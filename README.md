@@ -134,7 +134,7 @@ The memory map is the following
 |Start |End   |Content|
 |------|------|-------|
 |0x0000|0x7DFF|Instructions|
-|9x7E00|0x7FFF|Bootloader|
+|0x7E00|0x7FFF|Bootloader|
 |0x8000|0xFEFF|Data|
 |0xFF00|0xFFFF|Peripherals|
 |------|------|-------|
@@ -148,7 +148,7 @@ The memory map is the following
 |0xFF1C|0xFF1E|Seven segments controller|
 
 ### Top-level module
-The top-level module is in the `controller` folder and is named reflet\_16bit\_controller. Unlike its 8-bit counterpart, it can be used on its own as it is equipped with a bootloader which can be used to load a program in the data memory. Of course, if it is needed to only use a single program with an implementation, the mem_inst module can be replaced with a ROM.
+The top-level module is in the `controller` folder and is named reflet\_16bit\_controller. Unlike its 8-bit counterpart, it can be used on its own as it is equipped with a bootloader which can be used to load a program in the data memory. Of course, if it is needed to only use a single program with an implementation, the mem\_inst module can be replaced with a ROM.
 
 The parameters for this module are the following:
 |Name | Description | Default value|
