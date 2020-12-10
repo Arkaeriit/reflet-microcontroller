@@ -233,7 +233,7 @@ case(addr)
   15'h7ee1 : ret = 8'h7b;
   15'h7ee2 : ret = 8'hac;
   15'h7ee3 : ret = 8'h3b;
-  15'h7ee4 : ret = 8'h15;
+  15'h7ee4 : ret = 8'h19;
   15'h7ee5 : ret = 8'h7b;
   15'h7ee6 : ret = 8'h37;
   15'h7ee7 : ret = 8'h14;

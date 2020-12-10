@@ -101,7 +101,7 @@ cpy R3 ;R3 is now the status register
 set+ 400
 cpy R6
 cpy R1
-set+ 65301
+set+ 65305
 cpy R7
 setlab endBoot
 cpy R8

@@ -37,6 +37,7 @@ module reflet_inst_ram16 #(
             memory_ram[4] = 8'h10; //set 0
             memory_ram[5] = 8'hF0; //load WR
             memory_ram[6] = 8'h08; //jump 
+            memory_ram[7] = 8'h00; //slp 
 			for (i=8;i<size; i=i+1)
 				memory_ram[i] = 0;
         end
