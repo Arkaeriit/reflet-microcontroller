@@ -27,7 +27,7 @@ module reflet_uart #(
     wire [1:0] offset = addr - base_addr;
 
     //Frequency generator
-    integer mult = clk_freq / 9600;
+    integer mult = clk_freq / (9600 * 4);
     wire uart_en;
     reflet_counter #(.size(32)) uart_counter (
         .clk(clk), 
@@ -115,7 +115,7 @@ endmodule
 
 module reflet_uart_uart(
     input clk,
-    input enable,                 //Should have a one tick pulse at the same frequency as the UART
+    input enable,                 //Should have a one tick pulse at 4 times the frequency as the UART
     input reset,
     input rx,
     output tx,
@@ -127,14 +127,15 @@ module reflet_uart_uart(
     );
 
     //registers to count the number of byte we are at
-    reg [4:0] rx_count = 0;
-    reg [4:0] tx_count = 0;
+    reg [4:0] rx_count;
+    reg [4:0] tx_count;
 
     // transmit
-    reg tx_buzy = 0;
-    reg tx_r = 1;
+    reg tx_buzy;
+    reg tx_r;
     assign tx = tx_r;
     assign end_transmit = tx_count > 7;
+    reg [1:0] tx_sync; //Divide the enable freq by 4 to get the correct frequency
 
     always @(posedge clk)
         if(!reset)
@@ -142,73 +143,93 @@ module reflet_uart_uart(
             tx_count = 0;
             tx_buzy = 0;
             tx_r = 1;
+            tx_sync = 0;
         end
         else if(enable)
         begin
-            if(tx_buzy)
+            if(tx_sync == 0)
             begin
-                if(tx_count > 7) //end bit
+                if(tx_buzy)
                 begin
-                    tx_r = 1;
-                    tx_count = 0;
-                    tx_buzy = 0;
-                end    
-                else //data bits
-                begin
-                    tx_r = data_tx[tx_count];
-                    tx_count = tx_count + 1;
+                    if(tx_count > 7) //end bit
+                    begin
+                        tx_r = 1;
+                        tx_count = 0;
+                        tx_buzy = 0;
+                    end    
+                    else //data bits
+                    begin
+                        tx_r = data_tx[tx_count];
+                        tx_count = tx_count + 1;
+                    end
                 end
+                else 
+                    if(start_transmit)
+                    begin
+                        tx_buzy = 1;
+                        tx_r = 0; //start bit
+                    end
+                    else //rest value : 1
+                        tx_r = 1;
             end
-            else 
-                if(start_transmit)
-                begin
-                    tx_buzy = 1;
-                    tx_r = 0; //start bit
-                end
-                else //rest value : 1
-                    tx_r = 1;
+            tx_sync = tx_sync + 1;
         end
     
     //assign transmit_free = !tx_buzy //We could do this if we needed to check
     //if the transmission is possible
     
     //receive
-    reg rx_buzy = 0;
-    reg receive_done_r = 0;
-    reg [7:0] data_rx_r = 0;
+    reg rx_buzy;
+    reg receive_done_r;
+    reg [7:0] data_rx_r;
     assign receive_done = receive_done_r;
+    reg [1:0] rx_sync;
+    reg rx_sync_pass; //Used to wait an enable cycle before we sync the signal
+
 
     always @ (posedge clk)
         if(!reset)
         begin
+            rx_sync = 0;
             rx_buzy = 0;
             rx_count = 0;
             data_rx_r = 0;
             receive_done_r = 0;
             data_rx = 0;
+            rx_sync_pass = 0;
         end
         else if(enable)
         begin
             if(rx_buzy)
             begin
-                if(rx_count < 8) //receiving the 8 bits
-                    data_rx_r[rx_count] = rx;
-                else
-                begin // end of the transmission
-                    receive_done_r = 1;
-                    rx_buzy = 0;
-                    data_rx = data_rx_r;
-                end    
-                rx_count = rx_count + 1;
+                if(rx_sync == 0)
+                begin
+                    if(rx_count < 8) //receiving the 8 bits
+                        data_rx_r[rx_count] = rx;
+                    else
+                    begin // end of the transmission
+                        receive_done_r = 1;
+                        rx_buzy = 0;
+                        data_rx = data_rx_r;
+                    end    
+                    rx_count = rx_count + 1;
+                end
+                rx_sync = rx_sync + 1;
             end
             else
                 if(rx) //The message is ended for at least a clock cycle
                     receive_done_r = 0;
                 else //We received the start bit
                 begin
-                    receive_done_r = 0;
-                    rx_count = 0;
-                    rx_buzy = 1;
+                    if(rx_sync_pass)
+                    begin
+                        receive_done_r = 0;
+                        rx_count = 0;
+                        rx_buzy = 1;
+                        rx_sync_pass = 0;
+                    end
+                    else
+                        rx_sync_pass = 1;
                 end
         end
     

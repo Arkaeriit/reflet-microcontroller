@@ -8,6 +8,7 @@ module reflet_16bit_ctrl_tb ();
     reg clk = 0;
     always #1 clk = !clk;
     reg rx = 1;
+    wire quit;
 
     reflet_16bit_controller #(
         .clk_freq(1000000),
@@ -23,7 +24,8 @@ module reflet_16bit_ctrl_tb ();
         .reset(1'h1),
         .reset_limited(1'h1),
         .rx(rx),
-        .gpi(16'h0));
+        .gpi(16'h0),
+        .quit(quit));
 
     initial
     begin
@@ -40,6 +42,30 @@ module reflet_16bit_ctrl_tb ();
         #208;
         rx = 1;
         #1875;
+        rx = 0;
+        #208;
+        rx = 1;
+        #1875;
+        rx = 0; //Quit start bit
+        #208;
+        rx = 0;
+        #208;
+        rx = 1;
+        #208;
+        rx = 1;
+        #208;
+        rx = 1;
+        #208;
+        rx = 0;
+        #208;
+        rx = 0;
+        #208;
+        rx = 0;
+        #208;
+        rx = 0;
+        #208;
+        rx = 1; //End bit
+        #208;
     end
 
 endmodule    
