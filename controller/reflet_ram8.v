@@ -1,11 +1,14 @@
 /*----------------------------------------\
 |This module codes for a 8-bit ram block  |
 |with the same input and output addresses.|
+|Its behavior tries to mimic standard     |
+|synchronous RAM.                         |
 \----------------------------------------*/
 
 module reflet_ram8 #(
     parameter addrSize = 7,
-    size = 128
+    size = 128,
+    resetable = 1
     )(
     input clk,
     input reset,
@@ -19,12 +22,13 @@ module reflet_ram8 #(
 
 	// Declare memory 
 	reg [7:0] memory_ram [size-1:0];
+    reg [7:0] data_out_array;
 
     //addr control
-    wire usable = enable && addr < size;
+    wire usable = enable && addr < size && reset;
 	
 	always @(posedge clk)
-		if(!reset)
+		if(!reset & resetable)
         begin
 			for (i=0;i<size; i=i+1)
 				memory_ram[i] = 0;
@@ -32,10 +36,11 @@ module reflet_ram8 #(
 		else
         begin
             if(usable && write_en)
-                memory_ram[addr] = data_in;
+                memory_ram[addr] <= data_in;
+            data_out_array <= memory_ram[addr];
         end
 
-    assign data_out = ( usable ? memory_ram[addr] : 0 );
+    assign data_out = ( usable ? data_out_array : 0 );
         
 endmodule
 
