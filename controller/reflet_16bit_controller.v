@@ -15,7 +15,8 @@ module reflet_16bit_controller #(
     enable_pwm = 1,
     enable_segments = 1,
     data_size = 100,
-    inst_size = 128
+    inst_size = 128,
+    mem_resetable = 0
     )(
     input clk,
     input reset, //Resets the all system
@@ -69,7 +70,7 @@ module reflet_16bit_controller #(
     wire [7:0] dout_periph;
     assign data_in_cpu = dout_inst | dout_data | {8'h0, dout_periph};
     //0x00 to 0x7FFF: instruction. Can be replaced with a ROM
-    reflet_inst16 #(.size(inst_size)) mem_inst (
+    reflet_inst16 #(.size(inst_size), .resetable(mem_resetable)) mem_inst (
         .clk(clk),
         .reset(reset_full),
         .inst_ready(inst_ready),
@@ -80,7 +81,7 @@ module reflet_16bit_controller #(
         .write_en(write_en));
 
     //0x8000 to 0xFEFF: data. Should stay as a regular RAM
-    reflet_ram16 #(.addrSize(15), .size(data_size)) mem_data (
+    reflet_ram16 #(.addrSize(15), .size(data_size), .resetable(mem_resetable)) mem_data (
         .clk(clk),
         .reset(reset_smol),
         .enable(addr[15]),

@@ -8,8 +8,7 @@
 \----------------------------------- */
 
 module reflet_inst16 #(
-    //parameter size = 32255,
-    parameter size = 32,
+    parameter size = 32255,
     resetable = 1
     )(
     input clk,

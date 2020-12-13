@@ -114,6 +114,7 @@ The parameters for this module are the following:
 |enable\_gpio|If equal to 0, the GPIOs are disabled. |1|
 |enable\_timer|If equal to 0, the timer is disabled. |1|
 |enable\_uart|If equal to 0, the UART is disabled. |1|
+|mem\_resetable| If not set to 0, the memories are reset to 0 when the reset signal is pulled down. This can be incompatible with some FPGA's memory blocks. |0|
 
 The ports of this module are the following:
 |Name |Type   |Description|
@@ -163,6 +164,7 @@ The parameters for this module are the following:
 |enable\_segments|If equal to 0, the seven segments display controller is disabled. |1|
 |data\_size| Size in bytes of the data memory.|100| 
 |inst\_size| Size in bytes of the instruction memory.|128|
+|mem\_resetable| If not set to 0, the memories are reset to 0 when the reset signal is pulled down. This can be incompatible with some FPGA's memory blocks. |0|
 
 The ports of this module are the following:
 |Name |Type   |Description|
