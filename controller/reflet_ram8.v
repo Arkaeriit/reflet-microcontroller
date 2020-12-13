@@ -15,6 +15,7 @@ module reflet_ram8 #(
     input write_en,
     output [7:0] data_out
     );
+    integer i; //loop variable
 
 	// Declare memory 
 	reg [7:0] memory_ram [size-1:0];
@@ -25,7 +26,7 @@ module reflet_ram8 #(
 	always @(posedge clk)
 		if(!reset)
         begin
-			for (integer i=0;i<size; i=i+1)
+			for (i=0;i<size; i=i+1)
 				memory_ram[i] = 0;
         end
 		else

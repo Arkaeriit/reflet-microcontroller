@@ -61,7 +61,7 @@ module reflet_peripheral_minimal #(
 
     generate
         if(enable_exti)
-            reflet_exti #(.wordsize(wordsize), .base_addr_size(`offset_size), .base_addr(`exti_off)) exti (
+            reflet_exti #(.base_addr_size(`offset_size), .base_addr(`exti_off)) exti (
                 .clk(clk),
                 .reset(reset),
                 .enable(using_peripherals),
@@ -83,7 +83,7 @@ module reflet_peripheral_minimal #(
 
     generate
         if(enable_gpio)
-            reflet_gpio #(.wordsize(wordsize), .base_addr_size(`offset_size), .base_addr(`gpio_off)) gpio (
+            reflet_gpio #(.base_addr_size(`offset_size), .base_addr(`gpio_off)) gpio (
                 .clk(clk),
                 .reset(reset),
                 .enable(using_peripherals),
@@ -105,7 +105,7 @@ module reflet_peripheral_minimal #(
         
     generate
         if(enable_timer)
-            reflet_timer #(.wordsize(wordsize), .base_addr_size(`offset_size), .base_addr(`timer_off)) timer (
+            reflet_timer #(.base_addr_size(`offset_size), .base_addr(`timer_off)) timer (
                 .clk(clk),
                 .reset(reset),
                 .enable(using_peripherals),
@@ -123,7 +123,7 @@ module reflet_peripheral_minimal #(
 
     generate
         if(enable_uart)
-            reflet_uart #(.wordsize(wordsize), .base_addr_size(`offset_size), .base_addr(`uart_off), .clk_freq(clk_freq)) uart (
+            reflet_uart #(.base_addr_size(`offset_size), .base_addr(`uart_off), .clk_freq(clk_freq)) uart (
                 .clk(clk),
                 .reset(reset),
                 .enable(using_peripherals),

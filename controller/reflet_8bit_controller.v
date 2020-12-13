@@ -19,7 +19,7 @@ module reflet_8bit_controller #(
     );
 
     //reset control
-    wire reset, blink;
+    wire reset_used, blink;
     reflet_blink reset_bootstrap(.clk(clk), .out(blink));
     assign reset_used = reset & !blink;
 
