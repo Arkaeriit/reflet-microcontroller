@@ -39,10 +39,10 @@ module reflet_16bit_controller #(
     );
 
     //reset control
-    wire reset_full, blink, reset_smol;
+    wire reset_full, blink, reset_smol, inst_ready;
     reflet_blink reset_bootstrap(.clk(clk), .out(blink));
     assign reset_full = reset & !blink;
-    assign reset_smol = reset_full & reset_limited;
+    assign reset_smol = reset_full & reset_limited & inst_ready;
 
     //system bus and exti
     wire [15:0] addr;
@@ -72,6 +72,7 @@ module reflet_16bit_controller #(
     reflet_inst16 #(.size(inst_size)) mem_inst (
         .clk(clk),
         .reset(reset_full),
+        .inst_ready(inst_ready),
         .enable(!addr[15]),
         .addr(addr[14:0]),
         .data_in(data_out_cpu),
