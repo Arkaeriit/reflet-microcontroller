@@ -26,5 +26,13 @@ module simu5_tb;
         .seg_colon(seg_colon),
         .seg_dot(seg_dot));
 
+    initial
+    begin
+        #5000;
+        reset = 0;
+        #2;
+        reset = 1;
+    end
+
 endmodule
     
