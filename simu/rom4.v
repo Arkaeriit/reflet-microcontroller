@@ -1,4 +1,4 @@
-//The code used to make this rom is in software/uartLoopBack.rasm
+//The code used to make this rom is in software/uartLoopBack.asm
 module rom4(input clk, input enable_out,input [6:0] addr, output [7:0] dataOut);
 reg [7:0] ret; assign dataOut = (enable_out ? ret : 7'h0);
 always @ (posedge clk)

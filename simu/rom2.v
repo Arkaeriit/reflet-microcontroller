@@ -1,4 +1,4 @@
-//The code used to make this ROM is in software/helloWorld.rasm
+//The code used to make this ROM is in software/helloWorld.asm
 module rom2(input clk, input enable_out,input [7:0] addr, output [7:0] dataOut);
 reg [7:0] ret; assign dataOut = (enable_out ? ret : 8'h0);
 always @ (posedge clk)

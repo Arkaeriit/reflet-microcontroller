@@ -1,4 +1,4 @@
-//This module is made from the file software/bootloader16.rasm
+//This module is made from the file software/bootloader16.asm
 //It is assembled with the macro-assembler and the flags
 //-no-prefix, -no-stack-init, -ignore-start and -start-addr 32256
 module reflet_bootloader16_rom(input clk, input enable, input [14:0] addr, output [7:0] data_out);

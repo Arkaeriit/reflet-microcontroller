@@ -7,18 +7,13 @@ label printc
     pushr R2 ;addrs
     pushr R4 ;waiting loop pointer
     pushr R5 ;copy of the status register
-    read SR
-    cpy R5
-    set 6 ;geting in byte mode
-    cpy SR
     setlab UART ;UART tx_cmd addr
     load WR
     cpy R2
     setlab printcLoop
     cpy R4
     label printcLoop
-        read R2
-        load R2 ;testing that R2 is 0 to see if we are ready to print
+        load R2 ;testing that R2 is not 0 to see if we are ready to print
         cpy R12
         set 0
         eq R12
@@ -31,8 +26,6 @@ label printc
     str R12
     set 0   ;sending command
     str R2
-    read R5 ;restoring status register
-    cpy SR
     popr R5 ;restoring registers
     popr R4 
     popr R2
