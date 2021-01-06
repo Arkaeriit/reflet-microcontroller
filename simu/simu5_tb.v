@@ -28,10 +28,14 @@ module simu5_tb;
 
     initial
     begin
+        $dumpfile("simu5_tb.vcd");
+        $dumpvars();
         #5000;
         reset = 0;
         #2;
         reset = 1;
+        #10000;
+        $finish;
     end
 
 endmodule

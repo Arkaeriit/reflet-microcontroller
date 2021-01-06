@@ -22,7 +22,7 @@ module simu3();
     wire [7:0] data_out_rom;
     wire gpio_int;
     wire [3:0] int;
-    reflet_gpio #(.wordsize(8), .base_addr_size(7), .base_addr(7'h00)) gpio(
+    reflet_gpio #(.base_addr_size(7), .base_addr(7'h00)) gpio(
         .clk(clk), 
         .reset(reset), 
         .enable(addr[7]), 
@@ -33,7 +33,7 @@ module simu3();
         .gpi(gpi), 
         .gpo(gpo),
         .interrupt(gpio_int));
-    reflet_exti #(.wordsize(8), .base_addr_size(7), .base_addr(7'h08)) exti(
+    reflet_exti #(.base_addr_size(7), .base_addr(7'h08)) exti(
         .clk(clk), 
         .reset(reset), 
         .enable(addr[7]), 
@@ -64,6 +64,8 @@ module simu3();
 
     initial
     begin
+        $dumpfile("simu3_tb.vcd");
+        $dumpvars();
         #10;
         reset = 1;
         #2000;
@@ -74,6 +76,8 @@ module simu3();
         gpi = 16'h001;
         #200;
         gpi = 16'h0000;
+        #200;
+        $finish;
     end
 
 endmodule

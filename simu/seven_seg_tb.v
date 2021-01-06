@@ -51,5 +51,13 @@ module seven_seg_tb();
             if(update)
                 num = num + 1;
 
+    initial
+    begin
+        $dumpfile("seven_seg_tb.vcd");
+        $dumpvars();
+        #100000;
+        $finish;
+    end
+    
 endmodule
     

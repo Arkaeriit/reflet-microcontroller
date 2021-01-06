@@ -1,5 +1,5 @@
 
-module syth_tb();
+module synth_tb();
 
     reg clk = 0;
     always #1 clk = !clk;
@@ -19,8 +19,12 @@ module syth_tb();
 
     initial
     begin
+        $dumpfile("synth_tb.vcd");
+        $dumpvars();
         #10;
         reset = 1;
+        #10000;
+        $finish;
     end
 
 endmodule

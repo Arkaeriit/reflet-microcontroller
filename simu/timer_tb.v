@@ -12,7 +12,7 @@ module timer_tb();
 
     wire timer_int;
 
-    reflet_timer #(.wordsize(8), .base_addr_size(2), .base_addr(0)) timer (
+    reflet_timer #(.base_addr_size(2), .base_addr(0)) timer (
     .clk(clk),
     .reset(reset),
     .enable(1'b1),
@@ -24,6 +24,8 @@ module timer_tb();
 
     initial
     begin
+        $dumpfile("timer_tb.vcd");
+        $dumpvars();
         #10;
         reset = 1;
         #100;
@@ -45,6 +47,8 @@ module timer_tb();
         #2;
         write_en = 0;
         addr = 3;
+        #10000;
+        $finish;
     end
 
 endmodule

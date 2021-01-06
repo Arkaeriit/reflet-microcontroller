@@ -61,7 +61,7 @@ module clock_cpu #(
     rom5 rom (
         .clk(clk),
         .enable_out(!addr[15]),
-        .addr(addr[14:0]),
+        .addr(addr[8:0]),
         .dataOut(dout_inst));
 
     //0x8000 to 0xFEFF: data. Should stay as a regular RAM

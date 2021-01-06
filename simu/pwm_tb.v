@@ -18,6 +18,8 @@ module pwm_tb ();
 
     initial
     begin
+        $dumpfile("pwm_tb.vcd");
+        $dumpvars();
         #4;
         reset = 1;
         #100;
@@ -30,6 +32,8 @@ module pwm_tb ();
         duty_cycle = 10;
         #100;
         duty_cycle = 11;
+        #100;
+        $finish;
     end
 
 endmodule

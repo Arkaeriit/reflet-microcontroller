@@ -29,6 +29,8 @@ module reflet_16bit_ctrl_tb ();
 
     initial
     begin
+        $dumpfile("reflet_16bit_ctrl_tb.vcd");
+        $dumpvars();
         #5000;
         rx = 0;
         #208;
@@ -66,7 +68,10 @@ module reflet_16bit_ctrl_tb ();
         #208;
         rx = 1; //End bit
         #208;
+        #10000;
+        $finish;
     end
 
 endmodule    
     
+

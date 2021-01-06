@@ -12,14 +12,14 @@ module reflet_gpio_tb();
     //system bus
     reg [3:0] addr = 0;
     reg write_en = 0;
-    reg [15:0] data_in = 0;
-    wire [15:0] data_out;
+    reg [7:0] data_in = 0;
+    wire [7:0] data_out;
 
     //GPIO
     wire [15:0] gpi = 16'hABCD;
     wire [15:0] gpo;
 
-    reflet_gpio #(.wordsize(16), .base_addr_size(4), .base_addr(2)) gpio (
+    reflet_gpio #(.base_addr_size(4), .base_addr(2)) gpio (
         .clk(clk), 
         .reset(reset), 
         .enable(1'b1), 
@@ -32,6 +32,8 @@ module reflet_gpio_tb();
 
     initial
     begin
+        $dumpfile("reflet_gpio_tb.vcd");
+        $dumpvars();
         #10;
         reset = 1;
         data_in = 7;
@@ -48,6 +50,8 @@ module reflet_gpio_tb();
         addr = 5;
         #2;
         addr = 6;
+        #10;
+        $finish;
     end
 
 endmodule

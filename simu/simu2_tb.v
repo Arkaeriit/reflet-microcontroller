@@ -26,7 +26,7 @@ module simu2();
         .enable(addr[15]), 
         .addr(addr[14:0]), 
         .write_en(write_en), 
-        .data_in(data_out_cpu), 
+        .data_in(data_out_cpu[7:0]), 
         .data_out(data_out_uart), 
         .rx(rx), 
         .tx(tx));
@@ -56,8 +56,12 @@ module simu2();
 
     initial
     begin
+        $dumpfile("simu2_tb.vcd");
+        $dumpvars();
         #10;
         reset = 1;
+        #100000;
+        $finish;
     end
 
 endmodule

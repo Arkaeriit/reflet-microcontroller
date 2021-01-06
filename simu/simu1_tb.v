@@ -20,7 +20,7 @@ module simu1();
     //modules
     wire [7:0] data_out_gpio;
     wire [7:0] data_out_rom;
-    reflet_gpio #(.wordsize(8), .base_addr_size(7), .base_addr(7'h00)) gpio(
+    reflet_gpio #(.base_addr_size(7), .base_addr(7'h00)) gpio(
         .clk(clk), 
         .reset(reset), 
         .enable(addr[7]), 
@@ -47,10 +47,14 @@ module simu1();
 
     initial
     begin
+        $dumpfile("pwm_tb.vcd");
+        $dumpvars();
         #10;
         reset = 1;
         #1000;
         gpi = 16'hABCD;
+        #2000;
+        $finish;
     end
 
 endmodule

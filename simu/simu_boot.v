@@ -23,5 +23,13 @@ module simu_boot;
         .seg_colon(),
         .seg_dot());
 
+    initial
+    begin
+        $dumpfile("simu_boot.vcd");
+        $dumpvars();
+        #1000000;
+        $finish;
+    end
+
 endmodule
     

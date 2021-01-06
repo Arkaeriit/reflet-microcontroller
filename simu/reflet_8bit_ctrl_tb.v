@@ -19,6 +19,8 @@ module reflet_8bit_ctrl_tb ();
 
     initial
     begin
+        $dumpfile("reflet_8bit_ctrl_tb.vcd");
+        $dumpvars();
         #1000;
         rx = 0;
         #200;
@@ -31,6 +33,8 @@ module reflet_8bit_ctrl_tb ();
         rx = 0;
         #200;
         rx = 1;
+        #10000;
+        $finish;
     end
 
 endmodule
