@@ -68,7 +68,7 @@ module reflet_16bit_ctrl_tb ();
         #208;
         rx = 1; //End bit
         #208;
-        #10000;
+        #1000000;
         $finish;
     end
 

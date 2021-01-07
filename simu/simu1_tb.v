@@ -47,7 +47,7 @@ module simu1();
 
     initial
     begin
-        $dumpfile("pwm_tb.vcd");
+        $dumpfile("simu1.vcd");
         $dumpvars();
         #10;
         reset = 1;

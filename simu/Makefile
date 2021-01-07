@@ -3,13 +3,14 @@
 
 CPU = ../cpu/reflet.vh ../cpu/reflet_addr.v ../cpu/reflet_addr_reduced_behavior.v ../cpu/reflet_alu.v ../cpu/reflet_cpu.v ../cpu/reflet_interrupt.v ../cpu/reflet_stack.v
 CTRL = ../controller/reflet_16bit_controller.v ../controller/reflet_8bit_controller.v ../controller/reflet_blink.v ../controller/reflet_bootloader16_rom.v ../controller/reflet_inst16.v ../controller/reflet_peripheral_minimal.v ../controller/reflet_peripheral.v ../controller/reflet_ram8.v ../controller/reflet_ram16.v
-PERIPH = ../peripherals/reflet_counter.v ../peripherals/reflet_exti.v ../peripherals/reflet_gpio.v ../peripherals/reflet_hardware_info.v ../peripherals/reflet_pwm.v ../peripherals/reflet_ro_register.v ../peripherals/reflet_rwe_register.v ../peripherals/reflet_rw_register.v ../peripherals/reflet_seven_segment.v ../peripherals/reflet_synth.v ../peripherals/reflet_timer_2.v ../peripherals/reflet_timer.v ../peripherals/reflet_uart.v
+REGISTERS = ../peripherals/reflet_ro_register.v ../peripherals/reflet_rwe_register.v ../peripherals/reflet_rw_register.v
+PERIPH = ../peripherals/reflet_counter.v ../peripherals/reflet_exti.v ../peripherals/reflet_gpio.v ../peripherals/reflet_hardware_info.v ../peripherals/reflet_pwm.v ../peripherals/reflet_seven_segment.v ../peripherals/reflet_synth.v ../peripherals/reflet_timer_2.v ../peripherals/reflet_timer.v ../peripherals/reflet_uart.v $(REGISTERS)
 REFLET = $(CPU) $(CTRL) $(PERIPH)
 
-all : 
+all : pwm_tb.vcd reflet_16bit_ctrl_tb.vcd reflet_8bit_ctrl_tb.vcd reflet_gpio_tb.vcd simu1_tb.vcd simu2_tb.vcd simu3_tb.vcd simu5_tb.vcd simu_boot.vcd synth_tb.vcd 
 
-pwm_tb.vvp : pwm_tb.v $(PERIPH)
-	iverilog pwm_tb.v $(PERIPH) -o pwm_tb.vvp
+pwm_tb.vvp : pwm_tb.v ../peripherals/reflet_pwm.v ../peripherals/reflet_counter.v $(REGISTERS)
+	iverilog pwm_tb.v ../peripherals/reflet_pwm.v ../peripherals/reflet_counter.v $(REGISTERS) -o pwm_tb.vvp
 
 reflet_gpio_tb.vvp : reflet_gpio_tb.v $(PERIPH)
 	iverilog reflet_gpio_tb.v $(PERIPH) -o reflet_gpio_tb.vvp
@@ -57,6 +58,72 @@ simu_boot.vvp : $(REFLET) simu_boot.v test_boot.v test_boot_rom.v
 	cp ../cpu/reflet.vh ./
 	iverilog simu_boot.v test_boot_rom.v test_boot.v $(REFLET) -o simu_boot.vvp
 	rm ./reflet.vh
+
+pwm_tb.vcd : pwm_tb.vvp
+	vvp pwm_tb.vvp
+
+pwm_tb : pwm_tb.vcd
+	gtkwave pwm_tb.vcd
+
+reflet_16bit_ctrl_tb.vcd : reflet_16bit_ctrl_tb.vvp
+	vvp reflet_16bit_ctrl_tb.vvp
+
+reflet_16bit_ctrl_tb : reflet_16bit_ctrl_tb.vcd
+	gtkwave reflet_16bit_ctrl_tb.vcd
+
+reflet_8bit_ctrl_tb.vcd : reflet_8bit_ctrl_tb.vvp
+	vvp reflet_8bit_ctrl_tb.vvp
+
+reflet_8bit_ctrl_tb : reflet_8bit_ctrl_tb.vcd
+	gtkwave reflet_8bit_ctrl_tb.vcd
+
+reflet_gpio_tb.vcd : reflet_gpio_tb.vvp
+	vvp reflet_gpio_tb.vvp
+
+reflet_gpio_tb : reflet_gpio_tb.vcd
+	gtkwave reflet_gpio_tb.vcd
+
+simu1_tb.vcd : simu1_tb.vvp
+	vvp simu1_tb.vvp
+
+simu1_tb : simu1_tb.vcd
+	gtkwave simu1_tb.vcd
+
+simu2_tb.vcd : simu2_tb.vvp
+	vvp simu2_tb.vvp
+
+simu2_tb : simu2_tb.vcd
+	gtkwave simu2_tb.vcd
+
+simu3_tb.vcd : simu3_tb.vvp
+	vvp simu3_tb.vvp
+
+simu3_tb : simu3_tb.vcd
+	gtkwave simu3_tb.vcd
+
+simu5_tb.vcd : simu5_tb.vvp
+	vvp simu5_tb.vvp
+
+simu5_tb : simu5_tb.vcd
+	gtkwave simu5_tb.vcd
+
+simu_boot.vcd : simu_boot.vvp
+	vvp simu_boot.vvp
+
+simu_boot : simu_boot.vcd
+	gtkwave simu_boot.vcd
+
+synth_tb.vcd : synth_tb.vvp
+	vvp synth_tb.vvp
+
+synth_tb : synth_tb.vcd
+	gtkwave synth_tb.vcd
+
+timer_tb.vcd : timer_tb.vvp
+	vvp timer_tb.vvp
+
+timer_tb : timer_tb.vcd
+	gtkwave timer_tb.vcd
 
 clean :
 	rm -f *.vvp
