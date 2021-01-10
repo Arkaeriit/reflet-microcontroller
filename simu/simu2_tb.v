@@ -57,7 +57,7 @@ module simu2();
     initial
     begin
         $dumpfile("simu2_tb.vcd");
-        $dumpvars();
+        $dumpvars(0, simu2);
         #10;
         reset = 1;
         #100000;

@@ -19,7 +19,7 @@ module pwm_tb ();
     initial
     begin
         $dumpfile("pwm_tb.vcd");
-        $dumpvars();
+        $dumpvars(0, pwm_tb);
         #4;
         reset = 1;
         #100;

@@ -7,7 +7,7 @@ REGISTERS = ../peripherals/reflet_ro_register.v ../peripherals/reflet_rwe_regist
 PERIPH = ../peripherals/reflet_counter.v ../peripherals/reflet_exti.v ../peripherals/reflet_gpio.v ../peripherals/reflet_hardware_info.v ../peripherals/reflet_pwm.v ../peripherals/reflet_seven_segment.v ../peripherals/reflet_synth.v ../peripherals/reflet_timer_2.v ../peripherals/reflet_timer.v ../peripherals/reflet_uart.v $(REGISTERS)
 REFLET = $(CPU) $(CTRL) $(PERIPH)
 
-all : pwm_tb.vcd reflet_16bit_ctrl_tb.vcd reflet_8bit_ctrl_tb.vcd reflet_gpio_tb.vcd simu1_tb.vcd simu2_tb.vcd simu3_tb.vcd simu5_tb.vcd simu_boot.vcd synth_tb.vcd 
+all : pwm_tb.vcd reflet_16bit_ctrl_tb.vcd reflet_8bit_ctrl_tb.vcd reflet_gpio_tb.vcd simu1_tb.vcd simu2_tb.vcd simu3_tb.vcd simu5_tb.vcd simu_boot.vcd synth_tb.vcd uart_tb.vcd
 
 pwm_tb.vvp : pwm_tb.v ../peripherals/reflet_pwm.v ../peripherals/reflet_counter.v $(REGISTERS)
 	iverilog pwm_tb.v ../peripherals/reflet_pwm.v ../peripherals/reflet_counter.v $(REGISTERS) -o pwm_tb.vvp
@@ -23,6 +23,9 @@ synth_tb.vvp : synth_tb.v $(PERIPH)
 
 timer_tb.vvp : timer_tb.v $(PERIPH)
 	iverilog timer_tb.v $(PERIPH) -o timer_tb.vvp
+
+uart_tb.vvp : uart_tb.v $(PERIPH)
+	iverilog $(PERIPH) uart_tb.v -o uart_tb.vvp
 
 reflet_16bit_ctrl_tb.vvp : $(REFLET) reflet_16bit_ctrl_tb.v
 	cp ../cpu/reflet.vh ./
@@ -124,6 +127,12 @@ timer_tb.vcd : timer_tb.vvp
 
 timer_tb : timer_tb.vcd
 	gtkwave timer_tb.vcd
+
+uart_tb.vcd : uart_tb.vvp
+	vvp uart_tb.vvp
+
+uart_tb : uart_tb.vcd
+	gtkwave uart_tb.vcd
 
 clean :
 	rm -f *.vvp

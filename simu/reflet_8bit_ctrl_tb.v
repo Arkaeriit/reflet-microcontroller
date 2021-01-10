@@ -20,7 +20,7 @@ module reflet_8bit_ctrl_tb ();
     initial
     begin
         $dumpfile("reflet_8bit_ctrl_tb.vcd");
-        $dumpvars();
+        $dumpvars(0, reflet_8bit_ctrl_tb);
         #1000;
         rx = 0;
         #200;

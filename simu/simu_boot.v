@@ -26,7 +26,7 @@ module simu_boot;
     initial
     begin
         $dumpfile("simu_boot.vcd");
-        $dumpvars();
+        $dumpvars(0, simu_boot);
         #1000000;
         $finish;
     end

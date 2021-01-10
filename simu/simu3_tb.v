@@ -65,7 +65,7 @@ module simu3();
     initial
     begin
         $dumpfile("simu3_tb.vcd");
-        $dumpvars();
+        $dumpvars(0, simu3);
         #10;
         reset = 1;
         #2000;

@@ -30,7 +30,7 @@ module reflet_16bit_ctrl_tb ();
     initial
     begin
         $dumpfile("reflet_16bit_ctrl_tb.vcd");
-        $dumpvars();
+        $dumpvars(0, reflet_16bit_ctrl_tb);
         #5000;
         rx = 0;
         #208;

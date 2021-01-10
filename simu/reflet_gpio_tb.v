@@ -33,7 +33,7 @@ module reflet_gpio_tb();
     initial
     begin
         $dumpfile("reflet_gpio_tb.vcd");
-        $dumpvars();
+        $dumpvars(0, reflet_gpio_tb);
         #10;
         reset = 1;
         data_in = 7;

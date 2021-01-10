@@ -20,7 +20,7 @@ module synth_tb();
     initial
     begin
         $dumpfile("synth_tb.vcd");
-        $dumpvars();
+        $dumpvars(0, synth_tb);
         #10;
         reset = 1;
         #10000;
