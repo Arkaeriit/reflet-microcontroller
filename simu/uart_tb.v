@@ -10,13 +10,9 @@ module uart_tb();
     reg [7:0] tx_data = 8'hAB;
     reg start_transmit = 0;
     reg [2:0] uart_cnt = 0;
-    always @ (posedge clk)
-        uart_cnt <= uart_cnt + 1;
-    wire uart_en = uart_cnt == 0;
 
-    reflet_uart_uart uart(
+    reflet_uart_uart #(.clk_freq(40000)) uart(
         .clk(clk),
-        .enable(uart_en),
         .reset(reset),
         .rx(rx),
         .tx(tx),
@@ -36,12 +32,17 @@ module uart_tb();
         reset <= 1;
         #300;
         start_transmit <= 1;
-        #40;
+        #2;
         start_transmit <= 0;
         #600;
         start_transmit <= 1;
         tx_data = 8'hCD;
-        #40;
+        #2;
+        start_transmit <= 0;
+        #80;
+        start_transmit <= 1;
+        tx_data = 8'hEF;
+        #2;
         start_transmit <= 0;
         #1500;
         $finish;

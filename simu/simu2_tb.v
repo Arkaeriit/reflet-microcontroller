@@ -60,7 +60,7 @@ module simu2();
         $dumpvars(0, simu2);
         #10;
         reset = 1;
-        #100000;
+        #12000;
         $finish;
     end
 

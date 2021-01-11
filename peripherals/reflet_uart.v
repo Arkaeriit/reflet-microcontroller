@@ -26,16 +26,6 @@ module reflet_uart #(
     wire using_uart = enable && addr >= base_addr && addr < base_addr + 4;
     wire [1:0] offset = addr - base_addr;
 
-    //Frequency generator
-    integer mult = clk_freq / (9600 * 4);
-    wire uart_en;
-    reflet_counter #(.size(32)) uart_counter (
-        .clk(clk), 
-        .reset(reset), 
-        .enable(1'b1), 
-        .max(mult), 
-        .out(uart_en));
-
     //registers
     wire receive_done, end_transmit;
     wire [7:0] dout_tx_cmd;
@@ -80,9 +70,8 @@ module reflet_uart #(
         .data(rx_data));
     assign data_out = dout_rx_cmd | dout_tx_cmd | dout_rx_data | dout_tx_data;
 
-    reflet_uart_uart uart(
+    reflet_uart_uart #(.clk_freq(clk_freq)) uart(
         .clk(clk),
-        .enable(uart_en),
         .reset(reset),
         .rx(rx),
         .tx(tx),
@@ -113,31 +102,55 @@ endmodule
 |and a pulse of at least a UART clock cycle must be send to start_transmit. |
 \--------------------------------------------------------------------------*/
 
-module reflet_uart_uart(
+module reflet_uart_uart #(
+    parameter clk_freq = 1000000
+    )(
     input clk,
-    input enable,                 //Should have a one tick pulse at 4 times the frequency as the UART
     input reset,
     input rx,
     output tx,
     input [7:0] data_tx,          //Data to be send throught tx
     output [7:0] data_rx,         //data received on rx
     output receive_done,          //Rise for a clock when a message is recieved
-    input start_transmit,         //When set to 1 we transmit the message
+    input start_transmit,         //When set to 1, we transmit the message
     output end_transmit           //Pulse to 1 when a transmission is finished
     );
 
+    //Frequency generator
+    integer mult = clk_freq / (9600 * 4);
+    wire uart_en;
+    reflet_counter #(.size(32)) uart_counter (
+        .clk(clk), 
+        .reset(reset), 
+        .enable(1'b1), 
+        .max(mult), 
+        .out(uart_en));
+
+    //Transmission control
+    wire start_transmit_latched, end_transmit_long;
+    reflet_sr_latch tx_cmd_latch ( //Ensure that the start-transmit signal is as long as needed, also ensure consistency between the availability of the UART and what is send above
+        .clk(clk),
+        .reset(!reset | end_transmit),
+        .set(start_transmit),
+        .out(start_transmit_latched));
+    reflet_short end_tx_shortening ( //Ensure that the end-transmit signal is always a cycle long
+        .clk(clk),
+        .reset(reset),
+        .in(end_transmit_long),
+        .out(end_transmit));
+
     reflet_uart_tx transmit (
         .clk(clk),
-        .enable(enable),
+        .enable(uart_en),
         .reset(reset),
         .tx(tx),
         .data_tx(data_tx),
-        .start_transmit(start_transmit),
-        .end_transmit(end_transmit));
+        .start_transmit(start_transmit_latched),
+        .end_transmit(end_transmit_long));
 
     reflet_uart_rx receive (
         .clk(clk),
-        .enable(enable),
+        .enable(uart_en),
         .reset(reset),
         .rx(rx),
         .data_rx(data_rx),
@@ -151,7 +164,7 @@ endmodule
 \--------------------------------*/
 module reflet_uart_tx(
     input clk,
-    input enable,
+    input enable, //Must blink at 4 time the UART's frequency
     input reset,
     output tx,
     input [7:0] data_tx,
@@ -216,7 +229,7 @@ endmodule
 \------------------------------*/
 module reflet_uart_rx(
     input clk,
-    input enable,
+    input enable, //Must blink at 4 time the UART's frequency
     input reset,
     input rx,
     output reg [7:0] data_rx,
