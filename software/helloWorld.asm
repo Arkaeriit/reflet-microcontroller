@@ -1,10 +1,10 @@
 wordsize 16
 ;This is the code used to make the rom2 used in sim2_tb. This should be compiled with reflet-masm
 ;This program prints "Hello, world!\r\n" with the UART
-;The base addres for the UART is Ox8000. This addres is stored in R9
+;The base address for the UART is Ox8000. This addres is stored in R9
 
 label string
-data "Hellp, world!"
+data "Hello, world!"
 rawbytes 13 10 0
 
 ;This function prints the byte stored in R3
