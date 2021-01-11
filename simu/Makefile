@@ -57,11 +57,6 @@ simu5_tb.vvp : $(REFLET) simu5_tb.v rom5.v clock_cpu.v
 	iverilog simu5_tb.v rom5.v clock_cpu.v $(REFLET) -o simu5_tb.vvp
 	rm ./reflet.vh
 
-simu_boot.vvp : $(REFLET) simu_boot.v test_boot.v test_boot_rom.v
-	cp ../cpu/reflet.vh ./
-	iverilog simu_boot.v test_boot_rom.v test_boot.v $(REFLET) -o simu_boot.vvp
-	rm ./reflet.vh
-
 pwm_tb.vcd : pwm_tb.vvp
 	vvp pwm_tb.vvp
 
@@ -109,12 +104,6 @@ simu5_tb.vcd : simu5_tb.vvp
 
 simu5_tb : simu5_tb.vcd
 	gtkwave simu5_tb.vcd
-
-simu_boot.vcd : simu_boot.vvp
-	vvp simu_boot.vvp
-
-simu_boot : simu_boot.vcd
-	gtkwave simu_boot.vcd
 
 synth_tb.vcd : synth_tb.vvp
 	vvp synth_tb.vvp
