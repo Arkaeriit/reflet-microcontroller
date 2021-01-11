@@ -97,9 +97,9 @@ module reflet_uart #(
     assign interrupt = receive_done & !save_receive;
     always @ (posedge clk)
         if(!reset)
-            save_receive = 0;
+            save_receive <= 0;
         else
-            save_receive = receive_done;
+            save_receive <= receive_done;
 
 endmodule
     
@@ -120,17 +120,48 @@ module reflet_uart_uart(
     input rx,
     output tx,
     input [7:0] data_tx,          //Data to be send throught tx
-    output reg [7:0] data_rx = 0, //data received on rx
+    output [7:0] data_rx,         //data received on rx
     output receive_done,          //Rise for a clock when a message is recieved
     input start_transmit,         //When set to 1 we transmit the message
     output end_transmit           //Pulse to 1 when a transmission is finished
     );
 
+    reflet_uart_tx transmit (
+        .clk(clk),
+        .enable(enable),
+        .reset(reset),
+        .tx(tx),
+        .data_tx(data_tx),
+        .start_transmit(start_transmit),
+        .end_transmit(end_transmit));
+
+    reflet_uart_rx receive (
+        .clk(clk),
+        .enable(enable),
+        .reset(reset),
+        .rx(rx),
+        .data_rx(data_rx),
+        .receive_done(receive_done));
+
+endmodule
+
+
+/*--------------------------------\
+|The transmiting part of the UART.|
+\--------------------------------*/
+module reflet_uart_tx(
+    input clk,
+    input enable,
+    input reset,
+    output tx,
+    input [7:0] data_tx,
+    input start_transmit,
+    output end_transmit
+    );
+
     //registers to count the number of byte we are at
-    reg [4:0] rx_count;
     reg [4:0] tx_count;
 
-    // transmit
     reg tx_buzy;
     reg tx_r;
     assign tx = tx_r;
@@ -140,10 +171,10 @@ module reflet_uart_uart(
     always @(posedge clk)
         if(!reset)
         begin
-            tx_count = 0;
-            tx_buzy = 0;
-            tx_r = 1;
-            tx_sync = 0;
+            tx_count <= 0;
+            tx_buzy <= 0;
+            tx_r <= 1;
+            tx_sync <= 0;
         end
         else if(enable)
         begin
@@ -153,32 +184,48 @@ module reflet_uart_uart(
                 begin
                     if(tx_count > 7) //end bit
                     begin
-                        tx_r = 1;
-                        tx_count = 0;
-                        tx_buzy = 0;
+                        tx_r <= 1;
+                        tx_count <= 0;
+                        tx_buzy <= 0;
                     end    
                     else //data bits
                     begin
-                        tx_r = data_tx[tx_count];
-                        tx_count = tx_count + 1;
+                        tx_r <= data_tx[tx_count];
+                        tx_count <= tx_count + 1;
                     end
                 end
                 else 
                     if(start_transmit)
                     begin
-                        tx_buzy = 1;
-                        tx_r = 0; //start bit
+                        tx_buzy <= 1;
+                        tx_r <= 0; //start bit
                     end
                     else //rest value : 1
-                        tx_r = 1;
+                        tx_r <= 1;
             end
-            tx_sync = tx_sync + 1;
+            tx_sync <= tx_sync + 1;
         end
     
     //assign transmit_free = !tx_buzy //We could do this if we needed to check
     //if the transmission is possible
-    
-    //receive
+endmodule    
+
+
+/*------------------------------\
+|The receiving part of the UART.|
+\------------------------------*/
+module reflet_uart_rx(
+    input clk,
+    input enable,
+    input reset,
+    input rx,
+    output reg [7:0] data_rx,
+    output receive_done
+    );
+
+    //registers to count the number of byte we are at
+    reg [4:0] rx_count;
+
     reg rx_buzy;
     reg receive_done_r;
     reg [7:0] data_rx_r;
@@ -190,13 +237,13 @@ module reflet_uart_uart(
     always @ (posedge clk)
         if(!reset)
         begin
-            rx_sync = 0;
-            rx_buzy = 0;
-            rx_count = 0;
-            data_rx_r = 0;
-            receive_done_r = 0;
-            data_rx = 0;
-            rx_sync_pass = 0;
+            rx_buzy <= 0;
+            rx_count <= 0;
+            data_rx_r <= 0;
+            receive_done_r <= 0;
+            data_rx <= 0;
+            rx_sync_pass <= 0;
+            rx_sync <= 1; //Must be set to 1 to properly ignore the start bit
         end
         else if(enable)
         begin
@@ -205,31 +252,31 @@ module reflet_uart_uart(
                 if(rx_sync == 0)
                 begin
                     if(rx_count < 8) //receiving the 8 bits
-                        data_rx_r[rx_count] = rx;
+                        data_rx_r[rx_count] <= rx;
                     else
                     begin // end of the transmission
-                        receive_done_r = 1;
-                        rx_buzy = 0;
-                        data_rx = data_rx_r;
+                        receive_done_r <= 1;
+                        rx_buzy <= 0;
+                        data_rx <= data_rx_r;
                     end    
-                    rx_count = rx_count + 1;
+                    rx_count <= rx_count + 1;
                 end
-                rx_sync = rx_sync + 1;
+                rx_sync <= rx_sync + 1;
             end
             else
                 if(rx) //The message is ended for at least a clock cycle
-                    receive_done_r = 0;
+                    receive_done_r <= 0;
                 else //We received the start bit
                 begin
                     if(rx_sync_pass)
                     begin
-                        receive_done_r = 0;
-                        rx_count = 0;
-                        rx_buzy = 1;
-                        rx_sync_pass = 0;
+                        receive_done_r <= 0;
+                        rx_count <= 0;
+                        rx_buzy <= 1;
+                        rx_sync_pass <= 0;
                     end
                     else
-                        rx_sync_pass = 1;
+                        rx_sync_pass <= 1;
                 end
         end
     

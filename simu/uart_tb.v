@@ -2,15 +2,17 @@
 module uart_tb();
     
     reg clk = 0;
-    reg uart_en = 0;
-    always #10 uart_en = !uart_en;
-    always #1 clk = !clk;
+    always #1 clk <= !clk;
     reg reset = 0;
 
     wire rx, tx, receive_done, end_transmit;
     wire [7:0] rx_data;
     reg [7:0] tx_data = 8'hAB;
     reg start_transmit = 0;
+    reg [2:0] uart_cnt = 0;
+    always @ (posedge clk)
+        uart_cnt <= uart_cnt + 1;
+    wire uart_en = uart_cnt == 0;
 
     reflet_uart_uart uart(
         .clk(clk),
@@ -31,17 +33,17 @@ module uart_tb();
         $dumpfile("uart_tb.vcd");
         $dumpvars(0, uart_tb);
         #10;
-        reset = 1;
-        #3;
-        start_transmit = 1;
+        reset <= 1;
+        #300;
+        start_transmit <= 1;
         #40;
-        start_transmit = 0;
-        #100;
-        start_transmit = 1;
+        start_transmit <= 0;
+        #600;
+        start_transmit <= 1;
         tx_data = 8'hCD;
         #40;
-        start_transmit = 0;
-        #200;
+        start_transmit <= 0;
+        #1500;
         $finish;
     end
 
@@ -60,12 +62,12 @@ module shift_r(
 
     always @ (posedge clk) 
         if(!reset)
-            register = 0;
+            register <= ~0;
         else
         begin
             register[0] = in;
             for(integer i=0; i<127; i++)
-                register[i+1] = register[i];
+                register[i+1] <= register[i];
         end
 
     assign out = register[127];
