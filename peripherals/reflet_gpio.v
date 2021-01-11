@@ -33,9 +33,9 @@ module reflet_gpio #(
     assign interrupt = |(rising_edge_gpi & intmap_rising) | |(falling_edge_gpi & intmap_falling);
     always @ (posedge clk)
         if(!reset)
-            prev_gpi = 0;
+            prev_gpi <= 0;
         else
-            prev_gpi = gpi;
+            prev_gpi <= gpi;
 
     //Registers
     wire [7:0] dout_gpo1;

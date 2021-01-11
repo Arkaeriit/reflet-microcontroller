@@ -29,15 +29,15 @@ module reflet_inst16 #(
     always @ (posedge clk)
         if(!reset)
         begin
-            inst_ready = 0;
-            addr_init = 0;
+            inst_ready <= 0;
+            addr_init <= 0;
         end
         else
         begin
             if(addr_init == 4'b1111)
-                inst_ready = 1;
+                inst_ready <= 1;
             else
-                addr_init = addr_init + 1;
+                addr_init <= addr_init + 1;
         end
 
     //Init ROM

@@ -116,9 +116,9 @@ module reflet_7seg (
     wire [1:0] cnt = cnt_r[10:9];
     always @ (posedge clk)
         if(!reset)
-            cnt_r = 0;
+            cnt_r <= 0;
         else
-            cnt_r = cnt_r + 1;
+            cnt_r <= cnt_r + 1;
 
     assign segments = num_segments[cnt];
     assign selection = 

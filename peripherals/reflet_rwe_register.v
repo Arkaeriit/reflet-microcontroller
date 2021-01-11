@@ -29,16 +29,16 @@ module reflet_rwe_register #(
     always @ (posedge clk)
         if(!reset)
         begin
-            data = default_value;
+            data <= default_value;
         end
         else
         begin
             if(override)
-                data = data_override;
+                data <= data_override;
             else
             begin
                 if(wr_en)
-                    data = data_in;
+                    data <= data_in;
             end
         end
 

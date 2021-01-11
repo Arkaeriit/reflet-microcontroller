@@ -24,9 +24,9 @@ module reflet_counter #(
     always @ (posedge clk)
         if(!reset)
         begin
-            counter = 0;
-            reached_max = 0;    
-            reached_max_ark = 0;
+            counter <= 0;
+            reached_max <= 0;    
+            reached_max_ark <= 0;
         end
         else
         begin 
@@ -34,12 +34,12 @@ module reflet_counter #(
             begin
                 if(counter == max - 1)
                 begin
-                    counter = 0;
+                    counter <= 0;
                     reached_max <= 1;
                 end
                 else
                 begin
-                    counter = counter + 1;
+                    counter <= counter + 1;
                     reached_max <= 0;
                 end
             end

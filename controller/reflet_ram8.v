@@ -34,7 +34,7 @@ module reflet_ram8 #(
 				if(!reset)
 				  begin
 					for (i=0;i<size; i=i+1)
-						memory_ram[i] = 0;
+						memory_ram[i] <= 0;
 				  end
 				else
 				  begin

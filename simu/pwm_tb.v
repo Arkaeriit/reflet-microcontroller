@@ -2,7 +2,7 @@
 module pwm_tb ();
 
     reg clk = 0;
-    always #1 clk = !clk;
+    always #1 clk <= !clk;
     reg reset = 0;
     
     reg [7:0] max = 10;

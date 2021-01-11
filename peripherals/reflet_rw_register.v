@@ -27,12 +27,12 @@ module reflet_rw_register #(
     always @ (posedge clk)
         if(!reset)
         begin
-            data = default_value;
+            data <= default_value;
         end
         else
         begin
             if(wr_en)
-                data = data_in;
+                data <= data_in;
         end
 
     assign data_out = ( read_en ? data : 0 );

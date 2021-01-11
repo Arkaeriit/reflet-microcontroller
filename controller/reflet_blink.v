@@ -14,7 +14,7 @@ module reflet_blink (
     
     always @ (posedge clk)
         if(cnt != 2'b11)
-            cnt = cnt + 1;
+            cnt <= cnt + 1;
 
     assign out = cnt != 2'b11;
 

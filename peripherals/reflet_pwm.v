@@ -98,19 +98,19 @@ module reflet_pwm_pwm #(
 
     always @ (posedge clk)
         if(!reset)
-            out_normal = 0;
+            out_normal <= 0;
         else
         begin
             if(base_freq | update)
-                out_normal = 1;
+                out_normal <= 1;
             else if(switch_off)
-                out_normal = 0;
+                out_normal <= 0;
         end
 
     //resseting in case of sudden changes
     reg [2 * size - 1:0] old_values;
     always @ (posedge clk)
-        old_values = {max, duty_cycle};
+        old_values <= {max, duty_cycle};
     assign update = |(old_values ^ {max, duty_cycle});
 
     assign out = ( duty_cycle == 0 ? 0 :
