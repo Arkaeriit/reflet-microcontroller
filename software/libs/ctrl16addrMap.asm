@@ -7,7 +7,7 @@ rawbytes 00 128 ;0x8000
 label hardware_info
 rawbytes 00 255 ;0xFF00
 
-label interupt_manager
+label interrupt_manager
 rawbytes 04 255 ;0xFF04
 
 label GPIO

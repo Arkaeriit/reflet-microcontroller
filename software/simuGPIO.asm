@@ -1,4 +1,3 @@
-wordsize 8
 ;This is the code used in the rom1, used in sim1_tb. This should be compiled with reflet-pasm
 ;What it does is it copies the 15 first pins of the GPI to the GPO and
 ;it make the 16th bit of the GPO blink. The base address for the GPIO is 0x80

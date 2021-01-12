@@ -18,9 +18,9 @@ module simu2();
 
     //modules
     wire [7:0] data_out_uart;
-    wire [7:0] data_out_rom;
+    wire [15:0] data_out_rom;
     wire [15:0] data_out_ram;
-    reflet_uart #(.base_addr_size(15), .base_addr(14'h00), .clk_freq(96000)) uart (
+    reflet_uart #(.base_addr_size(15), .base_addr(15'h7F16), .clk_freq(96000)) uart (
         .clk(clk), 
         .reset(reset), 
         .enable(addr[15]), 
@@ -30,21 +30,20 @@ module simu2();
         .data_out(data_out_uart), 
         .rx(rx), 
         .tx(tx));
-    rom2 rom(
+    rom2_wide rom(
         .clk(clk), 
-        .enable_out(!addr[15]), 
-        .addr(addr[7:0]),
-        .dataOut(data_out_rom));
-    wire [15:0] addr_off = addr - 4;
-    reflet_ram16 #(.addrSize(15)) ram(
+        .enable(!addr[15]), 
+        .addr(addr[10:0]),
+        .data_out(data_out_rom));
+    reflet_ram16 #(.addrSize(15), .size(100)) ram(
         .clk(clk), 
         .reset(reset), 
-        .enable(addr_off[15] & addr[15]), 
-        .addr(addr_off[14:0]), 
+        .enable(addr[15]), 
+        .addr(addr[14:0]), 
         .data_in(data_out_cpu), 
         .write_en(write_en), 
         .data_out(data_out_ram));
-    assign data_in_cpu = {8'h0, data_out_rom} | {8'h0, data_out_uart} | data_out_ram;
+    assign data_in_cpu = data_out_rom | {8'h0, data_out_uart} | data_out_ram;
     reflet_cpu #(.wordsize(16)) cpu(
         .clk(clk), 
         .reset(reset), 
@@ -60,7 +59,7 @@ module simu2();
         $dumpvars(0, simu2);
         #10;
         reset = 1;
-        #12000;
+        #15000;
         $finish;
     end
 

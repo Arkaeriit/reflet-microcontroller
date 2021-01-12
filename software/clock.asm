@@ -4,13 +4,16 @@ wordsize 16
 ;hooked up to a seven segment display
 
 label start
-set+ 32768 ;0x8000, the beguining of the RAM
+setlab data ;0x8000, the beguining of the RAM
+load WR
 cpy SP
-set+ 65308 ;0xFF1C, the base address for the seven segment
+setlab seven_segments ;0xFF1C, the base address for the seven segment
+load WR
 cpy R1
 set 3
 str R1 ;enable it and activate the colon
-set+ 65296 ;0xFF10, the base address for the timer
+setlab timer ;0xFF10, the base address for the timer
+load WR
 cpy R2
 set+ 99 ; need to be changed to the correct value ;getting a division of 1 000 000 with the three prescalers
 str R2
@@ -24,7 +27,8 @@ push
 set 1
 add R2
 cpy R2 ;R2 now contain the last register of the timer
-set+ 65280 ;0xFF00, base address of the hadware info
+setlab hardware_info ;0xFF00, base address of the hadware info
+load WR
 cpy R3
 load R3
 str R2 ;set the last timer value to the clock. The timer 1 now ticks 1/100 of a seconds
@@ -42,8 +46,8 @@ add R2
 cpy R2
 set 1
 str R2 ;Timer 2 is now active, ticking once a second
-set 4 
-add R3 ;We now have 0xFF04, the base address of the exti
+setlab interrupt_manager
+load WR ;We now have 0xFF04, the base address of the exti
 cpy R3
 set 8
 str R3 ;We ennabled the timer 2 interrupt
