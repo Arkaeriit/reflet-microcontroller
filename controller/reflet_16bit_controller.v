@@ -13,6 +13,7 @@ module reflet_16bit_controller #(
     enable_timer2 = 1,
     enable_uart = 1,
     enable_pwm = 1,
+    enable_power_manager = 1,
     enable_segments = 1,
     data_size = 100,
     inst_size = 128,
@@ -45,17 +46,19 @@ module reflet_16bit_controller #(
     assign reset_full = reset & !blink;
     assign reset_smol = reset_full & reset_limited & inst_ready;
 
-    //system bus and exti
+    //system bus, cpu_enable et exti
     wire [15:0] addr;
     wire [15:0] data_out_cpu;
     wire [15:0] data_in_cpu;
     wire write_en;
     wire [3:0] exti;
+    wire cpu_enable;
 
     //cpu
     reflet_cpu #(.wordsize(16)) cpu (
         .clk(clk),
         .reset(reset_smol),
+        .enable(cpu_enable),
         .data_in(data_in_cpu),
         .data_out(data_out_cpu),
         .addr(addr),
@@ -99,6 +102,7 @@ module reflet_16bit_controller #(
     //0x16 to 0x19 : uart
     //0x1A to 0x1B : pwm
     //0x1C to 0x1E : seven segments
+    //0x1F to 0x20 : power_manager
     reflet_peripheral #(
         .wordsize(16), 
         .base_addr_size(15), 
@@ -110,12 +114,14 @@ module reflet_16bit_controller #(
         .enable_timer2(enable_timer2),
         .enable_uart(enable_uart),
         .enable_pwm(enable_pwm),
-        .enable_segments(enable_segments)) 
+        .enable_segments(enable_segments),
+        .enable_power_manager(enable_power_manager)) 
     periph (
         .clk(clk),
         .reset(reset_smol),
         .enable(addr[15]),
         .ext_int(exti),
+        .cpu_enable(cpu_enable),
         .addr(addr[14:0]),
         .data_in(data_out_cpu[7:0]),
         .data_out(dout_periph),

@@ -99,11 +99,12 @@ endmodule
 |A standard UART transmiter. When receving a byte, the content              |
 |of the byte will be put in data_rx and a pule will be send from            |
 |receive_done. To send a byte the content of the byte must be put in data_tx|
-|and a pulse of at least a UART clock cycle must be send to start_transmit. |
+|and a pulse of at least a clock cycle must be send to start_transmit.      |
 \--------------------------------------------------------------------------*/
 
 module reflet_uart_uart #(
-    parameter clk_freq = 1000000
+    parameter clk_freq = 1000000,
+    baud_rate = 9600 
     )(
     input clk,
     input reset,
@@ -117,7 +118,7 @@ module reflet_uart_uart #(
     );
 
     //Frequency generator
-    integer mult = clk_freq / (9600 * 4);
+    integer mult = clk_freq / (baud_rate * 4);
     wire uart_en;
     reflet_counter #(.size(32)) uart_counter (
         .clk(clk), 

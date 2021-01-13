@@ -14,6 +14,7 @@
 `define uart_size  4
 `define pwm_size   2
 `define seg_size   3
+`define power_size 2
 //assigning addresses
 `define hwi_off   0
 `define exti_off  (`hwi_off   + `hwi_size)
@@ -23,8 +24,9 @@
 `define uart_off  (`timer2off + `timer2size)
 `define pwm_off   (`uart_off  + `uart_size)
 `define seg_off   (`pwm_off   + `pwm_size)
+`define power_off (`seg_off   + `seg_size)
 //sizes
-`define total_size (`hwi_size + `exti_size + `gpio_size + `timer_size + `uart_size + `pwm_size + `seg_size + `timer2size)
+`define total_size (`hwi_size + `exti_size + `gpio_size + `timer_size + `uart_size + `pwm_size + `seg_size + `timer2size + `power_size)
 `define offset_size ($clog2(`total_size))
 
 module reflet_peripheral #(
@@ -38,12 +40,14 @@ module reflet_peripheral #(
     enable_timer2 = 1,
     enable_uart = 1,
     enable_pwm = 1,
-    enable_segments = 1
+    enable_segments = 1,
+    enable_power_manager = 1
     )(
     input clk,
     input reset,
     input enable,
     output [3:0] ext_int,
+    output cpu_enable,
     //system bus
     input [base_addr_size-1:0] addr,
     input [7:0] data_in,
@@ -73,7 +77,8 @@ module reflet_peripheral #(
     wire [7:0] dout_uart;
     wire [7:0] dout_pwm;
     wire [7:0] dout_segments;
-    assign data_out = dout_hwi | dout_exti | dout_gpio | dout_timer | dout_uart | dout_pwm | dout_segments;
+    wire [7:0] dout_power;
+    assign data_out = dout_hwi | dout_exti | dout_gpio | dout_timer | dout_uart | dout_pwm | dout_segments | dout_power;
 
     //interrupts signals
     wire int_gpio, int_timer, int_uart, int_timer2;
@@ -239,6 +244,25 @@ module reflet_peripheral #(
             assign seg_dot = 0;
             assign seg_colon = 0;
             assign dout_segments = 0;
+        end
+    endgenerate
+
+    generate
+        if(enable_power_manager)
+            reflet_power_manager #(.base_addr_size(`offset_size), .base_addr(`power_off)) power_manager (
+                .clk(clk),
+                .reset(reset),
+                .enable(using_peripherals),
+                .addr(offset),
+                .data_in(data_in[7:0]),
+                .data_out(dout_power),
+                .write_en(write_en),
+                .cpu_enable(cpu_enable),
+                .cpu_interrupts(ext_int));
+        else
+        begin
+            assign enable = 1;
+            assign dout_power = 0;
         end
     endgenerate
 
