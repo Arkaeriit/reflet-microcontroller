@@ -28,3 +28,6 @@ rawbytes 26 255 ;0xFF1A
 label seven_segments
 rawbytes 28 255 ;0xFF1C
 
+label power_manager
+rawbytes 31 255 ;0xFF1F
+
