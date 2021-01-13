@@ -25,7 +25,7 @@ module timer_tb();
     initial
     begin
         $dumpfile("timer_tb.vcd");
-        $dumpvars();
+        $dumpvars(0, timer_tb);
         #10;
         reset = 1;
         #100;

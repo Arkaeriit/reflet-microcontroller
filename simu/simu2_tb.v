@@ -48,6 +48,7 @@ module simu2();
         .clk(clk), 
         .reset(reset), 
         .quit(quit), 
+        .enable(1'b1),
         .data_in(data_in_cpu), 
         .addr(addr), 
         .data_out(data_out_cpu), 

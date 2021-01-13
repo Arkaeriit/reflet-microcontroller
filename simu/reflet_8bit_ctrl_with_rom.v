@@ -34,6 +34,7 @@ module reflet_8bit_ctrl_with_rom #(
     reflet_cpu #(.wordsize(8)) cpu (
         .clk(clk),
         .reset(reset),
+        .enable(1'b1),
         .data_in(data_in_cpu),
         .data_out(data_out_cpu),
         .addr(addr),

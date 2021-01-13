@@ -39,6 +39,7 @@ module simu1();
     reflet_cpu #(.wordsize(8)) cpu(
         .clk(clk), 
         .reset(reset), 
+        .enable(1'b1),
         .quit(quit), 
         .data_in(data_in_cpu), 
         .addr(addr), 
