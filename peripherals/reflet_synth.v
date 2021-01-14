@@ -9,7 +9,7 @@ module reflet_synth_generator #(
     )(
     input clk,
     input reset,
-    input [1:0] volume,
+    input [1:0] shape,
     input [5:0] tone,
     output out
     );
@@ -17,7 +17,10 @@ module reflet_synth_generator #(
     //Computing the number of time the 1 MHz clock must be divided and the duty cycle of the signal
     wire [13:0] divisor_map;
     wire [43:0] divisor = divisor_map * (clock_freq / 1000000);
-    wire [43:0] duty = divisor >> volume;
+    wire [43:0] duty = (volume == 2'b01 ? {2'b00, divisor[43:2]} : //25%
+                          (volume == 2'b10 ? {1'b0, divisor[43:1]} : //50%
+                             (volume == 2'b11 ? {1'b0, divisor[43:1]} + {2'b00, divisor[43:2]} :  //75%
+                                 0))); //0%
     reflet_synth_div_map map(
         .clk(clk),
         .select(tone),
@@ -27,7 +30,7 @@ module reflet_synth_generator #(
     reflet_pwm_pwm #(.size(44)) pwm (
         .clk(clk),
         .reset(reset),
-        .duty_cycle( |volume ? duty : 0),
+        .duty_cycle(duty),
         .max(divisor),
         .out(out));
 

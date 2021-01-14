@@ -5,7 +5,7 @@ module synth_tb();
     always #1 clk = !clk;
     reg reset = 0;
     
-    reg [1:0] volume = 1;
+    reg [1:0] shape = 1;
     reg [5:0] tone = 60;
 
     wire out;
@@ -13,7 +13,7 @@ module synth_tb();
     reflet_synth_generator synth(
         .clk(clk),
         .reset(reset),
-        .volume(volume),
+        .shape(shape),
         .tone(tone),
         .out(out));
 
@@ -23,6 +23,14 @@ module synth_tb();
         $dumpvars(0, synth_tb);
         #10;
         reset = 1;
+        #10000;
+        tone = 48;
+        shape = 2;
+        #10000;
+        tone = 55;
+        shape = 3;
+        #10000;
+        shape = 0;
         #10000;
         $finish;
     end
