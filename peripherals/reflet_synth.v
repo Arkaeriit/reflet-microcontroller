@@ -1,11 +1,62 @@
+/*---------------------\
+|Give an interface for |
+|reflet_synth_generator|
+|usable by a processor.|
+\---------------------*/
+
+module reflet_synth #(
+    parameter base_addr_size = 16,
+    base_addr = 16'hFF21,
+    clk_freq = 1000000
+    )(
+    input clk,
+    input reset,
+    input enable,
+    //system bus 
+    input [base_addr_size-1:0] addr,
+    input write_en,
+    input [7:0] data_in,
+    output [7:0] data_out,
+    //synth output
+    output synth_out
+    );
+
+    //acces control
+    wire using_synth = enable && addr == base_addr;
+
+    //register
+    wire [1:0] shape;
+    wire [5:0] tone;
+    reflet_rw_register #(.addr_size(1), .reg_addr(0), .default_value(0)) register (
+        .clk(clk),
+        .reset(reset),
+        .enable(using_synth),
+        .addr(1'b0),
+        .write_en(write_en),
+        .data_in(data_in),
+        .data_out(data_out),
+        .data({shape, tone}));
+
+    //actual synthetiser
+    reflet_synth_generator #(.clk_freq(clk_freq)) synth (
+        .clk(clk),
+        .reset(reset),
+        .shape(shape),
+        .tone(tone),
+        .out(synth_out));
+
+endmodule
+
+
+
 /*------------------------------------\
-|Generate a frequency depending on a  |
-|6 bit number to choose the tone and  |
-|a 2 bits number to choose the volume.|
+|Generate a frequency depending on a     |
+|6 bit number to choose the tone and     |
+|a 2 bits number to choose the pwm shape.|
 \------------------------------------*/
 
 module reflet_synth_generator #(
-    parameter clock_freq = 1000000
+    parameter clk_freq = 1000000
     )(
     input clk,
     input reset,
@@ -16,10 +67,10 @@ module reflet_synth_generator #(
 
     //Computing the number of time the 1 MHz clock must be divided and the duty cycle of the signal
     wire [13:0] divisor_map;
-    wire [43:0] divisor = divisor_map * (clock_freq / 1000000);
-    wire [43:0] duty = (volume == 2'b01 ? {2'b00, divisor[43:2]} : //25%
-                          (volume == 2'b10 ? {1'b0, divisor[43:1]} : //50%
-                             (volume == 2'b11 ? {1'b0, divisor[43:1]} + {2'b00, divisor[43:2]} :  //75%
+    wire [43:0] divisor = divisor_map * (clk_freq / 1000000);
+    wire [43:0] duty = (shape == 2'b01 ? {2'b00, divisor[43:2]} : //25%
+                          (shape == 2'b10 ? {1'b0, divisor[43:1]} : //50%
+                             (shape == 2'b11 ? {1'b0, divisor[43:1]} + {2'b00, divisor[43:2]} :  //75%
                                  0))); //0%
     reflet_synth_div_map map(
         .clk(clk),

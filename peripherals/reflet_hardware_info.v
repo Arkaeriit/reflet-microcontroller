@@ -17,6 +17,8 @@ module reflet_hardware_info #(
     enable_uart = 1,
     enable_pwm = 1,
     enable_segments = 1,
+    enable_power_manager = 1,
+    enable_synth = 1,
     clk_freq=1000000
     )(
     input enable,
@@ -62,7 +64,7 @@ module reflet_hardware_info #(
        .enable(using_hwi),
        .addr(offset),
        .data_out(dout_info2),
-       .data({6'h0, |enable_segments, |enable_pwm}));
+       .data({4'h0, |enable_synth, |enable_power_manager, |enable_segments, |enable_pwm}));
 
 endmodule
     

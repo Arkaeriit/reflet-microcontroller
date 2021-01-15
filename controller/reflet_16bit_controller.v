@@ -13,8 +13,9 @@ module reflet_16bit_controller #(
     enable_timer2 = 1,
     enable_uart = 1,
     enable_pwm = 1,
-    enable_power_manager = 1,
     enable_segments = 1,
+    enable_power_manager = 1,
+    enable_synth = 1,
     data_size = 100,
     inst_size = 128,
     mem_resetable = 0
@@ -37,7 +38,9 @@ module reflet_16bit_controller #(
     output [6:0] segments,
     output [3:0] seg_select,
     output seg_colon,
-    output seg_dot
+    output seg_dot,
+    //Frequency generator
+    output synth_out
     );
 
     //reset control
@@ -115,7 +118,8 @@ module reflet_16bit_controller #(
         .enable_uart(enable_uart),
         .enable_pwm(enable_pwm),
         .enable_segments(enable_segments),
-        .enable_power_manager(enable_power_manager)) 
+        .enable_power_manager(enable_power_manager),
+        .enable_synth(enable_synth)) 
     periph (
         .clk(clk),
         .reset(reset_smol),
@@ -134,7 +138,8 @@ module reflet_16bit_controller #(
         .segments(segments),
         .seg_select(seg_select),
         .seg_dot(seg_dot),
-        .seg_colon(seg_colon));
+        .seg_colon(seg_colon),
+        .synth_out(synth_out));
 
 endmodule
 

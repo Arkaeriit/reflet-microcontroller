@@ -15,6 +15,7 @@
 `define pwm_size   2
 `define seg_size   3
 `define power_size 2
+`define synth_size 1
 //assigning addresses
 `define hwi_off   0
 `define exti_off  (`hwi_off   + `hwi_size)
@@ -25,8 +26,9 @@
 `define pwm_off   (`uart_off  + `uart_size)
 `define seg_off   (`pwm_off   + `pwm_size)
 `define power_off (`seg_off   + `seg_size)
+`define synth_off (`power_off + `power_size)
 //sizes
-`define total_size (`hwi_size + `exti_size + `gpio_size + `timer_size + `uart_size + `pwm_size + `seg_size + `timer2size + `power_size)
+`define total_size (`hwi_size + `exti_size + `gpio_size + `timer_size + `uart_size + `pwm_size + `seg_size + `timer2size + `power_size + `synth_size)
 `define offset_size ($clog2(`total_size))
 
 module reflet_peripheral #(
@@ -41,7 +43,8 @@ module reflet_peripheral #(
     enable_uart = 1,
     enable_pwm = 1,
     enable_segments = 1,
-    enable_power_manager = 1
+    enable_power_manager = 1,
+    enable_synth = 1
     )(
     input clk,
     input reset,
@@ -65,7 +68,9 @@ module reflet_peripheral #(
     output [6:0] segments,
     output [3:0] seg_select,
     output seg_dot,
-    output seg_colon
+    output seg_colon,
+    //Synth
+    output synth_out
     );
 
     //data_out
@@ -78,7 +83,8 @@ module reflet_peripheral #(
     wire [7:0] dout_pwm;
     wire [7:0] dout_segments;
     wire [7:0] dout_power;
-    assign data_out = dout_hwi | dout_exti | dout_gpio | dout_timer | dout_uart | dout_pwm | dout_segments | dout_power;
+    wire [7:0] dout_synth;
+    assign data_out = dout_hwi | dout_exti | dout_gpio | dout_timer | dout_timer2 | dout_uart | dout_pwm | dout_segments | dout_power | dout_synth;
 
     //interrupts signals
     wire int_gpio, int_timer, int_uart, int_timer2;
@@ -98,7 +104,9 @@ module reflet_peripheral #(
         .enable_timer2(enable_timer2),
         .enable_uart(enable_uart),
         .enable_pwm(enable_pwm),
-        .enable_segments(enable_segments))
+        .enable_segments(enable_segments),
+        .enable_power_manager(enable_power_manager),
+        .enable_synth(enable_synth))
     hwi (
         .enable(using_peripherals),
         .addr(offset),
@@ -207,7 +215,7 @@ module reflet_peripheral #(
 
     generate
         if(enable_pwm)
-            reflet_pwm #(.base_addr_size(`offset_size), .base_addr(`pwm_off)) pwm (
+            reflet_pwm #(.base_addr_size(`offset_size), .base_addr(`pwm_off)) pwm_generator (
                 .clk(clk),
                 .reset(reset),
                 .enable(using_peripherals),
@@ -261,8 +269,25 @@ module reflet_peripheral #(
                 .cpu_interrupts(ext_int));
         else
         begin
-            assign enable = 1;
+            assign cpu_enable = 1;
             assign dout_power = 0;
+        end
+    endgenerate
+
+    generate 
+        if(enable_synth)
+            reflet_synth #(.base_addr_size(`offset_size), .base_addr(`synth_off), .clk_freq(clk_freq)) synth (
+                .clk(clk),
+                .reset(reset),
+                .enable(using_peripherals),
+                .addr(offset),
+                .data_in(data_in[7:0]),
+                .data_out(dout_synth),
+                .synth_out(synth_out));
+        else
+        begin
+            assign synth_out = 0;
+            assign dout_synth = 0;
         end
     endgenerate
 
