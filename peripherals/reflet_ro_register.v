@@ -18,7 +18,7 @@ module reflet_ro_register #(
 
     wire read_en = enable && reg_addr == addr;
 
-    assign data_out = ( enable  && addr == reg_addr ? data : 0 );
+    assign data_out = ( read_en ? data : 0 );
 
 endmodule
 

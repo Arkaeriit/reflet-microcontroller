@@ -45,6 +45,7 @@ module reflet_exti #(
     reflet_int_mapper timer_mapper(.enable(timer_int_en & timer_int), .level(timer_int_level), .out(timer_int_exti));
     wire [1:0] timer_2_int_level;
     wire [3:0] timer_2_int_exti;
+    wire timer_2_int_en;
     reflet_int_mapper timer_2_mapper(.enable(timer_2_int_en & timer_2_int), .level(timer_2_int_level), .out(timer_2_int_exti));
     assign cpu_int = gpio_int_exti | uart_int_exti | timer_int_exti | timer_2_int_exti;
 
