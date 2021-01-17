@@ -33,7 +33,7 @@ module reflet_power_manager #(
     reflet_pwm_pwm #(.size(9)) power_pwm(
         .clk(clk),
         .reset(reset),
-        .duty_cycle(power_value + 1),
+        .duty_cycle(power_value + 8'h1),
         .max(9'h100),
         .out(pwm_out));
     assign cpu_enable = (sleeping ? 0 : (using_lowpower ? pwm_out : 1));

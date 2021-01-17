@@ -75,7 +75,7 @@ module reflet_cpu #(
         .out_reg(index_addr),
         .ram_not_ready(ram_not_ready));
 
-    reflet_interrupt #(.wordsize(wordsize)) interrupt(
+    reflet_interrupt #(.wordsize(wordsize)) interrupt_ctrl (
         .clk(clk),
         .reset(reset),
         .enable(enable),

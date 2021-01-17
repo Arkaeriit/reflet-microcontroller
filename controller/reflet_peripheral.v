@@ -281,6 +281,7 @@ module reflet_peripheral #(
                 .reset(reset),
                 .enable(using_peripherals),
                 .addr(offset),
+                .write_en(write_en),
                 .data_in(data_in[7:0]),
                 .data_out(dout_synth),
                 .synth_out(synth_out));
