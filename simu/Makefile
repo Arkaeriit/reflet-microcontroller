@@ -7,7 +7,7 @@ REGISTERS = ../peripherals/reflet_ro_register.v ../peripherals/reflet_rwe_regist
 PERIPH = ../peripherals/reflet_counter.v ../peripherals/reflet_exti.v ../peripherals/reflet_gpio.v ../peripherals/reflet_hardware_info.v ../peripherals/reflet_pwm.v ../peripherals/reflet_seven_segment.v ../peripherals/reflet_synth.v ../peripherals/reflet_timer_2.v ../peripherals/reflet_timer.v ../peripherals/reflet_uart.v ../peripherals/reflet_basics.v ../peripherals/reflet_power_manager.v ../peripherals/reflet_extened_io.v  $(REGISTERS) 
 REFLET = $(CPU) $(CTRL) $(PERIPH)
 
-all : pwm_tb.vcd reflet_16bit_ctrl_tb.vcd reflet_8bit_ctrl_tb.vcd reflet_gpio_tb.vcd simu1_tb.vcd simu2_tb.vcd simu3_tb.vcd simu5_tb.vcd simu_boot.vcd synth_tb.vcd uart_tb.vcd simu6_tb.vcd timer_tb.vcd ext_gpio_tb.vcd
+all : pwm_tb.vcd reflet_8bit_ctrl_tb.vcd reflet_gpio_tb.vcd simu1_tb.vcd simu2_tb.vcd simu3_tb.vcd simu5_tb.vcd synth_tb.vcd uart_tb.vcd simu6_tb.vcd timer_tb.vcd ext_gpio_tb.vcd # reflet_16bit_ctrl_tb.vcd # reflet_16bit_ctrl_tb.vcd can be left out in order not to wait for the very long simulation
 
 pwm_tb.vvp : pwm_tb.v ../peripherals/reflet_pwm.v ../peripherals/reflet_counter.v $(REGISTERS)
 	iverilog pwm_tb.v ../peripherals/reflet_pwm.v ../peripherals/reflet_counter.v $(REGISTERS) -o pwm_tb.vvp
