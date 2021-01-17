@@ -23,6 +23,24 @@ module ext_gpio_tb ();
         .edit_gpo(edit_gpo),
         .gpi(gpi),
         .gpo(gpo));
+    
+    reg [2:0] sys_addr = 0;
+    reg sys_wren = 0;
+    reg [7:0] sys_din = 3;
+    wire [7:0] sys_dout = 0;
+    wire [3:0] reio_gpo;
+
+    reflet_extended_io #(.base_addr_size(3), .base_addr(0), .number_of_io(4)) reio (
+        .clk(clk),
+        .reset(reset),
+        .enable(1'b1),
+        .addr(sys_addr),
+        .write_en(sys_wren),
+        .data_in(sys_din),
+        .data_out(sys_dout),
+        .gpi(gpi[3:0]),
+        .gpo(reio_gpo));
+
 
     initial 
     begin
@@ -44,6 +62,16 @@ module ext_gpio_tb ();
         edit_gpo <= 0;
         #4;
         addr <= 1;
+        #20;
+        sys_wren <= 1;
+        #2;
+        sys_wren <= 0;
+        #10;
+        sys_addr <= 1;
+        sys_din <= 8'hFF;
+        sys_wren <= 1;
+        #2;
+        sys_wren <= 0;
         #20;
         $finish;
     end
