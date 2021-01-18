@@ -49,6 +49,6 @@ case(addr)
   6'h2b : ret = 8'h0;
   6'h2c : ret = 8'h0;
   6'h2d : ret = 8'he;
-  default: ret = 0;
+  default: ret = 8'h0;
 endcase
 endmodule

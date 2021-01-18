@@ -393,13 +393,13 @@ case(addr)
   9'h183 : ret <= 8'h1f;
   9'h184 : ret <= 8'hff;
   9'h185 : ret <= 8'h0;
-  default: ret <= 0;
+  default: ret <= 8'h0;
 endcase
 endmodule
 
 module rom6_wide(input clk, input enable ,input [8:0] addr, output [15:0] data_out);
 rom6 rom6_low(clk, enable, addr, data_out[7:0]);
-rom6 rom6_high(clk, enable, addr+1, data_out[15:8]);
+rom6 rom6_high(clk, enable, addr+9'h1, data_out[15:8]);
 endmodule
 
 

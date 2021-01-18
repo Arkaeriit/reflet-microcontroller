@@ -116,6 +116,6 @@ case(addr)
   7'h6e : ret = 8'he1;
   7'h6f : ret = 8'h22;
   7'h70 : ret = 8'h2;
-  default: ret = 0;
+  default: ret = 8'h0;
 endcase
 endmodule

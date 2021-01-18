@@ -1208,12 +1208,12 @@ case(addr)
   11'h4b2 : ret <= 8'h32;
   11'h4b3 : ret <= 8'hd;
   11'h4b4 : ret <= 8'h0;
-  default: ret <= 0;
+  default: ret <= 8'h0;
 endcase
 endmodule
 
 module rom2_wide(input clk, input enable ,input [10:0] addr, output [15:0] data_out);
 rom2 rom2_low(clk, enable, addr, data_out[7:0]);
-rom2 rom2_high(clk, enable, addr+1, data_out[15:8]);
+rom2 rom2_high(clk, enable, addr+11'h1, data_out[15:8]);
 endmodule
 

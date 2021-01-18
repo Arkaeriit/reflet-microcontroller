@@ -390,6 +390,6 @@ case(addr)
   9'h180 : ret = 8'h14;
   9'h181 : ret = 8'h7b;
   9'h182 : ret = 8'h8;
-  default: ret = 0;
+  default: ret = 8'h0;
 endcase
 endmodule
