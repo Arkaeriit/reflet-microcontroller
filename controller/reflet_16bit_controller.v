@@ -16,9 +16,11 @@ module reflet_16bit_controller #(
     enable_segments = 1,
     enable_power_manager = 1,
     enable_synth = 1,
+    enable_ext_io = 1,
     data_size = 100,
     inst_size = 128,
-    mem_resetable = 0
+    mem_resetable = 0,
+    ext_io_size = 128
     )(
     input clk,
     input reset, //Resets the all system
@@ -40,7 +42,10 @@ module reflet_16bit_controller #(
     output seg_colon,
     output seg_dot,
     //Frequency generator
-    output synth_out
+    output synth_out,
+    //extended io
+    input [ext_io_size-1:0] ext_io_in,
+    output [ext_io_size-1:0] ext_io_out
     );
 
     //reset control
@@ -106,6 +111,8 @@ module reflet_16bit_controller #(
     //0x1A to 0x1B : pwm
     //0x1C to 0x1E : seven segments
     //0x1F to 0x20 : power_manager
+    //0x21         : synth
+    //0x22 to 0x23 : extended IO
     reflet_peripheral #(
         .wordsize(16), 
         .base_addr_size(15), 
@@ -119,7 +126,9 @@ module reflet_16bit_controller #(
         .enable_pwm(enable_pwm),
         .enable_segments(enable_segments),
         .enable_power_manager(enable_power_manager),
-        .enable_synth(enable_synth)) 
+        .enable_synth(enable_synth),
+        .enable_ext_io(enable_ext_io),
+        .ext_io_size(ext_io_size)) 
     periph (
         .clk(clk),
         .reset(reset_smol),
@@ -139,7 +148,9 @@ module reflet_16bit_controller #(
         .seg_select(seg_select),
         .seg_dot(seg_dot),
         .seg_colon(seg_colon),
-        .synth_out(synth_out));
+        .synth_out(synth_out),
+        .ext_io_in(ext_io_in),
+        .ext_io_out(ext_io_out));
 
 endmodule
 
