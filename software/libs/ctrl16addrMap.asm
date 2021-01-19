@@ -31,3 +31,9 @@ rawbytes 28 255 ;0xFF1C
 label power_manager
 rawbytes 31 255 ;0xFF1F
 
+label synth
+rawbytes 33 255 ;0xFF21
+
+label ext_io
+rawbytes 34 2255 ;0xFF22
+

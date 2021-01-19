@@ -19,8 +19,8 @@ This peripheral is always active. It is used to read the frequency of the system
 |------------------------|----|-------------|------|
 |0|ro|clk\_lsb|Contain the 8 LSB of the frequency of the main clock in MHz.|
 |1|ro|clk\_msb|Contain the 8 MSB of the frequency of the main clock in MHz.|
-|2|ro|periph\_1|Bits 0 to 2 contain info about the wordsize of the processor. 1 means that it is an 8-bit processor, 2 means a 16 bit, 3 32 bits, 4 64 bits, 5 128 bits, and 0 means any other wordsize. Bit 3 tell if the interrupt manager is enabled. Bit 4 tell if the GPIO is enabled. Bit 5 tell if the timer is enabled. Bit 6 tell if the second timer is enabled. Finally, bit 7 tell if the UART is enabled.|
-|3|ro|periph\_2|Bit 0 tell if the PWM is enabled. Bit 1 tell if the seven-segment controller is enabled. Bits 2 to 7 are left to 0.|
+|2|ro|periph\_1|Bits 0 to 2 contain info about the wordsize of the processor. 1 means that it is an 8-bit processor, 2 means a 16 bit, 3 32 bits, 4 64 bits, 5 128 bits, and 0 means any other wordsize. Bit 3 tells if the interrupt manager is enabled. Bit 4 tells if the GPIO is enabled. Bit 5 tells if the timer is enabled. Bit 6 tells if the second timer is enabled. Finally, bit 7 tells if the UART is enabled.|
+|3|ro|periph\_2|Bit 0 tells if the PWM is enabled. Bit 1 tells if the seven-segment controller is enabled. Bit 2 tells if the power manager is enabled. Bit 3 tells if the synthesizer is enabled. Bit 4 tells if the extended io is enabled. Bits 5 to 7 are left to 0.|
 
 ## Interrupt manager
 The CPU got only 7 interrupt lines, but more than 4 peripherals can raise interrupts. This module lets the user control which peripherals can use interrupts and the priority of each interrupt.
@@ -85,6 +85,23 @@ Even if this could be done with GPIO and a timer, a controller for seven segment
 |1|r/w|num01|Bits 0 to 3 are used to set the value of the first number. Bits 4 to 7 are used to set the value of the second number.|
 |2|r/w|num23|Bits 0 to 3 are used to set the value of the third number. Bits 4 to 7 are used to set the value of the fourth number.|
 
+## Power manager 
+This module is meant to either reduce the speed of the processor or disable it until an interrupt happens. To reduce the speed, a PWM signal is sent to the enable pin of the CPU.
+|Offset with base address|Type|Register name|Effect|
+|------------------------|----|-------------|------|
+|0|r/w|sleep|When bit 0 is set to 1, the processor is disabled until a detected interrupt is raised. When bit 1 is set to 1, the processor is slowed down by a factor controlled in the power register. Bits 2 and 3 are unused. Bit 4 to 7 are used to tell if interrupts 0 to 3  are watched. If bit 4 is set to 1, the module will watch for interrupt 0 and unlock the processor if interrupt 0 is raised. Bit 5 will enable interrupt 1 and so on. |
+|1|r/w|power| This register will let you choose the duty cycle to send to the enable pin of the CPU. The duty cycle is (the content of this register + 1)/256.|
+
+## Frequency synthesizer
+The documentation will come when the module will be done
+
+## Extended IO
+If you need more than the 16 inputs and 16 outputs of the GPIO module, you can use this one to have up to 256 additional inputs and 256 output. The IOs can be selected with an address on a register and controlled with the other one. The inputs can not raise interrupt. The actual number of IO is chosen with a parameter of the controller module. 
+|Offset with base address|Type|Register name|Effect|
+|------------------------|----|-------------|------|
+|0|r/w|address|Select which IO is selected.|
+|1|r/w|control|Bit 0 contains the value in the selected input. Bit 1 contains the actual value of the selected output. To set the output, write the value you want in bit 2 and set bit 3 to 1. Bits 4 to 7 are unused.|
+
 # Controllers
 The folder controller contains files used to make 8 bits or a 16 bits microcontroller with a Reflet CPU. As of now, for the 8-bit controller, you must copy the `reflet\_?bits\_controller.c` file and replace the data memory with a ROM with a valid Reflet program. For the 16-bit one, you can do so or choose to use the included bootloader instead.
 
@@ -147,9 +164,12 @@ The memory map is the following
 |0xFF16|0xFF19|UART|
 |0xFF1A|0xFF1B|PWM|
 |0xFF1C|0xFF1E|Seven segments controller|
+|0xFF1F|0xFF20|Power manager|
+|0xFF21|0xFF21|Frequency synthesizer|
+|0xFF22|0xFF23|Extended IO|
 
 ### Top-level module
-The top-level module is in the `controller` folder and is named reflet\_16bit\_controller. Unlike its 8-bit counterpart, it can be used on its own as it is equipped with a bootloader which can be used to load a program in the data memory. Of course, if it is needed to only use a single program with an implementation, the mem\_inst module can be replaced with a ROM.
+The top-level module is in the `controller` folder and is named reflet\_16bit\_controller. Unlike its 8-bit counterpart, it can be used on its own as it is equipped with a bootloader that can be used to load a program in the data memory. Of course, if it is needed to only use a single program with an implementation, the mem\_inst module can be replaced with a ROM.
 
 The parameters for this module are the following:
 |Name | Description | Default value|
@@ -162,9 +182,13 @@ The parameters for this module are the following:
 |enable\_uart|If equal to 0, the UART is disabled. |1|
 |enable\_pwm|If equal to 0, the PWM is disabled. |1|
 |enable\_segments|If equal to 0, the seven segments display controller is disabled. |1|
+|enable\_power\_manager|If equal to 0, the power manager is disabled. |1|
+|enable\_synth|If equal to 0, the frequency synthesizer is disabled. |1|
+|enable\_ext\_io|If equal to 0, the extended IO is disabled. |1|
 |data\_size| Size in bytes of the data memory.|100| 
 |inst\_size| Size in bytes of the instruction memory.|128|
 |mem\_resetable| If not set to 0, the memories are reset to 0 when the reset signal is pulled down. This can be incompatible with some FPGA's memory blocks. |0|
+|ext\_io\_size|The size of the extended io ports.|128|
 
 The ports of this module are the following:
 |Name |Type   |Description|
@@ -183,6 +207,9 @@ The ports of this module are the following:
 |seg\_select| 4-bit output | Seven segments digit selection, an output value of 1 means that the digit is selected. |
 |seg\_colon| output | Control of the colon indicator of the seven-segment display, a value of 0 means that the colon is turned on. |
 |seg\_dot| output | Control of the decimal dot indicator of the seven-segment display, a value of 0 means that the dot is turned on. |
+|synth\_out| output | Output of the frequency synthesizer. |
+|ext\_io\_in | selectable size input | Input of the extended IO module. |
+| ext\_io\_out | selectable size output | Output of the extended IO module. |
 
 ### Using the bootloader
 The bootloader is very easy to use. After the processor started, transmit the program through the UART connection and wait 4 seconds for the program to start.
