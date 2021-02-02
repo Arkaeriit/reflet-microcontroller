@@ -44,7 +44,7 @@ case(addr)
   11'h26 : ret <= 8'h3b;
   11'h27 : ret <= 8'h1a;
   11'h28 : ret <= 8'h7b;
-  11'h29 : ret <= 8'h8;
+  11'h29 : ret <= 8'h3E;
   11'h2a : ret <= 8'h48;
   11'h2b : ret <= 8'h65;
   11'h2c : ret <= 8'h6c;
@@ -126,7 +126,7 @@ case(addr)
   11'h78 : ret <= 8'hff;
   11'h79 : ret <= 8'h4;
   11'h7a : ret <= 8'hff;
-  11'h7b : ret <= 8'h8;
+  11'h7b : ret <= 8'h3E;
   11'h7c : ret <= 8'hff;
   11'h7d : ret <= 8'h10;
   11'h7e : ret <= 8'hff;
@@ -307,7 +307,7 @@ case(addr)
   11'h12d : ret <= 8'h43;
   11'h12e : ret <= 8'h33;
   11'h12f : ret <= 8'h26;
-  11'h130 : ret <= 8'h8;
+  11'h130 : ret <= 8'h3E;
   11'h131 : ret <= 8'h23;
   11'h132 : ret <= 8'h31;
   11'h133 : ret <= 8'ha;
@@ -376,7 +376,7 @@ case(addr)
   11'h172 : ret <= 8'h43;
   11'h173 : ret <= 8'h33;
   11'h174 : ret <= 8'h25;
-  11'h175 : ret <= 8'h8;
+  11'h175 : ret <= 8'h3E;
   11'h176 : ret <= 8'h21;
   11'h177 : ret <= 8'h32;
   11'h178 : ret <= 8'h23;
@@ -481,7 +481,7 @@ case(addr)
   11'h1db : ret <= 8'ha;
   11'h1dc : ret <= 8'h31;
   11'h1dd : ret <= 8'h26;
-  11'h1de : ret <= 8'h8;
+  11'h1de : ret <= 8'h3E;
   11'h1df : ret <= 8'h23;
   11'h1e0 : ret <= 8'h31;
   11'h1e1 : ret <= 8'ha;
@@ -626,7 +626,7 @@ case(addr)
   11'h26c : ret <= 8'h5c;
   11'h26d : ret <= 8'h32;
   11'h26e : ret <= 8'h25;
-  11'h26f : ret <= 8'h8;
+  11'h26f : ret <= 8'h3E;
   11'h270 : ret <= 8'h24;
   11'h271 : ret <= 8'h3d;
   11'h272 : ret <= 8'ha;
@@ -758,7 +758,7 @@ case(addr)
   11'h2f0 : ret <= 8'h43;
   11'h2f1 : ret <= 8'h33;
   11'h2f2 : ret <= 8'h25;
-  11'h2f3 : ret <= 8'h8;
+  11'h2f3 : ret <= 8'h3E;
   11'h2f4 : ret <= 8'h27;
   11'h2f5 : ret <= 8'h3d;
   11'h2f6 : ret <= 8'ha;
@@ -870,7 +870,7 @@ case(addr)
   11'h360 : ret <= 8'h55;
   11'h361 : ret <= 8'h32;
   11'h362 : ret <= 8'h23;
-  11'h363 : ret <= 8'h8;
+  11'h363 : ret <= 8'h3E;
   11'h364 : ret <= 8'ha;
   11'h365 : ret <= 8'h36;
   11'h366 : ret <= 8'ha;

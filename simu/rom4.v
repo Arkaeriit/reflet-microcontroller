@@ -28,7 +28,7 @@ case(addr)
   7'h16 : ret = 8'h3b;
   7'h17 : ret = 8'h1e;
   7'h18 : ret = 8'h7b;
-  7'h19 : ret = 8'h8;
+  7'h19 : ret = 8'h3E;
   7'h1a : ret = 8'h34;
   7'h1b : ret = 8'h13;
   7'h1c : ret = 8'h42;
@@ -98,7 +98,7 @@ case(addr)
   7'h5c : ret = 8'h7b;
   7'h5d : ret = 8'h0;
   7'h5e : ret = 8'h0;
-  7'h5f : ret = 8'h8;
+  7'h5f : ret = 8'h3E;
   default: ret = 0;
 endcase
 endmodule

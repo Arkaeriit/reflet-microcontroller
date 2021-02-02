@@ -44,7 +44,7 @@ case(addr)
   9'h26 : ret <= 8'h3b;
   9'h27 : ret <= 8'h1a;
   9'h28 : ret <= 8'h7b;
-  9'h29 : ret <= 8'h8;
+  9'h29 : ret <= 8'h3E;
   9'h2a : ret <= 8'h14;
   9'h2b : ret <= 8'h3c;
   9'h2c : ret <= 8'h10;
@@ -378,7 +378,7 @@ case(addr)
   9'h174 : ret <= 8'hff;
   9'h175 : ret <= 8'h4;
   9'h176 : ret <= 8'hff;
-  9'h177 : ret <= 8'h8;
+  9'h177 : ret <= 8'h3E;
   9'h178 : ret <= 8'hff;
   9'h179 : ret <= 8'h10;
   9'h17a : ret <= 8'hff;

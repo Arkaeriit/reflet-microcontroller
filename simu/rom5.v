@@ -44,7 +44,7 @@ case(addr)
   9'h26 : ret = 8'h3b;
   9'h27 : ret = 8'h1a;
   9'h28 : ret = 8'h7b;
-  9'h29 : ret = 8'h8;
+  9'h29 : ret = 8'h3E;
   9'h2a : ret = 8'h14;
   9'h2b : ret = 8'h3c;
   9'h2c : ret = 8'h10;
@@ -219,7 +219,7 @@ case(addr)
   9'hd5 : ret = 8'h7b;
   9'hd6 : ret = 8'h0;
   9'hd7 : ret = 8'h0;
-  9'hd8 : ret = 8'h8;
+  9'hd8 : ret = 8'h3E;
   9'hd9 : ret = 8'hb;
   9'hda : ret = 8'h10;
   9'hdb : ret = 8'he3;
@@ -329,7 +329,7 @@ case(addr)
   9'h143 : ret = 8'h3b;
   9'h144 : ret = 8'h1a;
   9'h145 : ret = 8'h7b;
-  9'h146 : ret = 8'h8;
+  9'h146 : ret = 8'h3E;
   9'h147 : ret = 8'hf4;
   9'h148 : ret = 8'h35;
   9'h149 : ret = 8'h11;
@@ -389,7 +389,7 @@ case(addr)
   9'h17f : ret = 8'h3b;
   9'h180 : ret = 8'h14;
   9'h181 : ret = 8'h7b;
-  9'h182 : ret = 8'h8;
+  9'h182 : ret = 8'h3E;
   default: ret = 8'h0;
 endcase
 endmodule

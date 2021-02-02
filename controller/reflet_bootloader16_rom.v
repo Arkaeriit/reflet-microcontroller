@@ -118,7 +118,7 @@ case(addr)
   15'h7e6e : ret <= 8'h3b;
   15'h7e6f : ret <= 8'h12;
   15'h7e70 : ret <= 8'h7b;
-  15'h7e71 : ret <= 8'h8;
+  15'h7e71 : ret <= 8'h3E;
   15'h7e72 : ret <= 8'h11;
   15'h7e73 : ret <= 8'h43;
   15'h7e74 : ret <= 8'h33;
@@ -337,7 +337,7 @@ case(addr)
   15'h7f49 : ret <= 8'h28;
   15'h7f4a : ret <= 8'h9;
   15'h7f4b : ret <= 8'h2a;
-  15'h7f4c : ret <= 8'h8;
+  15'h7f4c : ret <= 8'h3E;
   15'h7f4d : ret <= 8'h11;
   15'h7f4e : ret <= 8'h3d;
   15'h7f4f : ret <= 8'h14;
@@ -415,7 +415,7 @@ case(addr)
   15'h7f97 : ret <= 8'h3c;
   15'h7f98 : ret <= 8'h3f;
   15'h7f99 : ret <= 8'h14;
-  15'h7f9a : ret <= 8'h8;
+  15'h7f9a : ret <= 8'h3E;
   15'h7f9b : ret <= 8'h34;
   15'h7f9c : ret <= 8'h26;
   15'h7f9d : ret <= 8'h31;

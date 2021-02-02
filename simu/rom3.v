@@ -28,7 +28,7 @@ case(addr)
   7'h16 : ret = 8'h3b;
   7'h17 : ret = 8'h1a;
   7'h18 : ret = 8'h7b;
-  7'h19 : ret = 8'h8;
+  7'h19 : ret = 8'h3E;
   7'h1a : ret = 8'h14;
   7'h1b : ret = 8'h3c;
   7'h1c : ret = 8'h10;
@@ -108,7 +108,7 @@ case(addr)
   7'h66 : ret = 8'h7b;
   7'h67 : ret = 8'h0;
   7'h68 : ret = 8'h0;
-  7'h69 : ret = 8'h8;
+  7'h69 : ret = 8'h3E;
   7'h6a : ret = 8'he;
   7'h6b : ret = 8'h32;
   7'h6c : ret = 8'hf;
