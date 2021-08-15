@@ -35,5 +35,5 @@ label synth
 rawbytes 33 255 ;0xFF21
 
 label ext_io
-rawbytes 34 2255 ;0xFF22
+rawbytes 34 255 ;0xFF22
 
