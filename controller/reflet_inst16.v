@@ -50,14 +50,14 @@ module reflet_inst16 #(
 
 
     //Input selection
-    wire [13:0] addr_used = ( inst_ready ? addr : addr_init );
+    wire [13:0] addr_used = ( inst_ready ? addr : {11'h0, addr_init} );
     wire [15:0] data_in_used = ( inst_ready ? data_in : data_in_init );
     wire write_en_used = ( inst_ready ? write_en : 1'b1 );
 
     //output
     wire [15:0] ram_out;
     wire [15:0] bootlader_out;
-    assign data_out = ram_out | {8'h0, bootlader_out};
+    assign data_out = ram_out | bootlader_out;
 
     //Actual memories
     reflet_ram #(.size(size), .dataSize(16), .addrSize(14), .resetable(resetable)) ram (
