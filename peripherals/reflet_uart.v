@@ -128,7 +128,7 @@ module reflet_uart_uart #(
         .out(uart_en));
 
     //Transmission control
-    wire start_transmit_latched, end_transmit_long;
+    wire start_transmit_latched, end_transmit_long, receive_done_long;
     reflet_sr_latch tx_cmd_latch ( //Ensure that the start-transmit signal is as long as needed, also ensure consistency between the availability of the UART and what is send above
         .clk(clk),
         .reset(!reset | end_transmit),
@@ -139,6 +139,11 @@ module reflet_uart_uart #(
         .reset(reset),
         .in(end_transmit_long),
         .out(end_transmit));
+    reflet_short receive_done_shortening (
+        .clk(clk),
+        .reset(reset),
+        .in(receive_done_long),
+        .out(receive_done));
 
     reflet_uart_tx transmit (
         .clk(clk),
@@ -155,7 +160,7 @@ module reflet_uart_uart #(
         .reset(reset),
         .rx(rx),
         .data_rx(data_rx),
-        .receive_done(receive_done));
+        .receive_done(receive_done_long));
 
 endmodule
 
