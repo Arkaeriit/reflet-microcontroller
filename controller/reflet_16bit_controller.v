@@ -86,17 +86,17 @@ module reflet_16bit_controller #(
         .reset(reset_full),
         .inst_ready(inst_ready),
         .enable(!addr[15]),
-        .addr(addr[14:0]),
+        .addr(addr[14:1]),
         .data_in(data_out_cpu),
         .data_out(dout_inst),
         .write_en(write_en));
 
     //0x8000 to 0xFEFF: data. Should stay as a regular RAM
-    reflet_ram16 #(.addrSize(15), .size(data_size), .resetable(mem_resetable)) mem_data (
+    reflet_ram #(.addrSize(14), .dataSize(16), .size(data_size), .resetable(mem_resetable)) mem_data (
         .clk(clk),
         .reset(reset_smol),
         .enable(addr[15]),
-        .addr(addr[14:0]),
+        .addr(addr[14:1]),
         .data_in(data_out_cpu),
         .data_out(dout_data),
         .write_en(write_en));

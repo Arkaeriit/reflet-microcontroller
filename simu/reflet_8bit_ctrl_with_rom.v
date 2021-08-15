@@ -56,7 +56,7 @@ module reflet_8bit_ctrl_with_rom #(
         .dataOut(dout_inst));
 
     //0x80 to 0xEC: data. Should stay as a regular RAM
-    reflet_ram8 #(.addrSize(7), .size(108)) mem_data (
+    reflet_ram #(.addrSize(7), .dataSize(8), .size(108)) mem_data (
         .clk(clk),
         .reset(reset),
         .enable(addr[7]),

@@ -33,13 +33,13 @@ module simu2();
     rom2_wide rom(
         .clk(clk), 
         .enable(!addr[15]), 
-        .addr(addr[10:0]),
+        .addr(addr[10:1]),
         .data_out(data_out_rom));
-    reflet_ram16 #(.addrSize(15), .size(100)) ram(
+    reflet_ram #(.addrSize(14), .dataSize(16), .size(100)) ram(
         .clk(clk), 
         .reset(reset), 
         .enable(addr[15]), 
-        .addr(addr[14:0]), 
+        .addr(addr[14:1]), 
         .data_in(data_out_cpu), 
         .write_en(write_en), 
         .data_out(data_out_ram));
