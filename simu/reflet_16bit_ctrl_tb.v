@@ -28,10 +28,14 @@ module reflet_16bit_ctrl_tb ();
         .gpi(16'h0),
         .quit(quit));
 
+    integer i;
+
     initial
     begin
         $dumpfile("reflet_16bit_ctrl_tb.vcd");
         $dumpvars(0, reflet_16bit_ctrl_tb);
+        for(i = 0; i<16; i=i+1)
+            $dumpvars(0, ctrl.cpu.registers[i]);
         #5000;
         rx = 0;
         #208;

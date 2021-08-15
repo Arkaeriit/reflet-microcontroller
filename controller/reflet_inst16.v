@@ -24,7 +24,7 @@ module reflet_inst16 #(
 
     //Initiation of the memory
     reg [2:0] addr_init;
-    wire [7:0] data_in_init;
+    wire [15:0] data_in_init;
 
     always @ (posedge clk)
         if(!reset)
@@ -42,10 +42,10 @@ module reflet_inst16 #(
 
     //Init ROM
     assign data_in_init = 
-        ( addr_init == 3'h0 ? 16'h7500 : //At addr 0, there is the addr of the bootloader
+        ( addr_init == 3'h0 ? 16'h7E00 : //At addr 0, there is the addr of the bootloader
         ( addr_init == 3'h1 ? 16'h0000 :
         ( addr_init == 3'h2 ? 16'hF010 : //set 0; load WR
-        ( addr_init == 3'h3 ? 16'h0008 : //jmp
+        ( addr_init == 3'h3 ? 16'h003E : //jmp
           0))));
 
 
