@@ -23,7 +23,7 @@ This peripheral is always active. It is used to read the frequency of the system
 |3|ro|periph\_2|Bit 0 tells if the PWM is enabled. Bit 1 tells if the seven-segment controller is enabled. Bit 2 tells if the power manager is enabled. Bit 3 tells if the synthesizer is enabled. Bit 4 tells if the extended io is enabled. Bits 5 to 7 are left to 0.|
 
 ## Interrupt manager
-The CPU got only 7 interrupt lines, but more than 4 peripherals can raise interrupts. This module lets the user control which peripherals can use interrupts and the priority of each interrupt.
+The CPU got only 4 interrupt lines, but more than 4 peripherals can raise interrupts. This module lets the user control which peripherals can use interrupts and the priority of each interrupt.
 |Offset with base address|Type|Register name|Effect|
 |------------------------|----|-------------|------|
 |0|r/w|int\_en|Bit 0 control if the interrupt from the GPIO is enabled. Bit 1 control if the interrupt from the UART is enabled. Bit 2 control if the interrupt from the timer is enabled. Bit 3 control if the interrupt from timer 2 is enabled.|
