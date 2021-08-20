@@ -42,15 +42,15 @@ module simu6 ();
     rom6_wide rom (
         .clk(clk),
         .enable(!addr[15]),
-        .addr(addr[8:0]),
+        .addr(addr[8:1]),
         .data_out(dout_inst));
 
     //0x8000 to 0xFEFF: data. Should stay as a regular RAM
-    reflet_ram16 #(.addrSize(15), .size(100)) mem_data (
+    reflet_ram #(.addrSize(14), .dataSize(16), .size(100)) mem_data (
         .clk(clk),
         .reset(reset),
         .enable(addr[15]),
-        .addr(addr[14:0]),
+        .addr(addr[14:1]),
         .data_in(data_out_cpu),
         .data_out(dout_data),
         .write_en(write_en));

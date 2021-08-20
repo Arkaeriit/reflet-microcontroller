@@ -50,7 +50,7 @@ module reflet_8bit_controller #(
     wire [7:0] dout_periph;
     assign data_in_cpu = dout_inst | dout_data | dout_periph;
     //0x00 to 0x7F: instruction. Should be replaced with a ROM for real use
-    reflet_ram8 #(.addrSize(7), .size(128), .resetable(mem_resetable)) mem_inst (
+    reflet_ram #(.addrSize(7), .dataSize(8), .size(128), .resetable(mem_resetable)) mem_inst (
         .clk(clk),
         .reset(reset_used),
         .enable(!addr[7]),
@@ -60,7 +60,7 @@ module reflet_8bit_controller #(
         .write_en(write_en));
 
     //0x80 to 0xEC: data. Should stay as a regular RAM
-    reflet_ram8 #(.addrSize(7), .size(108), .resetable(mem_resetable)) mem_data (
+    reflet_ram #(.addrSize(7), .dataSize(8), .size(108), .resetable(mem_resetable)) mem_data (
         .clk(clk),
         .reset(reset_used),
         .enable(addr[7]),

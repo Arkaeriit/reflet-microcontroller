@@ -79,24 +79,26 @@ module reflet_16bit_controller #(
     wire [15:0] dout_inst;
     wire [15:0] dout_data;
     wire [7:0] dout_periph;
-    assign data_in_cpu = dout_inst | dout_data | {8'h0, dout_periph};
+    wire [7:0] din_periph = (addr[0] ? data_out_cpu[15:8] : data_out_cpu[7:0]);
+    wire [15:0] dout_periph_shift = (addr[0] ? {dout_periph, 8'h0} : {8'h0, dout_periph});
+    assign data_in_cpu = dout_inst | dout_data | dout_periph_shift;
     //0x00 to 0x7FFF: instruction. Can be replaced with a ROM
     reflet_inst16 #(.size(inst_size), .resetable(mem_resetable)) mem_inst (
         .clk(clk),
         .reset(reset_full),
         .inst_ready(inst_ready),
         .enable(!addr[15]),
-        .addr(addr[14:0]),
+        .addr(addr[14:1]),
         .data_in(data_out_cpu),
         .data_out(dout_inst),
         .write_en(write_en));
 
     //0x8000 to 0xFEFF: data. Should stay as a regular RAM
-    reflet_ram16 #(.addrSize(15), .size(data_size), .resetable(mem_resetable)) mem_data (
+    reflet_ram #(.addrSize(14), .dataSize(16), .size(data_size), .resetable(mem_resetable)) mem_data (
         .clk(clk),
         .reset(reset_smol),
         .enable(addr[15]),
-        .addr(addr[14:0]),
+        .addr(addr[14:1]),
         .data_in(data_out_cpu),
         .data_out(dout_data),
         .write_en(write_en));
@@ -136,7 +138,7 @@ module reflet_16bit_controller #(
         .ext_int(exti),
         .cpu_enable(cpu_enable),
         .addr(addr[14:0]),
-        .data_in(data_out_cpu[7:0]),
+        .data_in(din_periph),
         .data_out(dout_periph),
         .write_en(write_en),
         .gpi(gpi),

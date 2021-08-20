@@ -14,6 +14,7 @@ wordsize 16
 ;R10 contain the addr of the infinite loop
 
 label init ;The label will probabely be unused...
+tbm ;Set byte mode as all we are going to do is manipulate peripheral's registers
 set 0 ;init registers
 cpy R2
 set 4 
@@ -184,6 +185,7 @@ cpy R11
 cpy R12
 ;cpy R13 SR is already set
 cpy R15
+tbm
 set 4
 jmp ;jmp back to the start
 

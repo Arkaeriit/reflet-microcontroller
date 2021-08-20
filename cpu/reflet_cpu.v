@@ -45,6 +45,9 @@ module reflet_cpu #(
     wire [3:0] argument_id = instruction[3:0];
     wire interrupt;
     wire [wordsize-1:0] int_routine;
+    wire alignement_error;
+    wire [3:0] used_int = {ext_int[3:1], ext_int[0] | (registers[`sr_id][7] & alignement_error)}; //External interrupt or notification for alignement error
+    wire byte_mode;
 
     reflet_alu #(.wordsize(wordsize)) alu(
         .working_register(registers[`wr_id]),
@@ -65,12 +68,14 @@ module reflet_cpu #(
         .otherRegister(registers[argument_id]),
         .reduced_behaviour_bits(registers[`sr_id][2:1]),
         .instruction(instruction),
+        .alignement_error(alignement_error),
         //System bus
         .addr(addr),
         .data_out(data_out),
         .data_in(data_in),
         .write_en(write_en),
         //Out to the CPU
+        .byte_mode(byte_mode),
         .out(content_addr),
         .out_reg(index_addr),
         .ram_not_ready(ram_not_ready));
@@ -79,7 +84,7 @@ module reflet_cpu #(
         .clk(clk),
         .reset(reset),
         .enable(enable),
-        .ext_int(ext_int),
+        .ext_int(used_int),
         .instruction(instruction),
         .working_register(registers[`wr_id]),
         .program_counter(registers[`pc_id]),
@@ -89,17 +94,6 @@ module reflet_cpu #(
         .out_routine(int_routine),
         .cpu_update(!ram_not_ready),
         .interrupt(interrupt));
-
-    //computing how much the stack pointer should evolve when using it
-    integer default_increase = wordsize/8; //Progression when handling addressis or with no reduced behavious
-    integer increase11 = 1; //A separate value for each conbinaison of reduced behaviour
-    wire [7:0] increase01 = ( wordsize > 32 ? 7'h4 : default_increase );
-    wire [7:0] increase10 = ( wordsize > 16 ? 7'h2 : default_increase );
-    wire [1:0] reduced_behavior = registers[`sr_id][2:1];
-    wire [7:0] increase_data = ( reduced_behavior == 2'b00 ? default_increase :
-                                    ( reduced_behavior == 2'b01 ? increase01 :
-                                        ( reduced_behavior == 2'b10 ? increase10 :
-                                            increase11)));
 
     //debug signal
     assign debug = instruction == `inst_debug && !ram_not_ready;
@@ -130,18 +124,18 @@ module reflet_cpu #(
                         `inst_quit : quit <= 1'b1;
                         `inst_pop :
                         begin
-                            registers[`sp_id] <= registers[`sp_id] - increase_data;
+                            registers[`sp_id] <= registers[`sp_id] - wordsize/8;
                             registers[index] <= content;
                         end
                         `inst_ret :
                         begin
-                            registers[`sp_id] <= registers[`sp_id] - default_increase;
+                            registers[`sp_id] <= registers[`sp_id] - wordsize/8;
                             registers[index] <= content;
                         end
-                        `inst_push : registers[`sp_id] <= registers[`sp_id] + increase_data;
+                        `inst_push : registers[`sp_id] <= registers[`sp_id] + wordsize/8;
                         `inst_call : 
                         begin
-                            registers[`sp_id] <= registers[`sp_id] + default_increase;
+                            registers[`sp_id] <= registers[`sp_id] + wordsize/8;
                             registers[index] <= content;
                         end
                         default : registers[index] <= content;
