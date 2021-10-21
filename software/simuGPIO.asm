@@ -1,12 +1,12 @@
-;This is the code used in the rom1, used in sim1_tb. This should be compiled with reflet-pasm
+;This is the code used in the rom1, used in sim1_tb. This should be compiled with reflet-asm as shown in the makefile
 ;What it does is it copies the 15 first pins of the GPI to the GPO and
 ;it make the 16th bit of the GPO blink. The base address for the GPIO is 0x80
 set 6  ;setting in 8 bit mode
 cpy SR 
 set 10 ;Getting the value 0x7F and 26
 jmp
-rawbyte 127 ;compiles to 0x7F
-rawbyte 26 ;compiles to 0x1A = 26
+rawbyte 7F ;compiles to 0x7F
+rawbyte 1A ;compiles to 0x1A = 26
 set 8
 cpy R1
 load R1 ;getting 0x7F in the working register

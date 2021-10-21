@@ -17,7 +17,7 @@ helloWorld.bin : helloWorld.asm libs/ctrl16addrMap.asm libs/uart.asm libs/printi
 	reflet-masm helloWorld.asm libs/ctrl16addrMap.asm libs/uart.asm libs/math.asm libs/string.asm libs/printing.asm -o helloWorld.bin
 
 simuGPIO.bin : simuGPIO.asm
-	reflet-pasm simuGPIO.asm simuGPIO.bin
+	reflet-asm simuGPIO.asm -o simuGPIO.bin -no-stack-init -word-size 8 -ignore-start
 
 uartLoopBack.bin : uartLoopBack.asm
 	reflet-masm uartLoopBack.asm -o uartLoopBack.bin
