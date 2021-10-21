@@ -11,7 +11,7 @@ clock.bin : clock.asm libs/ctrl16addrMap.asm
 	reflet-masm clock.asm libs/ctrl16addrMap.asm -o clock.bin
 
 bootloader16.bin : bootloader16.asm
-	reflet-masm -no-prefix -no-stack-init -ignore-start -start-addr 32256 bootloader16.asm -o bootloader16.bin #start addr set to 0x7E00
+	reflet-asm -word-size 16 -no-prefix -no-stack-init -ignore-start -start-addr 32000 bootloader16.asm -o bootloader16.bin #start addr set to 0x7D00
 
 helloWorld.bin : helloWorld.asm libs/ctrl16addrMap.asm libs/uart.asm libs/printing.asm libs/math.asm libs/string.asm
 	reflet-masm helloWorld.asm libs/ctrl16addrMap.asm libs/uart.asm libs/math.asm libs/string.asm libs/printing.asm -o helloWorld.bin

@@ -151,8 +151,8 @@ The 16 bits controller is equipped with all the peripherals and its bigger addre
 The memory map is the following
 |Start |End   |Content|
 |------|------|-------|
-|0x0000|0x7DFF|Instructions|
-|0x7E00|0x7FFF|Bootloader|
+|0x0000|0x7CFF|Instructions|
+|0x7D00|0x7FFF|Bootloader|
 |0x8000|0xFEFF|Data|
 |0xFF00|0xFFFF|Peripherals|
 |------|------|-------|

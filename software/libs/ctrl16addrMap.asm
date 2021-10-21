@@ -1,39 +1,41 @@
 ; This file contain labels to the base addresses of the various
 ; peipherals or memory space of the 16-bit controller
 
+@align_word
+
 label data
-rawbytes 00 128 ;0x8000
+@rawbytes 00 80
 
 label hardware_info
-rawbytes 00 255 ;0xFF00
+@rawbytes 00 FF ;0xFF00
 
 label interrupt_manager
-rawbytes 04 255 ;0xFF04
+@rawbytes 04 FF ;0xFF04
 
 label GPIO
-rawbytes 08 255 ;0xFF08
+@rawbytes 08 FF ;0xFF08
 
 label timer
-rawbytes 16 255 ;0xFF10
+@rawbytes 10 FF ;0xFF10
 
 label timer_2
-rawbytes 19 255 ;0xFF13
+@rawbytes 13 FF ;0xFF13
 
 label UART
-rawbytes 22 255 ;0xFF16
+@rawbytes 16 FF ;0xFF16
 
 label PWM
-rawbytes 26 255 ;0xFF1A
+@rawbytes 1A FF ;0xFF1A
 
 label seven_segments
-rawbytes 28 255 ;0xFF1C
+@rawbytes 1C FF ;0xFF1C
 
 label power_manager
-rawbytes 31 255 ;0xFF1F
+@rawbytes 1F FF ;0xFF1F
 
 label synth
-rawbytes 33 255 ;0xFF21
+@rawbytes 21 FF ;0xFF21
 
 label ext_io
-rawbytes 34 255 ;0xFF22
+@rawbytes 22 FF ;0xFF22
 
