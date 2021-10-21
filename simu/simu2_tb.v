@@ -20,17 +20,18 @@ module simu2();
     wire [7:0] data_out_uart;
     wire [15:0] data_out_rom;
     wire [15:0] data_out_ram;
+    wire [7:0] din_periph = (addr[0] ? data_out_cpu[15:8] : data_out_cpu[7:0]);
     reflet_uart #(.base_addr_size(15), .base_addr(15'h7F16), .clk_freq(96000)) uart (
         .clk(clk), 
         .reset(reset), 
         .enable(addr[15]), 
         .addr(addr[14:0]), 
         .write_en(write_en), 
-        .data_in(data_out_cpu[7:0]), 
+        .data_in(din_periph), 
         .data_out(data_out_uart), 
         .rx(rx), 
         .tx(tx));
-    rom2_wide rom(
+    rom2 rom(
         .clk(clk), 
         .enable(!addr[15]), 
         .addr(addr[10:1]),
@@ -54,10 +55,14 @@ module simu2();
         .data_out(data_out_cpu), 
         .write_en(write_en));
 
+    integer i;
+
     initial
     begin
         $dumpfile("simu2_tb.vcd");
         $dumpvars(0, simu2);
+        for(i = 0; i<16; i=i+1)
+            $dumpvars(0, cpu.registers[i]);
         #10;
         reset = 1;
         #15000;
