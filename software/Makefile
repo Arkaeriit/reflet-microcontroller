@@ -5,7 +5,7 @@ clean :
 	rm -f *.bin
 
 basicInt.bin : basicInt.asm
-	reflet-masm basicInt.asm -o basicInt.bin
+	reflet-asm -word-size 8 -no-stack-init -ignore-start basicInt.asm -o basicInt.bin
 
 clock.bin : clock.asm libs/ctrl16addrMap.asm
 	reflet-masm clock.asm libs/ctrl16addrMap.asm -o clock.bin

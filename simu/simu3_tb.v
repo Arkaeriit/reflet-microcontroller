@@ -47,7 +47,7 @@ module simu3();
         .cpu_int(int));
     rom3 rom(
         .clk(clk), 
-        .enable_out(!addr[7]), 
+        .enable(!addr[7]), 
         .addr(addr[6:0]), 
         .dataOut(data_out_rom));
     assign data_in_cpu = data_out_rom | data_out_gpio | data_out_exti;
