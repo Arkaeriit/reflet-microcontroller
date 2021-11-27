@@ -23,7 +23,7 @@ uartLoopBack.bin : uartLoopBack.asm
 	reflet-asm -word-size 8 uartLoopBack.asm -o uartLoopBack.bin
 
 primes.bin : primes.asm libs/ctrl16addrMap.asm libs/uart.asm libs/printing.asm libs/math.asm libs/string.asm
-	reflet-masm primes.asm libs/ctrl16addrMap.asm libs/uart.asm libs/math.asm libs/string.asm libs/printing.asm -wordsize 16 -o primes.bin
+	reflet-asm primes.asm -word-size 16 -o primes.bin
 
 low_power_mode.bin : low_power_mode.asm libs/ctrl16addrMap.asm
 	reflet-asm low_power_mode.asm -word-size 16 -o low_power_mode.bin

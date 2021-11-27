@@ -3,6 +3,12 @@
 ;As this is not very efficient, it is more ment to be a proof of 
 ;concept than anything else.
 
+@import libs/ctrl16addrMap.asm
+@import libs/uart.asm
+@import libs/math.asm
+@import libs/string.asm
+@import libs/printing.asm
+
 ;-----------------------
 ;Put 1 in R2 if the number in R1 is prime and put 0 otherwise
 label isPrime
