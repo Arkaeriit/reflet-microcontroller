@@ -17,10 +17,13 @@ module reflet_8bit_ctrl_tb ();
         .tx(tx),
         .rx(rx));
 
+    integer i;
     initial
     begin
         $dumpfile("reflet_8bit_ctrl_tb.vcd");
         $dumpvars(0, reflet_8bit_ctrl_tb);
+        for(i = 0; i<16; i=i+1)
+            $dumpvars(0, ctrl.cpu.registers[i]);
         #1000;
         rx = 0;
         #200;

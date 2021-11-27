@@ -48,19 +48,20 @@ module reflet_8bit_ctrl_with_rom #(
     wire [7:0] dout_data;
     wire [7:0] dout_periph;
     assign data_in_cpu = dout_inst | dout_data | dout_periph;
-    //0x00 to 0x7F: instruction. A rom that make a UART loop-back
+    wire enable_rom = ! (&addr[7:6]);
+    //0x00 to 0xBF: instruction. A rom that make a UART loop-back
     rom4 mem_inst (
         .clk(clk),
-        .enable_out(!addr[7]),
-        .addr(addr[6:0]),
-        .dataOut(dout_inst));
+        .enable(enable_rom),
+        .addr(addr),
+        .data(dout_inst));
 
-    //0x80 to 0xEC: data. Should stay as a regular RAM
-    reflet_ram #(.addrSize(7), .dataSize(8), .size(108)) mem_data (
+    //0xC0 to 0xEC: data. Should stay as a regular RAM
+    reflet_ram #(.addrSize(6), .dataSize(8), .size(44)) mem_data (
         .clk(clk),
         .reset(reset),
-        .enable(addr[7]),
-        .addr(addr[6:0]),
+        .enable(!enable_rom),
+        .addr(addr[5:0]),
         .data_in(data_out_cpu),
         .data_out(dout_data),
         .write_en(write_en));
@@ -68,8 +69,8 @@ module reflet_8bit_ctrl_with_rom #(
     //0xEE to 0xFF: peripherals
     reflet_peripheral_minimal #(
         .wordsize(8), 
-        .base_addr_size(7), 
-        .base_addr(7'h6D), 
+        .base_addr_size(6), 
+        .base_addr(7'h2D), 
         .clk_freq(clk_freq),
         .enable_exti(enable_exti),
         .enable_gpio(enable_gpio),
@@ -78,9 +79,9 @@ module reflet_8bit_ctrl_with_rom #(
     periph (
         .clk(clk),
         .reset(reset),
-        .enable(addr[7]),
+        .enable(!enable_rom),
         .ext_int(exti),
-        .addr(addr[6:0]),
+        .addr(addr[5:0]),
         .data_in(data_out_cpu),
         .data_out(dout_periph),
         .write_en(write_en),

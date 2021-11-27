@@ -20,7 +20,7 @@ simuGPIO.bin : simuGPIO.asm
 	reflet-asm simuGPIO.asm -o simuGPIO.bin -no-stack-init -word-size 8 -ignore-start
 
 uartLoopBack.bin : uartLoopBack.asm
-	reflet-masm uartLoopBack.asm -o uartLoopBack.bin
+	reflet-asm -word-size 8 uartLoopBack.asm -o uartLoopBack.bin
 
 primes.bin : primes.asm libs/ctrl16addrMap.asm libs/uart.asm libs/printing.asm libs/math.asm libs/string.asm
 	reflet-masm primes.asm libs/ctrl16addrMap.asm libs/uart.asm libs/math.asm libs/string.asm libs/printing.asm -wordsize 16 -o primes.bin
