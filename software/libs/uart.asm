@@ -8,6 +8,7 @@ label printc
     pushr R4 ;waiting loop pointer
     setlab UART ;UART tx_cmd addr
     load WR
+    tbm
     cpy R2
     setlab printcLoop
     cpy R4
@@ -25,6 +26,7 @@ label printc
     str R12
     set 0   ;sending command
     str R2
+    tbm
     popr R4 ;restoring registers
     popr R2
     ret

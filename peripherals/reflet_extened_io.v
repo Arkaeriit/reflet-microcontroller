@@ -31,6 +31,7 @@ module reflet_extended_io #(
     wire [7:0] io_addr;
     wire [7:0] io_ctrl;
     wire gpi_read, gpo_read, gpo_write, edit_gpo, update_ctrl;
+    assign data_out = dout_addr | dout_ctrl;
     reflet_rw_register #(.addr_size(1), .reg_addr(0), .default_value(0)) reg_addr (
         .clk(clk),
         .reset(reset),

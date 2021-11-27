@@ -1,4 +1,3 @@
-wordsize 16
 ;This program is ment to be a bootloader for the 16 bits microcontroller
 ;It wait for 4 seconds for an UART message and if there is, it load it in RAM.
 ;This bootloader never uses the RAM, only peripherals (uart, exti, timer, timer2) and registers
@@ -18,8 +17,10 @@ set 0 ;init registers
 cpy R2
 set 4 
 cpy R1
-set+ 65280 ;0xFF00, base addr for the hardwware info
+setlab hardware_info ;Getting H I addr
+load WR
 cpy R3
+tbm ;Set byte mode as all we are going to read from HI and timer
 load R3
 cpy R4
 set 1
@@ -33,7 +34,9 @@ cpy R5 ;R4 is clk_lsb R5 is clk_msb
 set 15
 add R3
 cpy R3 ;base addr for timer 1
+tbm
 set+ 99
+tbm
 str R3
 cpy R6 ;pre1 is set to 99
 set 1
@@ -49,7 +52,9 @@ str R3 ; mcnt is set to 1
 set 0
 eq R5
 cmpnot
+tbm
 setlab timerHF ;if there is a high frequency clock
+tbm
 jif
 
 ;low freq clock
@@ -63,9 +68,11 @@ add R3
 cpy R3
 read R4
 str R3
+tbm ;finished reading from HI and timer
 goto endTimer
 
 label timerHF
+tbm ;more timer config
 set 1
 add R3
 cpy R3 ; timer2
@@ -74,25 +81,33 @@ str R3 ;enable timer linking
 set 1
 add R3
 cpy R3
+tbm
 set+ 255
+tbm
 str R3 ;pre2 is now 255 to divide the clock speed by 256
 set 1
 add R3
 cpy R3
 read R5
 str R3
+tbm ;end timer config
 
 label endTimer
 ; interupt manager config
-set+ 65284 ;0xFF04, exti
+setlab interrupt_manager
+load WR
+tbm ;Starting to manipulate EXTI
 cpy R3
 set 10
 str R3 ;enable tim2 int and UART int
 set 1
 add R3
 cpy R3
+tbm
 set+ 64
+tbm
 str R3 ;set tim2 int to level 1
+tbm ;finished EXTI config
 set 2
 add R3
 cpy R3 ;R3 is now the status register
@@ -101,7 +116,7 @@ cpy R3 ;R3 is now the status register
 set+ 400
 cpy R6
 cpy R1
-set+ 65305
+set+ 65305 ;TX data register
 cpy R7
 setlab endBoot
 cpy R8
@@ -127,6 +142,7 @@ label endBoot
 set 1
 cpy SR
 set+ 65284 ;0xFF04
+tbm ;about to reset peripherals
 cpy R1
 set 0 
 str R1
@@ -170,6 +186,7 @@ add R1
 cpy R1
 set 0 
 str R1 ;timer and timer2 are cleared
+tbm ;finished reset periph
 cpy R1
 cpy R2
 cpy R3
@@ -188,6 +205,7 @@ set 4
 jmp ;jmp back to the start
 
 label uartHandle
+tbm
 cpy R4 ;protect WR
 read R6 ;Reset timeout
 cpy R1 
@@ -199,9 +217,11 @@ set 1 ;update the target addr
 add R2
 cpy R2
 read R4 ;reset WR
+tbm
 retint
 
 label timHandle
+tbm
 cpy R5 ;protect WR
 set 0
 str R3 ;clear int
@@ -211,5 +231,9 @@ read R1
 sub R9
 cpy R1
 read R5
+tbm
 retint
+
+;Importing symbols with needed address
+@import libs/ctrl16addrMap.asm
 

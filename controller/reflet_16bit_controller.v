@@ -16,9 +16,11 @@ module reflet_16bit_controller #(
     enable_segments = 1,
     enable_power_manager = 1,
     enable_synth = 1,
+    enable_ext_io = 1,
     data_size = 100,
     inst_size = 128,
-    mem_resetable = 0
+    mem_resetable = 0,
+    ext_io_size = 128
     )(
     input clk,
     input reset, //Resets the all system
@@ -40,7 +42,10 @@ module reflet_16bit_controller #(
     output seg_colon,
     output seg_dot,
     //Frequency generator
-    output synth_out
+    output synth_out,
+    //extended io
+    input [ext_io_size-1:0] ext_io_in,
+    output [ext_io_size-1:0] ext_io_out
     );
 
     //reset control
@@ -74,24 +79,26 @@ module reflet_16bit_controller #(
     wire [15:0] dout_inst;
     wire [15:0] dout_data;
     wire [7:0] dout_periph;
-    assign data_in_cpu = dout_inst | dout_data | {8'h0, dout_periph};
+    wire [7:0] din_periph = (addr[0] ? data_out_cpu[15:8] : data_out_cpu[7:0]);
+    wire [15:0] dout_periph_shift = (addr[0] ? {dout_periph, 8'h0} : {8'h0, dout_periph});
+    assign data_in_cpu = dout_inst | dout_data | dout_periph_shift;
     //0x00 to 0x7FFF: instruction. Can be replaced with a ROM
     reflet_inst16 #(.size(inst_size), .resetable(mem_resetable)) mem_inst (
         .clk(clk),
         .reset(reset_full),
         .inst_ready(inst_ready),
         .enable(!addr[15]),
-        .addr(addr[14:0]),
+        .addr(addr[14:1]),
         .data_in(data_out_cpu),
         .data_out(dout_inst),
         .write_en(write_en));
 
     //0x8000 to 0xFEFF: data. Should stay as a regular RAM
-    reflet_ram16 #(.addrSize(15), .size(data_size), .resetable(mem_resetable)) mem_data (
+    reflet_ram #(.addrSize(14), .dataSize(16), .size(data_size), .resetable(mem_resetable)) mem_data (
         .clk(clk),
         .reset(reset_smol),
         .enable(addr[15]),
-        .addr(addr[14:0]),
+        .addr(addr[14:1]),
         .data_in(data_out_cpu),
         .data_out(dout_data),
         .write_en(write_en));
@@ -106,6 +113,8 @@ module reflet_16bit_controller #(
     //0x1A to 0x1B : pwm
     //0x1C to 0x1E : seven segments
     //0x1F to 0x20 : power_manager
+    //0x21         : synth
+    //0x22 to 0x23 : extended IO
     reflet_peripheral #(
         .wordsize(16), 
         .base_addr_size(15), 
@@ -119,7 +128,9 @@ module reflet_16bit_controller #(
         .enable_pwm(enable_pwm),
         .enable_segments(enable_segments),
         .enable_power_manager(enable_power_manager),
-        .enable_synth(enable_synth)) 
+        .enable_synth(enable_synth),
+        .enable_ext_io(enable_ext_io),
+        .ext_io_size(ext_io_size)) 
     periph (
         .clk(clk),
         .reset(reset_smol),
@@ -127,7 +138,7 @@ module reflet_16bit_controller #(
         .ext_int(exti),
         .cpu_enable(cpu_enable),
         .addr(addr[14:0]),
-        .data_in(data_out_cpu[7:0]),
+        .data_in(din_periph),
         .data_out(dout_periph),
         .write_en(write_en),
         .gpi(gpi),
@@ -139,7 +150,9 @@ module reflet_16bit_controller #(
         .seg_select(seg_select),
         .seg_dot(seg_dot),
         .seg_colon(seg_colon),
-        .synth_out(synth_out));
+        .synth_out(synth_out),
+        .ext_io_in(ext_io_in),
+        .ext_io_out(ext_io_out));
 
 endmodule
 

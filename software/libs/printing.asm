@@ -25,7 +25,9 @@ label (print)
         eq R2
         read R4
         jif
+        tbm
         load R1 ;printing the char pointed at R1
+        tbm
         cpy R12 ;saving R1 while calling the function printc
         pushr R1
         mov R1 R12
@@ -76,6 +78,10 @@ label num2dec
     pushr R5 ;R5 will hold 48 to convert numbers to ASCII
     pushr R6 ;loop pointer
     pushr R7 ;pointer to intDiv
+    pushr R8 ;copy of the status register
+    mov R8 SR ;byte mode
+    set 6
+    cpy SR
     mov R3 R2 ;init registers
     setlab num2decLoop
     cpy R6
@@ -100,7 +106,9 @@ label num2dec
         jif
     set 0  ;Null-terminating the string
     str R3
-    popr R7 ;restoring registers
+    mov SR R8
+    popr R8 ;restauring registers
+    popr R7
     popr R6
     popr R5
     popr R4

@@ -1,4 +1,3 @@
-wordsize 8
 ;This software is ment to be used to create a loopback on the UART
 ;It is went to be used with an 8 bit processor and the minimal set of peripherals
 ;R2 should contain the base address for the UART
@@ -28,7 +27,7 @@ retint
 
 label start
 ;configuring the interrupt manager, enable the UART int and leaves it at level 0
-set+ 237
+set8 237
 cpy R1 ;exti base address
 set 2
 str R1
@@ -38,7 +37,7 @@ setint 0
 set 8
 cpy SR
 ;getting the base address of the UART
-set+ 252 
+set8 252 
 cpy R2
 ;infinite loop
 setlab loop

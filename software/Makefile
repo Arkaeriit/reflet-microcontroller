@@ -5,26 +5,26 @@ clean :
 	rm -f *.bin
 
 basicInt.bin : basicInt.asm
-	reflet-masm basicInt.asm -o basicInt.bin
+	reflet-asm -word-size 8 -no-stack-init -ignore-start basicInt.asm -o basicInt.bin
 
 clock.bin : clock.asm libs/ctrl16addrMap.asm
-	reflet-masm clock.asm libs/ctrl16addrMap.asm -o clock.bin
+	reflet-asm -word-size 16 -no-stack-init clock.asm -o clock.bin # Note: there is the argument `no-stack-init` as the stack pointer is initialized in the program
 
 bootloader16.bin : bootloader16.asm
-	reflet-masm -no-prefix -no-stack-init -ignore-start -start-addr 32256 bootloader16.asm -o bootloader16.bin #start addr set to 0x7E00
+	reflet-asm -word-size 16 -no-prefix -no-stack-init -ignore-start -start-addr 32000 bootloader16.asm -o bootloader16.bin #start addr set to 0x7D00
 
 helloWorld.bin : helloWorld.asm libs/ctrl16addrMap.asm libs/uart.asm libs/printing.asm libs/math.asm libs/string.asm
-	reflet-masm helloWorld.asm libs/ctrl16addrMap.asm libs/uart.asm libs/math.asm libs/string.asm libs/printing.asm -o helloWorld.bin
+	reflet-asm helloWorld.asm -o helloWorld.bin -word-size 16 -set-stack-to 32768 #Note: stack starts at 0x8000
 
 simuGPIO.bin : simuGPIO.asm
-	reflet-pasm simuGPIO.asm simuGPIO.bin
+	reflet-asm simuGPIO.asm -o simuGPIO.bin -no-stack-init -word-size 8 -ignore-start
 
 uartLoopBack.bin : uartLoopBack.asm
-	reflet-masm uartLoopBack.asm -o uartLoopBack.bin
+	reflet-asm -word-size 8 uartLoopBack.asm -o uartLoopBack.bin
 
 primes.bin : primes.asm libs/ctrl16addrMap.asm libs/uart.asm libs/printing.asm libs/math.asm libs/string.asm
-	reflet-masm primes.asm libs/ctrl16addrMap.asm libs/uart.asm libs/math.asm libs/string.asm libs/printing.asm -wordsize 16 -o primes.bin
+	reflet-asm primes.asm -word-size 16 -o primes.bin
 
 low_power_mode.bin : low_power_mode.asm libs/ctrl16addrMap.asm
-	reflet-masm low_power_mode.asm libs/ctrl16addrMap.asm -wordsize 16 -o low_power_mode.bin
+	reflet-asm low_power_mode.asm -word-size 16 -o low_power_mode.bin
 

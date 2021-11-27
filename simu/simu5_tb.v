@@ -26,15 +26,18 @@ module simu5_tb;
         .seg_colon(seg_colon),
         .seg_dot(seg_dot));
 
+    integer i;
     initial
     begin
         $dumpfile("simu5_tb.vcd");
         $dumpvars(0, simu5_tb);
+        for(i = 0; i<16; i=i+1)
+            $dumpvars(0, cpu.cpu.registers[i]);
         #5000;
         reset = 0;
         #2;
         reset = 1;
-        #10000;
+        #100000;
         $finish;
     end
 
