@@ -8,7 +8,7 @@ basicInt.bin : basicInt.asm
 	reflet-asm -word-size 8 -no-stack-init -ignore-start basicInt.asm -o basicInt.bin
 
 clock.bin : clock.asm libs/ctrl16addrMap.asm
-	reflet-masm clock.asm libs/ctrl16addrMap.asm -o clock.bin
+	reflet-asm -word-size 16 -no-stack-init clock.asm -o clock.bin # Note: there is the argument `no-stack-init` as the stack pointer is initialized in the program
 
 bootloader16.bin : bootloader16.asm
 	reflet-asm -word-size 16 -no-prefix -no-stack-init -ignore-start -start-addr 32000 bootloader16.asm -o bootloader16.bin #start addr set to 0x7D00
