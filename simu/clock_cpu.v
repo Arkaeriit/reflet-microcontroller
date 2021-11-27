@@ -61,7 +61,7 @@ module clock_cpu #(
     wire [7:0] dout_periph;
     wire [7:0] din_periph = (addr[0] ? data_out_cpu[15:8] : data_out_cpu[7:0]);
     wire [15:0] dout_periph_shift = (addr[0] ? {dout_periph, 8'h0} : {8'h0, dout_periph});
-    assign data_in_cpu = dout_inst | dout_data | {8'h0, dout_periph_shift};
+    assign data_in_cpu = dout_inst | dout_data | dout_periph_shift;
     //0x00 to 0x7FFF: instruction. Should be replaced with a ROM for real use
     rom5 rom (
         .clk(clk),

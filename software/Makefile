@@ -26,5 +26,5 @@ primes.bin : primes.asm libs/ctrl16addrMap.asm libs/uart.asm libs/printing.asm l
 	reflet-masm primes.asm libs/ctrl16addrMap.asm libs/uart.asm libs/math.asm libs/string.asm libs/printing.asm -wordsize 16 -o primes.bin
 
 low_power_mode.bin : low_power_mode.asm libs/ctrl16addrMap.asm
-	reflet-masm low_power_mode.asm libs/ctrl16addrMap.asm -wordsize 16 -o low_power_mode.bin
+	reflet-asm low_power_mode.asm -word-size 16 -o low_power_mode.bin
 

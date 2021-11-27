@@ -1,5 +1,7 @@
 ; This is a small demo to test the low-power mode of the processor
 
+@import libs/ctrl16addrMap.asm
+
 label start
     setlab data
     load WR
@@ -11,37 +13,37 @@ label start
     load WR
     cpy R9
     set 2  ;enabeling the low-power mode
-    str R9
+    str8 R9
     set 1
     add R9
     cpy R1
     set+ 100 ;choosing the speed factor, a bit slower that 2x normal speed
-    str R1
+    str8 R1
     ;runing the function again
     callf loopOverWAD
     ;reseting the max speed
     set 0
-    str R9
+    str8 R9
     ;setting a timer
     setlab timer
     load WR
     cpy R1
     set+ 100
-    str R1
+    str8 R1
     set 2
     add R1
     cpy R1
     set+ 100
-    str R1
-    ;enabeling the timer interrupt in the einterupt manager
+    str8 R1
+    ;enabeling the timer interrupt in the interupt manager
     setlab interrupt_manager
     load WR
     cpy R1
     set 4 ;enabeling the interupt
-    str R1
+    str8 R1
     ;making the processor sleep until an interupt with level 0 is raised
     set+ 17 ; 0b0001 0001, int 0 and sleep mode
-    str R9
+    str8 R9
     ;calling the function a last time
     callf loopOverWAD
     quit
