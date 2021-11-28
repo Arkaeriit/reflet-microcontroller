@@ -15,7 +15,7 @@ module uart_sending #(
 
     // Unused monitor wires
     wire receive_done;
-    wire data_rx;
+    wire [7:0] data_rx;
 
     // Choosing what data to send
     reg [7:0] data_tx;
