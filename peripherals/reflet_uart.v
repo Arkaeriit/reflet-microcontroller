@@ -54,10 +54,12 @@ module reflet_uart #(
         .data_in(data_in[7:0]),
         .data_out(dout_tx_data),
         .data(tx_data));
-    reflet_rw_register #(.addr_size(2), .reg_addr(2), .default_value(1)) reg_rx_cmd(
+    reflet_rwe_register #(.addr_size(2), .reg_addr(2), .default_value(1)) reg_rx_cmd(
         .clk(clk),
-        .reset(reset & !receive_done),
+        .reset(reset),
         .enable(using_uart),
+        .data_override(8'h0),
+        .override(receive_done),
         .addr(offset),
         .write_en(write_en),
         .data_in(data_in[7:0]),

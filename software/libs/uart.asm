@@ -44,3 +44,33 @@ label CR
     popr R1
     ret
 
+;------------------------------
+;waits until a new char is received on the uart and the writes it to R1
+label getc
+    pushr R2 ; periph addr
+    pushr R3 ; stores label
+    setlab UART
+    load WR
+    cpy R2
+    set 2
+    add R2
+    cpy R2 ;R2 now holds the rx_cmd address
+    setlab getcLoop
+    cpy R3
+    set 1
+    str8 R2 ;Now, there is a non-0 value in rx_cmd meaning that we know that when there will be a 0 back, we received a char
+    cpy R1 ;Used to temporaly store the value expected to be in rx_cmd
+    label getcLoop
+        load8 R2
+        eq R1
+        read R3
+        jif
+    set 1  ;A byte have been written, we can get it in rx_data register
+    add R2
+    cpy R2
+    load8 R2
+    cpy R1
+    popr R3 ;restauring stored value
+    popr R2
+    ret
+

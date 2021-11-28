@@ -1,5 +1,5 @@
 
-all : basicInt.bin clock.bin bootloader16.bin helloWorld.bin simuGPIO.bin uartLoopBack.bin primes.bin low_power_mode.bin
+all : basicInt.bin clock.bin bootloader16.bin helloWorld.bin simuGPIO.bin uartLoopBack.bin primes.bin low_power_mode.bin uartLoopBack_16bits.bin
 
 clean :
 	rm -f *.bin
@@ -27,4 +27,7 @@ primes.bin : primes.asm libs/ctrl16addrMap.asm libs/uart.asm libs/printing.asm l
 
 low_power_mode.bin : low_power_mode.asm libs/ctrl16addrMap.asm
 	reflet-asm low_power_mode.asm -word-size 16 -o low_power_mode.bin
+
+uartLoopBack_16bits.bin : uartLoopBack_16bits.asm libs/ctrl16addrMap.asm libs/uart.asm
+	reflet-asm uartLoopBack_16bits.asm -word-size 16 -set-stack-to 32768 -o uartLoopBack_16bits.bin
 
