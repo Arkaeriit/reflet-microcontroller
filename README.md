@@ -15,6 +15,7 @@ To minimize the synthesis time and size of a reflet microcontroller, peripherals
 
 ## Hardware info 
 This peripheral is always active. It is used to read the frequency of the system clock and which peripherals are enabled or not.
+
 |Offset with base address|Type|Register name|Effect|
 |------------------------|----|-------------|------|
 |0|ro|clk\_lsb|Contain the 8 LSB of the frequency of the main clock in MHz.|
@@ -24,6 +25,7 @@ This peripheral is always active. It is used to read the frequency of the system
 
 ## Interrupt manager
 The CPU got only 4 interrupt lines, but more than 4 peripherals can raise interrupts. This module lets the user control which peripherals can use interrupts and the priority of each interrupt.
+
 |Offset with base address|Type|Register name|Effect|
 |------------------------|----|-------------|------|
 |0|r/w|int\_en|Bit 0 control if the interrupt from the GPIO is enabled. Bit 1 control if the interrupt from the UART is enabled. Bit 2 control if the interrupt from the timer is enabled. Bit 3 control if the interrupt from timer 2 is enabled.|
@@ -34,6 +36,7 @@ The CPU got only 4 interrupt lines, but more than 4 peripherals can raise interr
 
 ## GPIO
 The most basic way to interact with the external world. It is made of a 16 bits parallel output and a 16 bits parallel input. The input can trigger an interrupt on the rising or falling edges of each input pin.
+
 |Offset with base address|Type|Register name|Effect|
 |------------------------|----|-------------|------|
 |0|r/w|gpo\_lsb|Control the 8 first pins of the parallel output.|
@@ -47,6 +50,7 @@ The most basic way to interact with the external world. It is made of a 16 bits 
 
 ## Timer
 A 24 bits timer. This timer contains two prescalers (pre1 and pre2) and the main counter (mcnt). Each of these 3 values is on 8 bits. The timer raise an interrupt each `(pre1 + 1) * (pre2 + 1) * (mcnt)` cycles of the system clock.
+
 |Offset with base address|Type|Register name|Effect|
 |------------------------|----|-------------|------|
 |0|r/w|pre1|Control the value of pre1.|
@@ -55,6 +59,7 @@ A 24 bits timer. This timer contains two prescalers (pre1 and pre2) and the main
 
 ## Timer 2
 A 23 bits timer. This timer behaves in a similar way to the main timer except that pre1 is on 7 bits instead of 8 and that we can select to use either the system clock or the output of the main timer as the input source. This makes it possible to chain timer and timer2 to have a resulting 47 bits timer.
+
 |Offset with base address|Type|Register name|Effect|
 |------------------------|----|-------------|------|
 |0|r/w|pre1|Bit 0 should be set to 0 to use the system clock as an input source and set to 1 to use timer 1 as the input source. Bits 1 to 7 control the value of pre1.|
@@ -63,6 +68,7 @@ A 23 bits timer. This timer behaves in a similar way to the main timer except th
 
 ## UART
 A UART module with a baud rate locked at 9600. Its behavior is very similar to the IO functions of the Reflet simulator. To send a message, write its value in the `tx_data` register and put a 0 in `tx_cmd`. To receive a message, either enable the interrupt in the interrupt manager or wait for the value in the `rx_cmd` register to be set to 0. The data will then be readable in the `rx_data` register.
+
 |Offset with base address|Type|Register name|Effect|
 |------------------------|----|-------------|------|
 |0|r/w|tx\_cmd |Set to 0 to send a message.|
@@ -72,6 +78,7 @@ A UART module with a baud rate locked at 9600. Its behavior is very similar to t
 
 ## PWM
 A PWM module with up to 8 bits of resolution. Its frequency is configurable but the higher the frequency, the smaller the resolution. Its period is controllable with the `freq` register and its duty cycle with the `duty` register. The resulting duty cycle will be duty/freq.
+
 |Offset with base address|Type|Register name|Effect|
 |------------------------|----|-------------|------|
 |0|r/w|freq|Set the period of the PWM.|
@@ -79,6 +86,7 @@ A PWM module with up to 8 bits of resolution. Its frequency is configurable but 
 
 ## Seven segments display controller
 Even if this could be done with GPIO and a timer, a controller for seven segments display could be useful. This module is made to control 4 digits displays with colons and dots. In the selection bits, a 1 indicates that the digit is active. In the segments bits, 0 indicates that the segments must be lit.
+
 |Offset with base address|Type|Register name|Effect|
 |------------------------|----|-------------|------|
 |0|r/w|ctrl |Bit 0 is used to enable or disable the display. Bit 1 is used to enable the colon. Bits 4 to 7 are used to select which dots must be turned on. Bits 2 and 3 are unused.|
@@ -87,6 +95,7 @@ Even if this could be done with GPIO and a timer, a controller for seven segment
 
 ## Power manager 
 This module is meant to either reduce the speed of the processor or disable it until an interrupt happens. To reduce the speed, a PWM signal is sent to the enable pin of the CPU.
+
 |Offset with base address|Type|Register name|Effect|
 |------------------------|----|-------------|------|
 |0|r/w|sleep|When bit 0 is set to 1, the processor is disabled until a detected interrupt is raised. When bit 1 is set to 1, the processor is slowed down by a factor controlled in the power register. Bits 2 and 3 are unused. Bit 4 to 7 are used to tell if interrupts 0 to 3  are watched. If bit 4 is set to 1, the module will watch for interrupt 0 and unlock the processor if interrupt 0 is raised. Bit 5 will enable interrupt 1 and so on. |
@@ -97,6 +106,7 @@ The documentation will come when the module will be done
 
 ## Extended IO
 If you need more than the 16 inputs and 16 outputs of the GPIO module, you can use this one to have up to 256 additional inputs and 256 output. The IOs can be selected with an address on a register and controlled with the other one. The inputs can not raise interrupt. The actual number of IO is chosen with a parameter of the controller module. 
+
 |Offset with base address|Type|Register name|Effect|
 |------------------------|----|-------------|------|
 |0|r/w|address|Select which IO is selected.|
@@ -108,7 +118,8 @@ The folder controller contains files used to make 8 bits or a 16 bits microcontr
 ## 8 bits controller
 The 8 bits controller is very limited by its addressable space and thus, is only equipped with a limited amount of peripherals.
 
-The memory map is the following
+The memory map is the following:
+
 |Start|End |Content|
 |-----|----|-------|
 |0x00 |0x7F|Instructions|
@@ -121,9 +132,10 @@ The memory map is the following
 |0xFC |0xFF|UART|
 
 ### Top-level module
-The top-level module is in the `controller` folder and is named reflet\_8bit\_controller. It can not be used as-is because there is no way to fill its instruction memory. To use it, you must copy the top-level module and replace the mem_inst module with a ROM.
+The top-level module is in the `controller` folder and is named reflet\_8bit\_controller. It can not be used as-is because there is no way to fill its instruction memory. To use it, you must copy the top-level module and replace the mem\_inst module with a ROM.
 
 The parameters for this module are the following:
+
 |Name | Description | Default value|
 |------|------|-------| 
 |clk\_freq|The frequency of the main clock in Hertz.|1 000 000|
@@ -134,6 +146,7 @@ The parameters for this module are the following:
 |mem\_resetable| If not set to 0, the memories are reset to 0 when the reset signal is pulled down. This can be incompatible with some FPGA's memory blocks. |0|
 
 The ports of this module are the following:
+
 |Name |Type   |Description|
 |------|------|-------|
 |clk     |input|The main clock.|
@@ -148,7 +161,8 @@ The ports of this module are the following:
 ## 16 bits controller
 The 16 bits controller is equipped with all the peripherals and its bigger addressable space makes it way easier to program for.
 
-The memory map is the following
+The memory map is the following:
+
 |Start |End   |Content|
 |------|------|-------|
 |0x0000|0x7CFF|Instructions|
@@ -172,6 +186,7 @@ The memory map is the following
 The top-level module is in the `controller` folder and is named reflet\_16bit\_controller. Unlike its 8-bit counterpart, it can be used on its own as it is equipped with a bootloader that can be used to load a program in the data memory. Of course, if it is needed to only use a single program with an implementation, the mem\_inst module can be replaced with a ROM.
 
 The parameters for this module are the following:
+
 |Name | Description | Default value|
 |------|------|-------| 
 |clk\_freq|The frequency of the main clock in Hertz.|1 000 000|
@@ -191,6 +206,7 @@ The parameters for this module are the following:
 |ext\_io\_size|The size of the extended io ports.|128|
 
 The ports of this module are the following:
+
 |Name |Type   |Description|
 |------|------|-------|
 |clk     |input|The main clock.|
