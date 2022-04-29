@@ -47,6 +47,7 @@ module reflet_inst16 #(
         ( addr_init == 3'h2 ? 16'hF010 : //set 0; load WR
         ( addr_init == 3'h3 ? 16'h003E : //jmp
           0))));
+    wire ram_en = (inst_ready ? enable : 1);
 
 
     //Input selection
@@ -63,7 +64,7 @@ module reflet_inst16 #(
     reflet_ram #(.size(size), .dataSize(16), .addrSize(14), .resetable(resetable)) ram (
         .clk(clk),
         .reset(reset),
-        .enable(enable),
+        .enable(ram_en),
         .addr(addr_used),
         .data_in(data_in_used),
         .data_out(ram_out),
