@@ -1,7 +1,7 @@
 # This makefile is used to use the various tesbenches vith icarus verilog
 # And then show graphs with gtkwave
 
-CPU := ../cpu/reflet_addr.v ../cpu/reflet_alignement_fixer.v ../cpu/reflet_alu.v ../cpu/reflet_cpu.v ../cpu/reflet_interrupt.v ../cpu/reflet_stack.v
+CPU := ../cpu/reflet_addr.v ../cpu/reflet_alignment_fixer.v ../cpu/reflet_alu.v ../cpu/reflet_cpu.v ../cpu/reflet_interrupt.v ../cpu/reflet_stack.v ../cpu/reflet_full_mem_interface.v ../cpu/reflet_mini_mem_interface.v
 CTRL := ../controller/reflet_16bit_controller.v ../controller/reflet_8bit_controller.v ../controller/reflet_blink.v ../controller/reflet_bootloader16_rom.v ../controller/reflet_inst16.v ../controller/reflet_peripheral_minimal.v ../controller/reflet_peripheral.v ../controller/reflet_ram.v
 SIM_TOOLS := rom1.v rom2.v rom3.v rom4.v rom5.v rom6.v rom7.v ./reflet_8bit_ctrl_with_rom.v ./clock_cpu.v ./uart_sending.v
 REGISTERS := ../peripherals/reflet_ro_register.v ../peripherals/reflet_rwe_register.v ../peripherals/reflet_rw_register.v
