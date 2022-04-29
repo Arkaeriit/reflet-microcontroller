@@ -65,7 +65,7 @@ module simu2();
             $dumpvars(0, cpu.registers[i]);
         #10;
         reset = 1;
-        #15000;
+        #25000;
         $finish;
     end
 

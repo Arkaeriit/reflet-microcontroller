@@ -1,4 +1,4 @@
-//The software used to make this ROM is software/lowa_power_mode.asm
+//The software used to make this ROM is software/low_power_mode.asm
 module rom6(input clk, input enable, input [9-1:0] addr, output [16-1:0] data);
     reg [16-1:0] data_reg;
     always @ (posedge clk)

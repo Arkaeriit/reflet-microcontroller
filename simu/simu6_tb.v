@@ -91,7 +91,7 @@ module simu6 ();
         $dumpvars(0, simu6);
         for(i = 0; i<16; i=i+1)
             $dumpvars(0, cpu.registers[i]);
-        #400000;
+        #800000;
         $finish;
     end
 
