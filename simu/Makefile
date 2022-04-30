@@ -10,8 +10,7 @@ REFLET := $(CPU) $(CTRL) $(PERIPH)
 HEADERS := ./reflet.vh
 TEST_BENCHES := pwm_tb reflet_8bit_ctrl_tb reflet_gpio_tb simu1_tb simu2_tb simu3_tb simu5_tb synth_tb uart_tb simu6_tb timer_tb ext_gpio_tb reflet_16bit_ctrl_tb uart_sending_tb simu7_tb
 
-
-all : pwm_tb.vcd reflet_8bit_ctrl_tb.vcd reflet_gpio_tb.vcd simu1_tb.vcd simu2_tb.vcd simu3_tb.vcd simu5_tb.vcd synth_tb.vcd uart_tb.vcd simu6_tb.vcd timer_tb.vcd ext_gpio_tb.vcd # reflet_16bit_ctrl_tb.vcd # reflet_16bit_ctrl_tb.vcd can be left out in order not to wait for the very long simulation
+all :
 
 define test_bench_template
 $(1).vvp: $$(REFLET) $$(SIM_TOOLS) $$(HEADERS) $(1).v
@@ -22,7 +21,7 @@ $(1).vcd: $(1).vvp
 	@echo "[VDC]      $(1).vvp"
 	@vvp $$<
 
-.PHONY: $(1).vcd
+.PHONY: $(1)
 $(1): $(1).vcd
 	@echo "[GTKWAVE]  $(1).vcd"
 	@gtkwave $$<
@@ -41,4 +40,6 @@ endef
 $(foreach tb, $(TEST_BENCHES), $(eval $(call test_bench_template, $(tb))))
 
 clean : $(ALL_CLEAN)
+
+all : $(ALL_VCD)
 

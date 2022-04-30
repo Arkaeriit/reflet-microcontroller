@@ -61,13 +61,14 @@ module shift_r(
 
     reg [127:0] register;
 
+    integer i;
     always @ (posedge clk) 
         if(!reset)
             register <= ~0;
         else
         begin
             register[0] = in;
-            for(integer i=0; i<127; i++)
+            for(i=0; i<127; i++)
                 register[i+1] <= register[i];
         end
 
