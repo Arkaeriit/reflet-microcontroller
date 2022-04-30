@@ -1,4 +1,4 @@
-//This simulation print Heelo, world! with the UART
+//This simulation print Hello, world! with the UART
 module simu2();
 
     reg clk = 0;
@@ -51,8 +51,8 @@ module simu2();
     rom2 rom(
         .clk(clk), 
         .enable(!addr[15]), 
-        .addr(addr[10:1]),
-        .data_out(data_out_rom));
+        .addr(addr[14:1]),
+        .data(data_out_rom));
     reflet_ram #(.addrSize(14), .dataSize(16), .size(100)) ram(
         .clk(clk), 
         .reset(reset), 

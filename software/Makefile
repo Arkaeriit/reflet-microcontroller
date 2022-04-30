@@ -19,6 +19,9 @@ bootloader16.bin : bootloader16.asm
 helloWorld.bin : helloWorld.asm libs/ctrl16addrMap.asm libs/uart.asm libs/printing.asm libs/math.asm libs/string.asm
 	reflet-asm helloWorld.asm -o helloWorld.bin -word-size 16 -set-stack-to 32768 #Note: stack starts at 0x8000
 
+../simu/rom2.v : helloWorld.bin
+	ROM_maker -name rom2 -input_file $< -output_file $@ -wordsize 2 -min_addr_size 14
+
 simuGPIO.bin : simuGPIO.asm
 	reflet-asm simuGPIO.asm -o simuGPIO.bin -no-stack-init -word-size 8 -ignore-start
 

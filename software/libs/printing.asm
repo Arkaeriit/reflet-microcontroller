@@ -12,10 +12,6 @@ label (print)
     pushr R4 ;end loop pointer
     pushr R5 ;contain the constant 1
     pushr R6 ;pointer to printc
-    pushr R7 ;copy of the status register
-    mov R7 SR ;byte mode
-    set 6
-    cpy SR
     setlab (print)-loop
     cpy R3
     setlab (print)-endloop
@@ -47,9 +43,7 @@ label (print)
         read R3 ;going back on top of the loop
         jmp
     label (print)-endloop
-    mov SR R7
-    popr R7 ;restauring registers
-    popr R6
+    popr R6 ;restauring registers
     popr R5
     popr R4
     popr R3
