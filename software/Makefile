@@ -13,6 +13,9 @@ clock.bin : clock.asm libs/ctrl16addrMap.asm
 bootloader16.bin : bootloader16.asm
 	reflet-asm -word-size 16 -no-prefix -no-stack-init -ignore-start -start-addr 32000 bootloader16.asm -o bootloader16.bin #start addr set to 0x7D00
 
+../controller/reflet_bootloader16_rom.v : bootloader16.bin
+	ROM_maker -name reflet_bootloader16_rom -input_file $< -output_file $@ -wordsize 2 -start_addr 16000 -min_addr_size 14
+
 helloWorld.bin : helloWorld.asm libs/ctrl16addrMap.asm libs/uart.asm libs/printing.asm libs/math.asm libs/string.asm
 	reflet-asm helloWorld.asm -o helloWorld.bin -word-size 16 -set-stack-to 32768 #Note: stack starts at 0x8000
 

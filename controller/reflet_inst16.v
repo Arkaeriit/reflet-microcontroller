@@ -74,7 +74,7 @@ module reflet_inst16 #(
         .clk(clk),
         .enable(enable),
         .addr(addr_used),
-        .data_out(bootlader_out));
+        .data(bootlader_out));
 
 endmodule
 

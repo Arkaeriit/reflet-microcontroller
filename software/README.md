@@ -9,3 +9,5 @@ The `libs` folder contain all the libraries from the original Reflet repository 
 * `uart.asm` implement the functions from `basicIO.asm` but meant to be used on the 16 bit microcontroller instead of the simulator.
 * `ctrl16addrMap.asm` contain the addresses of the peripherals of the 16 bits microcontroller.
 
+The makefile let you build some ROMs used in the controller or the simulation. If you want to rebuild them you will [ROM\_maker](https://github.com/Arkaeriit/ROM_maker).
+
