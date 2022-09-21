@@ -3,7 +3,7 @@
 
 CPU := ../cpu/reflet_addr.v ../cpu/reflet_alignment_fixer.v ../cpu/reflet_alu.v ../cpu/reflet_cpu.v ../cpu/reflet_interrupt.v ../cpu/reflet_stack.v ../cpu/reflet_full_mem_interface.v ../cpu/reflet_mini_mem_interface.v
 CTRL := ../controller/reflet_16bit_controller.v ../controller/reflet_8bit_controller.v ../controller/reflet_blink.v ../controller/reflet_bootloader16_rom.v ../controller/reflet_inst16.v ../controller/reflet_peripheral_minimal.v ../controller/reflet_peripheral.v ../controller/reflet_ram.v
-SIM_TOOLS := rom1.v rom2.v rom3.v rom4.v rom5.v rom6.v rom7.v ./reflet_8bit_ctrl_with_rom.v ./clock_cpu.v ./uart_sending.v
+SIM_TOOLS := rom1.v rom2.v rom3.v rom4.v rom5.v rom6.v rom7.v ./reflet_8bit_ctrl_with_rom.v ./clock_cpu.v ./uart_sending.v ./uart_sending_msg.v
 REGISTERS := ../peripherals/reflet_ro_register.v ../peripherals/reflet_rwe_register.v ../peripherals/reflet_rw_register.v
 PERIPH := ../peripherals/reflet_counter.v ../peripherals/reflet_exti.v ../peripherals/reflet_gpio.v ../peripherals/reflet_hardware_info.v ../peripherals/reflet_pwm.v ../peripherals/reflet_seven_segment.v ../peripherals/reflet_synth.v ../peripherals/reflet_timer_2.v ../peripherals/reflet_timer.v ../peripherals/reflet_uart.v ../peripherals/reflet_basics.v ../peripherals/reflet_power_manager.v ../peripherals/reflet_extened_io.v  $(REGISTERS) 
 REFLET := $(CPU) $(CTRL) $(PERIPH)

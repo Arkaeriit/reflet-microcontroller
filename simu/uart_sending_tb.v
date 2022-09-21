@@ -22,7 +22,7 @@ module uart_sending_tb();
         $dumpvars(0, uart_sending_tb);
         #10;
         reset <= 1;
-        #100000;
+        #400000;
         $finish;
     end
     
