@@ -7,7 +7,7 @@ module reflet_16bit_ctrl_tb ();
     
     reg clk = 0;
     always #1 clk = !clk;
-    wire rx, quit;
+    wire rx, quit, debug;
     reg reset_uart_emmiter = 0;
 
     reflet_16bit_controller #(
@@ -25,13 +25,14 @@ module reflet_16bit_ctrl_tb ();
         .reset(1'h1),
         .reset_limited(1'h1),
         .rx(rx),
+        .debug(debug),
         .gpi(16'h0),
         .quit(quit));
 
-    uart_sending_msg #(.clk_freq(1000000), .msg_size_byte(5)) prg (
+    uart_sending_msg #(.clk_freq(1000000), .msg_size_byte(6)) prg (
         .clk(clk),
         .reset(reset_uart_emmiter),
-        .msg(40'h0E01020304),
+        .msg(48'h0E0F01020304),
         .rx(1'b1),
         .tx(rx));
 
