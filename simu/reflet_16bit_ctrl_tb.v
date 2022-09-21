@@ -42,7 +42,10 @@ module reflet_16bit_ctrl_tb ();
         $dumpfile("reflet_16bit_ctrl_tb.vcd");
         $dumpvars(0, reflet_16bit_ctrl_tb);
         for(i = 0; i<16; i=i+1)
+        begin
             $dumpvars(0, ctrl.cpu.registers[i]);
+            $dumpvars(0, ctrl.mem_inst.ram.memory_ram[i]);
+        end
         #5000;
         reset_uart_emmiter <= 1;
         #10000000;
