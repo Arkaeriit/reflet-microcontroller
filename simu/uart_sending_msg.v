@@ -15,7 +15,8 @@ module uart_sending_msg #(
     output tx
     );
 
-    reg [$clog2(msg_size_byte)-1:0] byte_index;
+    reg [$clog2(msg_size_byte)+1:0] byte_index;
+    wire [$clog2(msg_size_byte)+1:0] byte_index_max = msg_size_byte;
     wire end_transmit, receive_done;
     reg start_transmit, start_transmit_sl;
 
@@ -31,7 +32,10 @@ module uart_sending_msg #(
             if (end_transmit)
                 byte_index <= byte_index + 1;
             start_transmit <= start_transmit_sl;
-            start_transmit_sl <= end_transmit;
+            if (byte_index+1 < byte_index_max)
+                start_transmit_sl <= end_transmit;
+            else
+                start_transmit_sl <= 0;
         end
 
     wire [8*msg_size_byte-1:0] shifted_msg = msg >> (byte_index * 8);

@@ -1,6 +1,6 @@
 /*--------------------------------------------------------\
 |This module contains an UART and use it to send messages.|
-|It sends all chars form 0 to 255 and repeats.            |
+|It sends all chars form 0 to 255 once.                   |
 \--------------------------------------------------------*/
 
 module uart_sending #(
