@@ -47,8 +47,6 @@ module reflet_inst16 #(
         ( addr_init == 3'h2 ? 16'hF010 : //set 0; load WR
         ( addr_init == 3'h3 ? 16'h003E : //jmp
           0))));
-    wire ram_en = (inst_ready ? enable : 1);
-
 
     //Input selection
     wire [13:0] addr_used = ( inst_ready ? addr : {11'h0, addr_init} );
@@ -59,6 +57,11 @@ module reflet_inst16 #(
     wire [15:0] ram_out;
     wire [15:0] bootlader_out;
     assign data_out = ram_out | bootlader_out;
+
+    //Address validation
+    wire [13:0] bl_start_addr = 14'h3E80;
+    wire ram_en = (addr_used < bl_start_addr) && (enable || !inst_ready);
+    wire bl_en = enable && (addr_used >= bl_start_addr);
 
     //Actual memories
     reflet_ram #(.size(size), .dataSize(16), .addrSize(14), .resetable(resetable)) ram (
@@ -72,7 +75,7 @@ module reflet_inst16 #(
 
     reflet_bootloader16_rom bootloader (
         .clk(clk),
-        .enable(enable),
+        .enable(bl_en),
         .addr(addr_used),
         .data(bootlader_out));
 
