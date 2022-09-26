@@ -22,11 +22,14 @@ helloWorld.bin : helloWorld.asm libs/ctrl16addrMap.asm libs/uart.asm libs/printi
 ../simu/rom2.v : helloWorld.bin
 	ROM_maker -name rom2 -input_file $< -output_file $@ -wordsize 2 -min_addr_size 14
 
+../simu/rom4.v : uartLoopBack.bin
+	ROM_maker -name rom4 -input_file $< -output_file $@ -wordsize 1 -min_addr_size 7
+
 simuGPIO.bin : simuGPIO.asm
 	reflet-asm simuGPIO.asm -o simuGPIO.bin -no-stack-init -word-size 8 -ignore-start
 
 uartLoopBack.bin : uartLoopBack.asm
-	reflet-asm -word-size 8 uartLoopBack.asm -o uartLoopBack.bin
+	reflet-asm -word-size 8 -no-stack-init uartLoopBack.asm -o uartLoopBack.bin
 
 primes.bin : primes.asm libs/ctrl16addrMap.asm libs/uart.asm libs/printing.asm libs/math.asm libs/string.asm
 	reflet-asm primes.asm -word-size 16 -o primes.bin
