@@ -213,6 +213,19 @@ set 0 ;clear int
 str R3
 load R7 ;reading the char
 str R2
+;cpy R12 ;Uncomment this section for UART loop back.
+;set 2
+;cc2
+;add R7
+;cpy R11
+;read R12
+;str R11
+;set 1
+;cc2
+;add R11
+;cpy R11
+;set 0
+;str R11
 set 1 ;update the target addr
 add R2
 cpy R2
