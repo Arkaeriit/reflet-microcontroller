@@ -8,7 +8,7 @@ module reflet_8bit_ctrl_tb ();
     reg reset_cpu = 0;
     reg reset_uart = 0;
 
-    reflet_8bit_ctrl_with_rom #(.clk_freq(100_000))  ctrl (
+    reflet_8bit_ctrl_with_rom #(.clk_freq(1_000_000))  ctrl (
         .clk(clk),
         .reset_in(reset_cpu),
         .debug(),
@@ -18,7 +18,7 @@ module reflet_8bit_ctrl_tb ();
         .tx(tx),
         .rx(rx));
 
-    uart_sending #(.clk_freq(100_000), .baud_rate(9600)) uart_s (
+    uart_sending #(.clk_freq(1_000_000), .baud_rate(9600)) uart_s (
         .clk(clk),
         .reset(reset_uart),
         .rx(tx),
@@ -36,7 +36,7 @@ module reflet_8bit_ctrl_tb ();
         reset_cpu <= 1;
         #1000;
         reset_uart <= 1;
-        #100000;
+        #1000000;
         $finish;
     end
 
