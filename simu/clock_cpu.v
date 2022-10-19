@@ -53,7 +53,7 @@ module clock_cpu #(
         .write_en(write_en),
         .quit(quit),
         .debug(debug),
-        .ext_int(exti));
+        .interrupt_request(exti));
 
     //memory map
     wire [15:0] dout_inst;
@@ -96,7 +96,7 @@ module clock_cpu #(
         .clk(clk),
         .reset(reset),
         .enable(addr[15]),
-        .ext_int(exti),
+        .interrupt_request(exti),
         .addr(addr[14:0]),
         .data_in(din_periph),
         .data_out(dout_periph),

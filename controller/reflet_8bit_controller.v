@@ -42,7 +42,7 @@ module reflet_8bit_controller #(
         .write_en(write_en),
         .quit(quit),
         .debug(debug),
-        .ext_int(exti));
+        .interrupt_request(exti));
 
     //memory map
     wire [7:0] dout_inst;
@@ -87,7 +87,7 @@ module reflet_8bit_controller #(
         .clk(clk),
         .reset(reset_used),
         .enable(addr[7]),
-        .ext_int(exti),
+        .interrupt_request(exti),
         .addr(addr[6:0]),
         .data_in(data_out_cpu),
         .data_out(dout_periph),

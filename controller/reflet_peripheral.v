@@ -53,7 +53,7 @@ module reflet_peripheral #(
     input clk,
     input reset,
     input enable,
-    output [3:0] ext_int,
+    output [3:0] interrupt_request,
     output cpu_enable,
     //system bus
     input [base_addr_size-1:0] addr,
@@ -131,7 +131,7 @@ module reflet_peripheral #(
                 .data_in(data_in[7:0]),
                 .data_out(dout_exti),
                 .write_en(write_en),
-                .cpu_int(ext_int),
+                .cpu_int(interrupt_request),
                 .gpio_int_in(int_gpio),
                 .uart_int_in(int_uart),
                 .timer_int_in(int_timer),
@@ -139,7 +139,7 @@ module reflet_peripheral #(
         else
         begin
             assign dout_exti = 0;
-            assign ext_int = 0;
+            assign interrupt_request = 0;
         end
     endgenerate
 
@@ -275,7 +275,7 @@ module reflet_peripheral #(
                 .data_out(dout_power),
                 .write_en(write_en),
                 .cpu_enable(cpu_enable),
-                .cpu_interrupts(ext_int));
+                .cpu_interrupts(interrupt_request));
         else
         begin
             assign cpu_enable = 1;

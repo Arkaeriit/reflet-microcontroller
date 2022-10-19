@@ -41,7 +41,7 @@ module reflet_8bit_ctrl_with_rom #(
         .write_en(write_en),
         .quit(quit),
         .debug(debug),
-        .ext_int(exti));
+        .interrupt_request(exti));
 
     //memory map
     wire [7:0] dout_inst;
@@ -80,7 +80,7 @@ module reflet_8bit_ctrl_with_rom #(
         .clk(clk),
         .reset(reset),
         .enable(!enable_rom),
-        .ext_int(exti),
+        .interrupt_request(exti),
         .addr(addr[5:0]),
         .data_in(data_out_cpu),
         .data_out(dout_periph),

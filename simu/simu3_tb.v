@@ -60,7 +60,7 @@ module simu3();
         .addr(addr), 
         .data_out(data_out_cpu), 
         .write_en(write_en),
-        .ext_int(int),
+        .interrupt_request(int),
         .debug(debug));
 
     initial

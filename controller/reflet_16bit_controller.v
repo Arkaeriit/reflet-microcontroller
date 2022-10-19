@@ -73,7 +73,7 @@ module reflet_16bit_controller #(
         .write_en(write_en),
         .quit(quit),
         .debug(debug),
-        .ext_int(exti));
+        .interrupt_request(exti));
 
     //memory map
     wire [15:0] dout_inst;
@@ -135,7 +135,7 @@ module reflet_16bit_controller #(
         .clk(clk),
         .reset(reset_smol),
         .enable(addr[15]),
-        .ext_int(exti),
+        .interrupt_request(exti),
         .cpu_enable(cpu_enable),
         .addr(addr[14:0]),
         .data_in(din_periph),
