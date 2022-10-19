@@ -12,7 +12,7 @@ module reflet_16bit_ctrl_tb ();
 
     reflet_16bit_controller #(
         .clk_freq(1000000),
-        .enable_exti(1),
+        .enable_interrupt_mux(1),
         .enable_gpio(0),
         .enable_timer(1),
         .enable_timer2(1),

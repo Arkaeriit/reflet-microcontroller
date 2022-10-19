@@ -6,31 +6,31 @@
 
 //memory map
 //number of registers in each peripherals
-`define hwi_size   4
-`define exti_size  4
-`define gpio_size  8
-`define timer_size 3
-`define timer2size 3
-`define uart_size  4
-`define pwm_size   2
-`define seg_size   3
-`define power_size 2
-`define synth_size 1
-`define extio_size 2
+`define hwi_size           4
+`define interrupt_mux_size 4
+`define gpio_size          8
+`define timer_size         3
+`define timer2size         3
+`define uart_size          4
+`define pwm_size           2
+`define seg_size           3
+`define power_size         2
+`define synth_size         1
+`define extio_size         2
 //assigning addresses
 `define hwi_off   0
-`define exti_off  (`hwi_off   + `hwi_size)
-`define gpio_off  (`exti_off  + `exti_size)
-`define timer_off (`gpio_off  + `gpio_size)
-`define timer2off (`timer_off + `timer_size)
-`define uart_off  (`timer2off + `timer2size)
-`define pwm_off   (`uart_off  + `uart_size)
-`define seg_off   (`pwm_off   + `pwm_size)
-`define power_off (`seg_off   + `seg_size)
-`define synth_off (`power_off + `power_size)
-`define extio_off (`synth_off + `synth_size)
+`define interrupt_mux_off (`hwi_off   + `hwi_size)
+`define gpio_off          (`interrupt_mux_off  + `interrupt_mux_size)
+`define timer_off         (`gpio_off  + `gpio_size)
+`define timer2off         (`timer_off + `timer_size)
+`define uart_off          (`timer2off + `timer2size)
+`define pwm_off           (`uart_off  + `uart_size)
+`define seg_off           (`pwm_off   + `pwm_size)
+`define power_off         (`seg_off   + `seg_size)
+`define synth_off         (`power_off + `power_size)
+`define extio_off         (`synth_off + `synth_size)
 //sizes
-`define total_size (`hwi_size + `exti_size + `gpio_size + `timer_size + `uart_size + `pwm_size + `seg_size + `timer2size + `power_size + `synth_size + `extio_off)
+`define total_size (`hwi_size + `interrupt_mux_size + `gpio_size + `timer_size + `uart_size + `pwm_size + `seg_size + `timer2size + `power_size + `synth_size + `extio_off)
 `define offset_size ($clog2(`total_size))
 
 module reflet_peripheral #(
@@ -38,7 +38,7 @@ module reflet_peripheral #(
     base_addr_size = 16,
     base_addr = 16'hFF00,
     clk_freq = 1000000,
-    enable_exti = 1,
+    enable_interrupt_mux = 1,
     enable_gpio = 1,
     enable_timer = 1,
     enable_timer2 = 1,
@@ -82,7 +82,7 @@ module reflet_peripheral #(
 
     //data_out
     wire [7:0] dout_hwi;
-    wire [7:0] dout_exti;
+    wire [7:0] dout_interrupt_mux;
     wire [7:0] dout_gpio;
     wire [7:0] dout_timer;
     wire [7:0] dout_timer2;
@@ -92,7 +92,7 @@ module reflet_peripheral #(
     wire [7:0] dout_power;
     wire [7:0] dout_synth;
     wire [7:0] dout_extio;
-    assign data_out = dout_hwi | dout_exti | dout_gpio | dout_timer | dout_timer2 | dout_uart | dout_pwm | dout_segments | dout_power | dout_synth | dout_extio;
+    assign data_out = dout_hwi | dout_interrupt_mux | dout_gpio | dout_timer | dout_timer2 | dout_uart | dout_pwm | dout_segments | dout_power | dout_synth | dout_extio;
 
     //interrupts signals
     wire int_gpio, int_timer, int_uart, int_timer2;
@@ -106,7 +106,7 @@ module reflet_peripheral #(
         .base_addr_size(`offset_size), 
         .base_addr(`hwi_off), 
         .clk_freq(clk_freq),
-        .enable_exti(enable_exti),
+        .enable_interrupt_mux(enable_interrupt_mux),
         .enable_gpio(enable_gpio),
         .enable_timer(enable_timer),
         .enable_timer2(enable_timer2),
@@ -122,14 +122,14 @@ module reflet_peripheral #(
         .data_out(dout_hwi)); 
     
     generate
-        if(enable_exti)
-            reflet_exti #(.base_addr_size(`offset_size), .base_addr(`exti_off)) exti (
+        if(enable_interrupt_mux)
+            reflet_interrupt_mux #(.base_addr_size(`offset_size), .base_addr(`interrupt_mux_off)) interrupt_mux (
                 .clk(clk),
                 .reset(reset),
                 .enable(using_peripherals),
                 .addr(offset),
                 .data_in(data_in[7:0]),
-                .data_out(dout_exti),
+                .data_out(dout_interrupt_mux),
                 .write_en(write_en),
                 .cpu_int(interrupt_request),
                 .gpio_int_in(int_gpio),
@@ -138,7 +138,7 @@ module reflet_peripheral #(
                 .timer_2_int_in(int_timer2));
         else
         begin
-            assign dout_exti = 0;
+            assign dout_interrupt_mux = 0;
             assign interrupt_request = 0;
         end
     endgenerate

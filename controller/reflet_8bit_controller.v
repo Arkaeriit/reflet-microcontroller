@@ -1,7 +1,7 @@
 
 module reflet_8bit_controller #(
     parameter clk_freq = 1000000,
-    enable_exti = 1,
+    enable_interrupt_mux = 1,
     enable_gpio = 1,
     enable_timer = 1,
     enable_uart = 1,
@@ -24,12 +24,12 @@ module reflet_8bit_controller #(
     reflet_blink reset_bootstrap(.clk(clk), .out(blink));
     assign reset_used = reset & !blink;
 
-    //system bus and exti
+    //system bus and interrupts
     wire [7:0] addr;
     wire [7:0] data_out_cpu;
     wire [7:0] data_in_cpu;
     wire write_en;
-    wire [3:0] exti;
+    wire [3:0] interrupt_request;
 
     //cpu
     reflet_cpu #(.wordsize(8)) cpu (
@@ -42,7 +42,7 @@ module reflet_8bit_controller #(
         .write_en(write_en),
         .quit(quit),
         .debug(debug),
-        .interrupt_request(exti));
+        .interrupt_request(interrupt_request));
 
     //memory map
     wire [7:0] dout_inst;
@@ -70,7 +70,7 @@ module reflet_8bit_controller #(
         .write_en(write_en));
 
     //0xED to 0xFF: peripherals
-    //0xED to 0xF0: exti
+    //0xED to 0xF0: interrupt mux
     //0xF1 to 0xF8: GPIO
     //0xF9 to 0xFB: timer
     //0xFC to 0xFF: UART
@@ -79,7 +79,7 @@ module reflet_8bit_controller #(
         .base_addr_size(7), 
         .base_addr(7'h6D), 
         .clk_freq(clk_freq),
-        .enable_exti(enable_exti),
+        .enable_interrupt_mux(enable_interrupt_mux),
         .enable_gpio(enable_gpio),
         .enable_timer(enable_timer),
         .enable_uart(enable_uart)) 
@@ -87,7 +87,7 @@ module reflet_8bit_controller #(
         .clk(clk),
         .reset(reset_used),
         .enable(addr[7]),
-        .interrupt_request(exti),
+        .interrupt_request(interrupt_request),
         .addr(addr[6:0]),
         .data_in(data_out_cpu),
         .data_out(dout_periph),

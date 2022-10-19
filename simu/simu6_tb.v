@@ -12,12 +12,12 @@ module simu6 ();
     reflet_blink reset_bootstrap(.clk(clk), .out(blink));
     assign reset = reset_in & !blink;
 
-    //system bus and exti
+    //system bus and interrupt request
     wire [15:0] addr;
     wire [15:0] data_out_cpu;
     wire [15:0] data_in_cpu;
     wire write_en;
-    wire [3:0] exti;
+    wire [3:0] interrupt_request;
     wire cpu_enable;
 
     //cpu
@@ -31,7 +31,7 @@ module simu6 ();
         .write_en(write_en),
         .quit(quit),
         .debug(debug),
-        .interrupt_request(exti));
+        .interrupt_request(interrupt_request));
 
     //memory map
     wire [15:0] dout_inst;
@@ -63,7 +63,7 @@ module simu6 ();
         .base_addr_size(15), 
         .base_addr(15'h7F00), 
         .clk_freq(1000000),
-        .enable_exti(1),
+        .enable_interrupt_mux(1),
         .enable_gpio(0),
         .enable_timer(1),
         .enable_timer2(0),
@@ -75,7 +75,7 @@ module simu6 ();
         .clk(clk),
         .reset(reset),
         .enable(addr[15]),
-        .interrupt_request(exti),
+        .interrupt_request(interrupt_request),
         .cpu_enable(cpu_enable),
         .addr(addr[14:0]),
         .data_in(din_periph),

@@ -5,7 +5,7 @@
 |the various interruptions.                                |
 \---------------------------------------------------------*/
 
-module reflet_exti #(
+module reflet_interrupt_mux #(
     parameter base_addr_size = 16,
     base_addr = 16'hFF04
     )(
@@ -26,28 +26,28 @@ module reflet_exti #(
     input timer_2_int_in
     );
 
-    wire using_exti = enable && addr >= base_addr && addr < base_addr + 4;
+    wire using_interrupt_mux = enable && addr >= base_addr && addr < base_addr + 4;
     wire [1:0] offset = addr - base_addr;
 
     //Controling interrupts
     wire gpio_int, uart_int, timer_int, timer_2_int;
     wire gpio_int_en;
     wire [1:0] gpio_int_level;
-    wire [3:0] gpio_int_exti;
-    reflet_int_mapper gpio_mapper(.enable(gpio_int_en & gpio_int), .level(gpio_int_level), .out(gpio_int_exti));
+    wire [3:0] gpio_int_interrupt_mux;
+    reflet_int_mapper gpio_mapper(.enable(gpio_int_en & gpio_int), .level(gpio_int_level), .out(gpio_int_interrupt_mux));
     wire uart_int_en;
     wire [1:0] uart_int_level;
-    wire [3:0] uart_int_exti;
-    reflet_int_mapper uart_mapper(.enable(uart_int_en & uart_int), .level(uart_int_level), .out(uart_int_exti));
+    wire [3:0] uart_int_interrupt_mux;
+    reflet_int_mapper uart_mapper(.enable(uart_int_en & uart_int), .level(uart_int_level), .out(uart_int_interrupt_mux));
     wire timer_int_en;
     wire [1:0] timer_int_level;
-    wire [3:0] timer_int_exti;
-    reflet_int_mapper timer_mapper(.enable(timer_int_en & timer_int), .level(timer_int_level), .out(timer_int_exti));
+    wire [3:0] timer_int_interrupt_mux;
+    reflet_int_mapper timer_mapper(.enable(timer_int_en & timer_int), .level(timer_int_level), .out(timer_int_interrupt_mux));
     wire [1:0] timer_2_int_level;
-    wire [3:0] timer_2_int_exti;
+    wire [3:0] timer_2_int_interrupt_mux;
     wire timer_2_int_en;
-    reflet_int_mapper timer_2_mapper(.enable(timer_2_int_en & timer_2_int), .level(timer_2_int_level), .out(timer_2_int_exti));
-    assign cpu_int = gpio_int_exti | uart_int_exti | timer_int_exti | timer_2_int_exti;
+    reflet_int_mapper timer_2_mapper(.enable(timer_2_int_en & timer_2_int), .level(timer_2_int_level), .out(timer_2_int_interrupt_mux));
+    assign cpu_int = gpio_int_interrupt_mux | uart_int_interrupt_mux | timer_int_interrupt_mux | timer_2_int_interrupt_mux;
 
     //gestion of status register
     wire [7:0] int_list = {4'h0, timer_2_int_in & timer_2_int_en, timer_int_in & timer_int_en, uart_int_in & uart_int_en, gpio_int_in & gpio_int_en};
@@ -75,7 +75,7 @@ module reflet_exti #(
     reflet_rw_register #(.addr_size(2), .reg_addr(0), .default_value(0)) reg_en(
         .clk(clk),
         .reset(reset),
-        .enable(using_exti),
+        .enable(using_interrupt_mux),
         .addr(offset),
         .write_en(write_en),
         .data_in(data_in[7:0]),
@@ -84,21 +84,21 @@ module reflet_exti #(
     reflet_rw_register #(.addr_size(2), .reg_addr(1), .default_value(0)) reg_level(
         .clk(clk),
         .reset(reset),
-        .enable(using_exti),
+        .enable(using_interrupt_mux),
         .addr(offset),
         .write_en(write_en),
         .data_in(data_in[7:0]),
         .data_out(dout_level),
         .data(int_level));
     reflet_ro_register #(.addr_size(2), .reg_addr(2)) reg_reserved (
-        .enable(using_exti),
+        .enable(using_interrupt_mux),
         .addr(offset),
         .data_out(dout_reserved),
         .data(8'h0));
     reflet_rwe_register #(.addr_size(2), .reg_addr(3), .default_value(0)) reg_status(
         .clk(clk),
         .reset(reset),
-        .enable(using_exti),
+        .enable(using_interrupt_mux),
         .addr(offset),
         .write_en(write_en),
         .data_in(data_in[7:0]),
@@ -120,8 +120,8 @@ endmodule
 
 
 /*---------------------------------------------\
-|This module map an interrupt on exti depending|
-|on the level of the interrupt.                |
+|This module map an interrupt on interrupt_mux |
+|depending on the level of the interrupt.      |
 \---------------------------------------------*/
 
 module reflet_int_mapper(

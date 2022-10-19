@@ -1,7 +1,7 @@
 
 module reflet_8bit_ctrl_with_rom #(
     parameter clk_freq = 1000000,
-    enable_exti = 1,
+    enable_interrupt_mux = 1,
     enable_gpio = 1,
     enable_timer = 1,
     enable_uart = 1
@@ -23,12 +23,12 @@ module reflet_8bit_ctrl_with_rom #(
     reflet_blink reset_bootstrap(.clk(clk), .out(blink));
     assign reset = reset_in & !blink;
 
-    //system bus and exti
+    //system bus and interrupt requests
     wire [7:0] addr;
     wire [7:0] data_out_cpu;
     wire [7:0] data_in_cpu;
     wire write_en;
-    wire [3:0] exti;
+    wire [3:0] interrupt_request;
 
     //cpu
     reflet_cpu #(.wordsize(8)) cpu (
@@ -41,7 +41,7 @@ module reflet_8bit_ctrl_with_rom #(
         .write_en(write_en),
         .quit(quit),
         .debug(debug),
-        .interrupt_request(exti));
+        .interrupt_request(interrupt_request));
 
     //memory map
     wire [7:0] dout_inst;
@@ -72,7 +72,7 @@ module reflet_8bit_ctrl_with_rom #(
         .base_addr_size(6), 
         .base_addr(7'h2D), 
         .clk_freq(clk_freq),
-        .enable_exti(enable_exti),
+        .enable_interrupt_mux(enable_interrupt_mux),
         .enable_gpio(enable_gpio),
         .enable_timer(enable_timer),
         .enable_uart(enable_uart)) 
@@ -80,7 +80,7 @@ module reflet_8bit_ctrl_with_rom #(
         .clk(clk),
         .reset(reset),
         .enable(!enable_rom),
-        .interrupt_request(exti),
+        .interrupt_request(interrupt_request),
         .addr(addr[5:0]),
         .data_in(data_out_cpu),
         .data_out(dout_periph),

@@ -1,6 +1,6 @@
 ;This program is ment to be a bootloader for the 16 bits microcontroller
 ;It wait for 4 seconds for an UART message and if there is, it load it in RAM.
-;This bootloader never uses the RAM, only peripherals (uart, exti, timer, timer2) and registers
+;This bootloader never uses the RAM, only peripherals (uart, interrupt multiplexer, timer, timer2) and registers
 
 ;R1 contain the UART timeout
 ;R2 contain the target RAM addr for loading the program
@@ -96,7 +96,7 @@ label endTimer
 ; interupt manager config
 setlab interrupt_manager
 load WR
-tbm ;Starting to manipulate EXTI
+tbm ;Starting to manipulate interrupt multiplexer
 cpy R3
 set 10
 str R3 ;enable tim2 int and UART int
@@ -107,7 +107,7 @@ tbm
 set+ 64
 tbm
 str R3 ;set tim2 int to level 1
-tbm ;finished EXTI config
+tbm ;finished interrupt multiplexer config
 set 2
 add R3
 cpy R3 ;R3 is now the status register
@@ -155,7 +155,7 @@ set 1
 add R1
 cpy R1
 set 0
-str R1 ;exti is clear
+str R1 ;interrupt multiplexer is clear
 set 9
 add R1
 cpy R1

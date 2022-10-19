@@ -20,10 +20,10 @@ This peripheral is always active. It is used to read the frequency of the system
 |------------------------|----|-------------|------|
 |0|ro|clk\_lsb|Contain the 8 LSB of the frequency of the main clock in MHz.|
 |1|ro|clk\_msb|Contain the 8 MSB of the frequency of the main clock in MHz.|
-|2|ro|periph\_1|Bits 0 to 2 contain info about the wordsize of the processor. 1 means that it is an 8-bit processor, 2 means a 16 bit, 3 32 bits, 4 64 bits, 5 128 bits, and 0 means any other wordsize. Bit 3 tells if the interrupt manager is enabled. Bit 4 tells if the GPIO is enabled. Bit 5 tells if the timer is enabled. Bit 6 tells if the second timer is enabled. Finally, bit 7 tells if the UART is enabled.|
+|2|ro|periph\_1|Bits 0 to 2 contain info about the wordsize of the processor. 1 means that it is an 8-bit processor, 2 means a 16 bit, 3 32 bits, 4 64 bits, 5 128 bits, and 0 means any other wordsize. Bit 3 tells if the interrupt multiplexer is enabled. Bit 4 tells if the GPIO is enabled. Bit 5 tells if the timer is enabled. Bit 6 tells if the second timer is enabled. Finally, bit 7 tells if the UART is enabled.|
 |3|ro|periph\_2|Bit 0 tells if the PWM is enabled. Bit 1 tells if the seven-segment controller is enabled. Bit 2 tells if the power manager is enabled. Bit 3 tells if the synthesizer is enabled. Bit 4 tells if the extended io is enabled. Bits 5 to 7 are left to 0.|
 
-## Interrupt manager
+## Interrupt multiplexer
 The CPU got only 4 interrupt lines, but more than 4 peripherals can raise interrupts. This module lets the user control which peripherals can use interrupts and the priority of each interrupt.
 
 |Offset with base address|Type|Register name|Effect|
@@ -67,7 +67,7 @@ A 23 bits timer. This timer behaves in a similar way to the main timer except th
 |2|r/w|mcnt|Control the value of mcnt.|
 
 ## UART
-A UART module with a baud rate locked at 9600. Its behavior is very similar to the IO functions of the Reflet simulator. To send a message, write its value in the `tx_data` register and put a 0 in `tx_cmd`. To receive a message, either enable the interrupt in the interrupt manager or wait for the value in the `rx_cmd` register to be set to 0. The data will then be readable in the `rx_data` register.
+A UART module with a baud rate locked at 9600. Its behavior is very similar to the IO functions of the Reflet simulator. To send a message, write its value in the `tx_data` register and put a 0 in `tx_cmd`. To receive a message, either enable the interrupt in the interrupt multiplexer or wait for the value in the `rx_cmd` register to be set to 0. The data will then be readable in the `rx_data` register.
 
 |Offset with base address|Type|Register name|Effect|
 |------------------------|----|-------------|------|
@@ -126,7 +126,7 @@ The memory map is the following:
 |0x80 |0xEC|Data|
 |0xED |0xFF|Peripherals|
 |-----|----|-------|
-|0xED |0xF0|Interupt manager|
+|0xED |0xF0|Interrupt multiplexer|
 |0xF1 |0xF8|GPIO|
 |0xF9 |0xFB|Timer|
 |0xFC |0xFF|UART|
@@ -139,7 +139,7 @@ The parameters for this module are the following:
 |Name | Description | Default value|
 |------|------|-------| 
 |clk\_freq|The frequency of the main clock in Hertz.|1 000 000|
-|enable\_exti|If equal to 0, the interrupt manager is disabled. |1|
+|enable\_interrupt\_mux|If equal to 0, the interrupt multiplexer is disabled. |1|
 |enable\_gpio|If equal to 0, the GPIOs are disabled. |1|
 |enable\_timer|If equal to 0, the timer is disabled. |1|
 |enable\_uart|If equal to 0, the UART is disabled. |1|
@@ -171,7 +171,7 @@ The memory map is the following:
 |0xFF00|0xFFFF|Peripherals|
 |------|------|-------|
 |0xFF00|0xFF03|Hardware info|
-|0xFF04|0xFF07|Interupt manager|
+|0xFF04|0xFF07|Interrupt multiplexer|
 |0xFF08|0xFF0F|GPIO|
 |0xFF10|0xFF12|Timer|
 |0xFF13|0xFF15|Timer 2|
@@ -190,7 +190,7 @@ The parameters for this module are the following:
 |Name | Description | Default value|
 |------|------|-------| 
 |clk\_freq|The frequency of the main clock in Hertz.|1 000 000|
-|enable\_exti|If equal to 0, the interrupt manager is disabled. |1|
+|enable\_interrupt\_mux|If equal to 0, the interrupt multiplexer is disabled. |1|
 |enable\_gpio|If equal to 0, the GPIOs are disabled. |1|
 |enable\_timer|If equal to 0, the timer is disabled. |1|
 |enable\_timer2|If equal to 0, the timer2 is disabled. |1|

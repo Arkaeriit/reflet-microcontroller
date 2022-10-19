@@ -48,13 +48,13 @@ cpy R2
 set 1
 str8 R2 ;Timer 2 is now active, ticking once a second
 setlab interrupt_manager
-load WR ;We now have 0xFF04, the base address of the exti
+load WR ;We now have 0xFF04, the base address of the interrupt multiplexer
 cpy R3
 set 8
 str8 R3 ;We ennabled the timer 2 interrupt
 set 3
 add R3
-cpy R3 ;R3 now have the address of the status register of exti
+cpy R3 ;R3 now have the address of the status register of interrupt multiplexer
 setlab updateTime
 setint 0
 set 8

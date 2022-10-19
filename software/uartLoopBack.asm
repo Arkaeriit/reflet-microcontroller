@@ -6,7 +6,7 @@
 label start
 ;configuring the interrupt manager, enable the UART int and leaves it at level 0
 set8 237
-cpy R1 ;exti base address
+cpy R1 ;interrupt multiplexer base address
 set 2
 str R1
 ;cofiguring the interrupt on the CPU

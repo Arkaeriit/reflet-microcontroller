@@ -18,7 +18,7 @@ module simu3();
 
     //modules
     wire [7:0] data_out_gpio;
-    wire [7:0] data_out_exti;
+    wire [7:0] data_out_interrupt_mux;
     wire [7:0] data_out_rom;
     wire gpio_int;
     wire [3:0] int;
@@ -33,14 +33,14 @@ module simu3();
         .gpi(gpi), 
         .gpo(gpo),
         .interrupt(gpio_int));
-    reflet_exti #(.base_addr_size(7), .base_addr(7'h08)) exti(
+    reflet_interrupt_mux #(.base_addr_size(7), .base_addr(7'h08)) interrupt_mux(
         .clk(clk), 
         .reset(reset), 
         .enable(addr[7]), 
         .addr(addr[6:0]), 
         .write_en(write_en), 
         .data_in(data_out_cpu), 
-        .data_out(data_out_exti), 
+        .data_out(data_out_interrupt_mux), 
         .gpio_int_in(gpio_int),
         .uart_int_in(1'b0),
         .timer_int_in(1'b0),
@@ -50,7 +50,7 @@ module simu3();
         .enable(!addr[7]), 
         .addr(addr[6:0]), 
         .dataOut(data_out_rom));
-    assign data_in_cpu = data_out_rom | data_out_gpio | data_out_exti;
+    assign data_in_cpu = data_out_rom | data_out_gpio | data_out_interrupt_mux;
     reflet_cpu #(.wordsize(8)) cpu(
         .clk(clk), 
         .reset(reset), 

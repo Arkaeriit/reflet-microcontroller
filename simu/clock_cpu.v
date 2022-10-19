@@ -1,7 +1,7 @@
 
 module clock_cpu #(
     parameter clk_freq = 1000000,
-    enable_exti = 1,
+    enable_interrupt_mux = 1,
     enable_gpio = 1,
     enable_timer = 1,
     enable_uart = 1,
@@ -34,12 +34,12 @@ module clock_cpu #(
     reflet_blink reset_bootstrap(.clk(clk), .out(blink));
     assign reset = reset_in & !blink;
 
-    //system bus and exti
+    //system bus and interrupt request
     wire [15:0] addr;
     wire [15:0] data_out_cpu;
     wire [15:0] data_in_cpu;
     wire write_en;
-    wire [3:0] exti;
+    wire [3:0] interrupt_request;
     wire cpu_enable;
 
     //cpu
@@ -53,7 +53,7 @@ module clock_cpu #(
         .write_en(write_en),
         .quit(quit),
         .debug(debug),
-        .interrupt_request(exti));
+        .interrupt_request(interrupt_request));
 
     //memory map
     wire [15:0] dout_inst;
@@ -85,7 +85,7 @@ module clock_cpu #(
         .base_addr_size(15), 
         .base_addr(15'h7F00), 
         .clk_freq(clk_freq),
-        .enable_exti(enable_exti),
+        .enable_interrupt_mux(enable_interrupt_mux),
         .enable_gpio(enable_gpio),
         .enable_timer(enable_timer),
         .enable_uart(enable_uart),
@@ -96,7 +96,7 @@ module clock_cpu #(
         .clk(clk),
         .reset(reset),
         .enable(addr[15]),
-        .interrupt_request(exti),
+        .interrupt_request(interrupt_request),
         .addr(addr[14:0]),
         .data_in(din_periph),
         .data_out(dout_periph),

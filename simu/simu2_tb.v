@@ -25,7 +25,7 @@ module simu2();
         .base_addr_size(15), 
         .base_addr(15'h7F00), 
         .clk_freq(96000),
-        .enable_exti(0),
+        .enable_interrupt_mux(0),
         .enable_gpio(0),
         .enable_timer(0),
         .enable_timer2(0),

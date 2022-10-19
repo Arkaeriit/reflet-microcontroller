@@ -10,7 +10,7 @@ module reflet_hardware_info #(
     parameter wordsize = 16,
     base_addr_size = 16,
     base_addr = 16'hFF00,
-    enable_exti = 1,
+    enable_interrupt_mux = 1,
     enable_gpio = 1,
     enable_timer = 1,
     enable_timer2 = 1,
@@ -60,7 +60,7 @@ module reflet_hardware_info #(
        .enable(using_hwi),
        .addr(offset),
        .data_out(dout_info1),
-       .data({|enable_uart, |enable_timer2, |enable_timer, |enable_gpio, |enable_exti, wordsize_info }));
+       .data({|enable_uart, |enable_timer2, |enable_timer, |enable_gpio, |enable_interrupt_mux, wordsize_info }));
    reflet_ro_register #(.addr_size(2), .reg_addr(3)) reg_info2 (
        .enable(using_hwi),
        .addr(offset),

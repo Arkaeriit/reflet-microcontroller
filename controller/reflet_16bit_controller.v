@@ -7,7 +7,7 @@
 
 module reflet_16bit_controller #(
     parameter clk_freq = 1000000,
-    enable_exti = 1,
+    enable_interrupt_mux = 1,
     enable_gpio = 1,
     enable_timer = 1,
     enable_timer2 = 1,
@@ -54,12 +54,12 @@ module reflet_16bit_controller #(
     assign reset_full = reset & !blink;
     assign reset_smol = reset_full & reset_limited & inst_ready;
 
-    //system bus, cpu_enable et exti
+    //system bus, cpu_enable and interrupts
     wire [15:0] addr;
     wire [15:0] data_out_cpu;
     wire [15:0] data_in_cpu;
     wire write_en;
-    wire [3:0] exti;
+    wire [3:0] interrupt_request;
     wire cpu_enable;
 
     //cpu
@@ -73,7 +73,7 @@ module reflet_16bit_controller #(
         .write_en(write_en),
         .quit(quit),
         .debug(debug),
-        .interrupt_request(exti));
+        .interrupt_request(interrupt_request));
 
     //memory map
     wire [15:0] dout_inst;
@@ -105,7 +105,7 @@ module reflet_16bit_controller #(
 
     //0xFF00 to 0xFFFF: peripherals
     //0x00 to 0x03 : hardware info
-    //0x04 to 0x07 : exti
+    //0x04 to 0x07 : interrupt_mux
     //0x08 to 0x0F : gpio
     //0x10 to 0x12 : timer
     //0x13 to 0x15 : timer2
@@ -120,7 +120,7 @@ module reflet_16bit_controller #(
         .base_addr_size(15), 
         .base_addr(15'h7F00), 
         .clk_freq(clk_freq),
-        .enable_exti(enable_exti),
+        .enable_interrupt_mux(enable_interrupt_mux),
         .enable_gpio(enable_gpio),
         .enable_timer(enable_timer),
         .enable_timer2(enable_timer2),
@@ -135,7 +135,7 @@ module reflet_16bit_controller #(
         .clk(clk),
         .reset(reset_smol),
         .enable(addr[15]),
-        .interrupt_request(exti),
+        .interrupt_request(interrupt_request),
         .cpu_enable(cpu_enable),
         .addr(addr[14:0]),
         .data_in(din_periph),
