@@ -113,7 +113,7 @@ If you need more than the 16 inputs and 16 outputs of the GPIO module, you can u
 |1|r/w|control|Bit 0 contains the value in the selected input. Bit 1 contains the actual value of the selected output. To set the output, write the value you want in bit 2 and set bit 3 to 1. Bits 4 to 7 are unused.|
 
 # Controllers
-The folder controller contains files used to make 8 bits or a 16 bits microcontroller with a Reflet CPU. As of now, for the 8-bit controller, you must copy the `reflet\_?bits\_controller.c` file and replace the data memory with a ROM with a valid Reflet program. For the 16-bit one, you can do so or choose to use the included bootloader instead.
+The folder controller contains files used to make 8 bits or a 16 bits microcontroller with a Reflet CPU. As of now, for the 8-bit controller, you must copy the `reflet_?bits_controller.v` file and replace the data memory with a ROM with a valid Reflet program. For the 16-bit one, you can do so or choose to use the included bootloader instead.
 
 ## 8 bits controller
 The 8 bits controller is very limited by its addressable space and thus, is only equipped with a limited amount of peripherals.
