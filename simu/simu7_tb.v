@@ -14,7 +14,7 @@ module simu7_tb ();
         .rx(rx),
         .tx(tx));
     
-    uart_sending #(.clk_freq(1_000_000), .baud_rate(9600)) uart_s (
+    uart_sending #(.clk_freq(1_000_000), .baud_rate(9600), .wait_time(5000)) uart_s (
         .clk(clk),
         .reset(reset_uart),
         .rx(tx),
@@ -25,8 +25,6 @@ module simu7_tb ();
     begin
         $dumpfile("simu7_tb.vcd");
         $dumpvars(0, simu7_tb);
-        //for(i = 0; i<16; i=i+1)
-            //$dumpvars(0, cpu.registers[i]);
         #10;
         reset_cpu <= 1;
         #4000;

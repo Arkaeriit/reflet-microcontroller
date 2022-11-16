@@ -6,7 +6,8 @@
 module uart_sending_msg #(
     parameter clk_freq = 1000000,
     baud_rate = 9600,
-    msg_size_byte =2
+    msg_size_byte =2,
+    wait_time = 1
     )(
     input clk,
     input reset,
@@ -17,21 +18,36 @@ module uart_sending_msg #(
 
     reg [$clog2(msg_size_byte)+1:0] byte_index;
     wire [$clog2(msg_size_byte)+1:0] byte_index_max = msg_size_byte;
-    wire end_transmit, receive_done;
-    reg start_transmit, start_transmit_sl;
+    wire end_transmit, receive_done, start_transmit;
+    reg start_transmit_sl;
+
+    reg [$clog2(wait_time):0] delay;
+    always @ (posedge clk)
+        if (!reset)
+            delay <= 0;
+        else
+        begin
+            if (delay != 0)
+                if (delay >= wait_time)
+                    delay <= 0;
+                else
+                    delay <= delay + 1;
+            else
+                if (start_transmit_sl)
+                    delay <= 1;
+        end
+    assign start_transmit = delay == wait_time;
 
     always @ (posedge clk)
         if (!reset)
         begin
             byte_index <= 0;
-            start_transmit <= 0;
             start_transmit_sl <= 1;
         end
         else
         begin
             if (end_transmit)
                 byte_index <= byte_index + 1;
-            start_transmit <= start_transmit_sl;
             if (byte_index+1 < byte_index_max)
                 start_transmit_sl <= end_transmit;
             else

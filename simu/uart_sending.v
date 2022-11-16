@@ -5,7 +5,9 @@
 
 module uart_sending #(
     parameter clk_freq = 1000000,
-    baud_rate = 9600 
+    baud_rate = 9600,
+    wait_time = 1
+
     )(
     input clk,
     input reset,
@@ -13,7 +15,7 @@ module uart_sending #(
     output tx
     );
 
-    uart_sending_msg #(.clk_freq(clk_freq), .baud_rate(baud_rate), .msg_size_byte(256)) uart (
+    uart_sending_msg #(.clk_freq(clk_freq), .baud_rate(baud_rate), .msg_size_byte(256), .wait_time(wait_time)) uart (
         .clk(clk),
         .reset(reset),
         .rx(rx),
