@@ -1,5 +1,5 @@
 
-all : basicInt.bin clock.bin bootloader16.bin helloWorld.bin simuGPIO.bin uartLoopBack.bin primes.bin low_power_mode.bin uartLoopBack_16bits.bin
+all : basicInt.bin clock.bin bootloader16.bin helloWorld.bin simuGPIO.bin uartLoopBack.bin primes.bin low_power_mode.bin uartLoopBack_16bits.bin keyboard_synth.bin
 
 clean :
 	rm -f *.bin
@@ -25,6 +25,9 @@ helloWorld.bin : helloWorld.asm libs/ctrl16addrMap.asm libs/uart.asm libs/printi
 ../simu/rom4.v : uartLoopBack.bin
 	ROM_maker -name rom4 -input_file $< -output_file $@ -wordsize 1 -min_addr_size 7
 
+../simu/rom8.v : keyboard_synth.bin
+	ROM_maker -name rom8 -input_file $< -output_file $@ -wordsize 2 -min_addr_size 14
+
 simuGPIO.bin : simuGPIO.asm
 	reflet-asm simuGPIO.asm -o simuGPIO.bin -no-stack-init -word-size 8 -ignore-start
 
@@ -40,3 +43,5 @@ low_power_mode.bin : low_power_mode.asm libs/ctrl16addrMap.asm
 uartLoopBack_16bits.bin : uartLoopBack_16bits.asm libs/ctrl16addrMap.asm libs/uart.asm
 	reflet-asm uartLoopBack_16bits.asm -word-size 16 -set-stack-to 32768 -o uartLoopBack_16bits.bin
 
+keyboard_synth.bin : keyboard_synth.asm libs/ctrl16addrMap.asm libs/uart.asm libs/synth.asm
+	reflet-asm $< -o $@ -word-size 16 -set-stack-to 32768

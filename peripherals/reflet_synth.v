@@ -49,11 +49,11 @@ endmodule
 
 
 
-/*------------------------------------\
+/*---------------------------------------\
 |Generate a frequency depending on a     |
 |6 bit number to choose the tone and     |
 |a 2 bits number to choose the pwm shape.|
-\------------------------------------*/
+\---------------------------------------*/
 
 module reflet_synth_generator #(
     parameter clk_freq = 1000000
