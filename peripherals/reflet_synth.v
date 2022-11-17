@@ -65,22 +65,33 @@ module reflet_synth_generator #(
     output out
     );
 
-    //Computing the number of time the 1 MHz clock must be divided and the duty cycle of the signal
-    wire [13:0] divisor_map;
-    wire [43:0] divisor = divisor_map * (clk_freq / 1000000);
-    wire [43:0] duty = (shape == 2'b01 ? {2'b00, divisor[43:2]} : //25%
-                          (shape == 2'b10 ? {1'b0, divisor[43:1]} : //50%
-                             (shape == 2'b11 ? {1'b0, divisor[43:1]} + {2'b00, divisor[43:2]} :  //75%
+    // Generating a 1 MHz clk
+    wire clk_1MHZ;
+    localparam clk_freq_MHz = clk_freq / 1000000;
+    wire[$clog2(clk_freq_MHz):0] _clk_freq_MHz = clk_freq_MHz;
+    reflet_counter #(.size($clog2(clk_freq_MHz)+1)) mhz_gen (
+        .clk(clk),
+        .reset(reset),
+        .enable(1'b1),
+        .max(_clk_freq_MHz),
+        .out(clk_1MHZ));
+
+    // Computing the number of time the 1 MHz clock must be divided and the duty cycle of the signal
+    wire [13:0] divisor;
+    wire [13:0] duty = (shape == 2'b01 ? {2'b00, divisor[13:2]} : //25%
+                          (shape == 2'b10 ? {1'b0, divisor[13:1]} : //50%
+                             (shape == 2'b11 ? {1'b0, divisor[13:1]} + {2'b00, divisor[13:2]} :  //75%
                                  0))); //0%
     reflet_synth_div_map map(
         .clk(clk),
         .select(tone),
-        .out(divisor_map));
+        .out(divisor));
 
-    //Generating the signal with a PWM
-    reflet_pwm_pwm #(.size(44)) pwm (
+    // Generating the signal with a PWM
+    reflet_pwm_pwm #(.size(14)) pwm (
         .clk(clk),
         .reset(reset),
+        .enable(clk_1MHZ),
         .duty_cycle(duty),
         .max(divisor),
         .out(out));

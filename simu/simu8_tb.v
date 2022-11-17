@@ -8,14 +8,14 @@ module simu8_tb ();
     reg reset_uart = 0;
     wire rx, tx, synth_out;
 
-    simu8_mcu #(.clk_freq(1_000_000)) mcu (
+    simu8_mcu #(.clk_freq(2_000_000)) mcu (
         .clk(clk),
         .reset_in(reset_cpu),
         .synth_out(synth_out),
         .rx(rx),
         .tx(tx));
     
-    uart_sending #(.clk_freq(1_000_000), .baud_rate(9600), .wait_time(50000)) uart_s (
+    uart_sending #(.clk_freq(2_000_000), .baud_rate(9600), .wait_time(100000)) uart_s (
         .clk(clk),
         .reset(reset_uart),
         .rx(tx),
@@ -28,11 +28,11 @@ module simu8_tb ();
         $dumpvars(0, simu8_tb);
         //for(i = 0; i<16; i=i+1)
             //$dumpvars(0, mcu.cpu.registers[i]);
-        #10;
+        #20;
         reset_cpu <= 1;
-        #4000;
+        #8000;
         reset_uart <= 1;
-        #4000000;
+        #8000000;
         $finish;
     end
 

@@ -52,6 +52,7 @@ module reflet_pwm #(
     reflet_pwm_pwm #(.size(8)) pwm (
         .clk(clk),
         .reset(reset),
+        .enable(1'b1),
         .duty_cycle(duty),
         .max(freq),
         .out(out));
@@ -70,12 +71,14 @@ module reflet_pwm_pwm #(
     )(
     input clk,
     input reset,
+    input enable,
     input [size-1:0] duty_cycle,
     input [size-1:0] max,
     output out
     );
 
     reg out_normal;
+    reg enable_later;
     wire update;
 
     wire using_count_off = duty_cycle > 1 && duty_cycle < max;
@@ -86,28 +89,35 @@ module reflet_pwm_pwm #(
     reflet_counter #(.size(size)) count_base (
         .clk(clk),
         .reset(reset & !update),
-        .enable(using_count_base),
+        .enable(using_count_base & enable),
         .max(max),
         .out(base_freq));
     reflet_counter #(.size(size)) count_off (
         .clk(clk),
         .reset(reset & !update & !base_freq), //This counter should start a clk cycle after the other counter, it should thus be reset by uate_late
-        .enable(using_count_off & out_normal),
+        .enable(using_count_off & out_normal & enable),
         .max(duty_cycle_late), //As the counter is reset each cycles, we need to put a -1 because this counter is a clock cycle late
         .out(switch_off));
 
     always @ (posedge clk)
         if(!reset)
+        begin
             out_normal <= 0;
+            enable_later <= 0;
+        end
         else
         begin
-            if(base_freq | update)
-                out_normal <= 1;
-            else if(switch_off)
-                out_normal <= 0;
+            enable_later <= enable;
+            if (enable_later)
+            begin
+                if(base_freq | update)
+                    out_normal <= 1;
+                else if(switch_off)
+                    out_normal <= 0;
+            end
         end
 
-    //resseting in case of sudden changes
+    // resetting in case of sudden changes
     reg [2 * size - 1:0] old_values;
     always @ (posedge clk)
         old_values <= {max, duty_cycle};

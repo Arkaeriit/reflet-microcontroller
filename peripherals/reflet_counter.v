@@ -1,11 +1,11 @@
-/*--------------------------------------------\
-|This module is  counter. When enabled,       |
-|it will increase a register until a certain  |
-|value is reached. Then it will start again   |
-|and send a pulse.                            |
-|If the max value is 0, the counter is        |
-|disabled; if it is 1, it output a constant 1.|
-\--------------------------------------------*/
+/*---------------------------------------------\
+|This module is a counter. When enabled,       |
+|it will increase a register until a certain   |
+|value is reached. Then it will start again    |
+|and send a pulse.                             |
+|If the max value is 0, the counter is         |
+|disabled; if it is 1, its output a constant 1.|
+\-------------------------- ------------------*/
 
 module reflet_counter #(
     parameter size = 32

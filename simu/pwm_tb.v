@@ -12,6 +12,7 @@ module pwm_tb ();
     reflet_pwm_pwm pwm(
         .clk(clk),
         .reset(reset),
+        .enable(1'b1),
         .duty_cycle(duty_cycle),
         .max(max),
         .out(out));
