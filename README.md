@@ -112,6 +112,9 @@ If you need more than the 16 inputs and 16 outputs of the GPIO module, you can u
 |0|r/w|address|Select which IO is selected.|
 |1|r/w|control|Bit 0 contains the value in the selected input. Bit 1 contains the actual value of the selected output. To set the output, write the value you want in bit 2 and set bit 3 to 1. Bits 4 to 7 are unused.|
 
+## Debug Helper
+This module helps in debugging by printing over an UART line the content of the working register whenever a `debug` instruction is encountered. The data is sent at 9600 bauds in a little-endian fashion. When sending those data, the CPU is disabled to ensure that no debug instructions will be missed.
+
 # Controllers
 The folder controller contains files used to make 8 bits or a 16 bits microcontroller with a Reflet CPU. As of now, for the 8-bit controller, you must copy the `reflet_?bits_controller.v` file and replace the data memory with a ROM with a valid Reflet program. For the 16-bit one, you can do so or choose to use the included bootloader instead.
 
@@ -139,6 +142,7 @@ The parameters for this module are the following:
 |Name | Description | Default value|
 |------|------|-------| 
 |clk\_freq|The frequency of the main clock in Hertz.|1 000 000|
+|debug\_output|When set to 1, enable the debug helper module.|0|
 |enable\_interrupt\_mux|If equal to 0, the interrupt multiplexer is disabled. |1|
 |enable\_gpio|If equal to 0, the GPIOs are disabled. |1|
 |enable\_timer|If equal to 0, the timer is disabled. |1|
@@ -152,6 +156,7 @@ The ports of this module are the following:
 |clk     |input|The main clock.|
 |reset |input|Reset the controller when flipped to low.|
 |debug|output|Turned on for a clock cycle when the CPU executes a `debug` instruction.|
+|debug\_tx|output|When `debug_output` is enabled, this line prints the content of the working register on `debug` instructions.|
 |quit|output|Is turned on from the moment the CPU executes a quit instruction and stops itself.|
 |gpi| 16-bit input | The input of the GPIO.|
 |gpo| 16-bit output | The output of the GPIO.|
@@ -190,6 +195,7 @@ The parameters for this module are the following:
 |Name | Description | Default value|
 |------|------|-------| 
 |clk\_freq|The frequency of the main clock in Hertz.|1 000 000|
+|debug\_output|When set to 1, enable the debug helper module.|0|
 |enable\_interrupt\_mux|If equal to 0, the interrupt multiplexer is disabled. |1|
 |enable\_gpio|If equal to 0, the GPIOs are disabled. |1|
 |enable\_timer|If equal to 0, the timer is disabled. |1|
@@ -213,6 +219,7 @@ The ports of this module are the following:
 |reset |input|Reset the controller when flipped to low.|
 |reset\_limited|input|Reset the CPU, peripherals, and data memory but preserves the instruction memory.|
 |debug|output|Turned on for a clock cycle when the CPU executes a `debug` instruction.|
+|debug\_tx|output|When `debug_output` is enabled, this line prints the content of the working register on `debug` instructions.|
 |quit|output|Is turned on from the moment the CPU executes a quit instruction and stops itself.|
 |gpi| 16-bit input | The input of the GPIO.|
 |gpo| 16-bit output | The output of the GPIO.|
