@@ -16,6 +16,7 @@ set 8
 cpy SR
 ;getting the base address of the UART
 set8 252 
+debug
 cpy R2
 ;infinite loop
 setlab loop

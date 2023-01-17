@@ -5,13 +5,15 @@ module reflet_8bit_ctrl_tb ();
     always #1 clk = !clk;
     wire tx;
     wire rx;
+    wire debug, debug_tx;
     reg reset_cpu = 0;
     reg reset_uart = 0;
 
     reflet_8bit_ctrl_with_rom #(.clk_freq(1_000_000))  ctrl (
         .clk(clk),
         .reset_in(reset_cpu),
-        .debug(),
+        .debug(debug),
+        .debug_tx(debug_tx),
         .quit(),
         .gpi(16'b0),
         .gpo(),
