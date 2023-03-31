@@ -1,5 +1,5 @@
 
-all : basicInt.bin clock.bin bootloader16.bin helloWorld.bin simuGPIO.bin uartLoopBack.bin primes.bin low_power_mode.bin uartLoopBack_16bits.bin keyboard_synth.bin
+all : basicInt.bin clock.bin bootloader16.bin helloWorld.bin simuGPIO.bin uartLoopBack.bin primes.bin low_power_mode.bin uartLoopBack_16bits.bin keyboard_synth.bin test_instructions.bin
 
 clean :
 	rm -f *.bin
@@ -45,3 +45,11 @@ uartLoopBack_16bits.bin : uartLoopBack_16bits.asm libs/ctrl16addrMap.asm libs/ua
 
 keyboard_synth.bin : keyboard_synth.asm libs/ctrl16addrMap.asm libs/uart.asm libs/synth.asm
 	reflet-asm $< -o $@ -word-size 16 -set-stack-to 32768
+
+test_instructions.bin : test_instructions.asm
+	reflet-asm test_instructions.asm -o test_instructions.bin -word-size 16 -no-stack-init
+
+../simu/simu9_tb.vh : test_instructions.bin
+	printf '`define test_instruction_bin_size %i\n' $$(wc --bytes < $<) > $@
+	printf "\`define test_instruction_bin %i'h%s\n" $$(echo $$(wc --bytes < $<) 8 '*' n | dc) $$(xxd -p -c1 < $< | tac | tr -d '\n') >> $@
+
