@@ -2,17 +2,17 @@
 ;It wait for 4 seconds for an UART message and if there is, it load it in RAM.
 ;This bootloader never uses the RAM, only peripherals (uart, interrupt multiplexer, timer, timer2) and registers
 
-;R1 contain the UART timeout
-;R2 contain the target RAM addr for loading the program
-;R3 contail the status register
-;R4 and R5 is used to store the WR in interupt for the UART and the timer, respectively
-;R6 contain 400, the timer timeout reset
-;R7 contain 0xFF15, the rx_data register
-;R8 contain the endBoot label
-;R9 is ised as a scratch register for timHandle
-;R10 contain the addr of the infinite loop
+;R1 contains the UART timeout
+;R2 contains the target RAM addr for loading the program
+;R3 contains the status register
+;R4 and R5 is used to store the WR in interrupt for the UART and the timer, respectively
+;R6 contains 400, the timer timeout reset
+;R7 contains 0xFF15, the rx_data register
+;R8 contains the endBoot label
+;R9 is used as a scratch register for timHandle
+;R10 contains the addr of the infinite loop
 
-label init ;The label will probabely be unused...
+label init ;The label will probably be unused...
 set 0 ;init registers
 cpy R2
 set 4 
@@ -93,7 +93,7 @@ str R3
 tbm ;end timer config
 
 label endTimer
-; interupt manager config
+; interrupt manager config
 setlab interrupt_manager
 load WR
 tbm ;Starting to manipulate interrupt multiplexer
