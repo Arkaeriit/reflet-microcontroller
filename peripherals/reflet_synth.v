@@ -80,7 +80,7 @@ module reflet_synth_generator #(
     wire [13:0] divisor;
     wire [13:0] duty = (shape == 2'b01 ? {3'b000, divisor[13:3]} : // 12.5 %
                           (shape == 2'b10 ? {2'b00, divisor[13:2]} : // 25 %
-                              (shape == 2'b10 ? {1'b0, divisor[13:1]} : // 50 %
+                              (shape == 2'b11 ? {1'b0, divisor[13:1]} : // 50 %
                                  0))); //0%
     reflet_synth_div_map map(
         .clk(clk),
