@@ -3,6 +3,9 @@
 
 @align_word
 
+label bootloader
+@rawbytes 00 7D
+
 label data
 @rawbytes 00 80
 
