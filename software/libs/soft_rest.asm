@@ -41,6 +41,8 @@ label reset_to_bootloader
     cpy SR
     goto reset
     
+    ; This is the small routine written at the start of the instruction memory
+    ; on the first boot of the 16 bit controller
     @align 2
     label 16_bit_por_routine
         @rawbytes 00 7D 00 00 ; The bootloader address and a padding word
