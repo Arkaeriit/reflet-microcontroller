@@ -1,6 +1,6 @@
 // This rom is made with a slighly modified vertion of ../software/clock.asm
 // The only difference is the constant written in the timers's registers
-module rom5(input clk, input enable, input [9-1:0] addr, output [16-1:0] data);
+module rom05(input clk, input enable, input [9-1:0] addr, output [16-1:0] data);
     reg [16-1:0] data_reg;
     always @ (posedge clk)
         case(addr)

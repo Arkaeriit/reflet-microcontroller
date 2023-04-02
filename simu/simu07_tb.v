@@ -1,6 +1,6 @@
 // This is a test of the uart loopback in 16 bit mode
 
-module simu7_tb ();
+module simu07_tb ();
 
     reg clk = 0;
     always #1 clk <= !clk;
@@ -23,8 +23,8 @@ module simu7_tb ();
     integer i;
     initial
     begin
-        $dumpfile("simu7_tb.vcd");
-        $dumpvars(0, simu7_tb);
+        $dumpfile("simu07_tb.vcd");
+        $dumpvars(0, simu07_tb);
         #10;
         reset_cpu <= 1;
         #4000;
@@ -79,7 +79,7 @@ module simu7_mcu #(
     wire [15:0] dout_periph_shift = (addr[0] ? {dout_periph, 8'h0} : {8'h0, dout_periph});
     assign data_in_cpu = dout_inst | dout_data | dout_periph_shift;
     //0x00 to 0x7FFF: instruction. Should be replaced with a ROM for real use
-    rom7 rom (
+    rom07 rom (
         .clk(clk),
         .enable(!addr[15]),
         .addr(addr[8:1]),

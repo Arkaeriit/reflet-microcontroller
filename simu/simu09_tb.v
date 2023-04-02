@@ -3,9 +3,9 @@
 |test_instructions.asm and running it.      |
 \------------------------------------------*/
 
-`include "simu9_tb.vh"
+`include "simu09_tb.vh"
 
-module simu9_tb ();
+module simu09_tb ();
 
     reg clk = 0;
     always #1 clk <= !clk;
@@ -49,8 +49,8 @@ module simu9_tb ();
     integer i;
     initial
     begin
-        $dumpfile("simu9_tb.vcd");
-        $dumpvars(0, simu9_tb);
+        $dumpfile("simu09_tb.vcd");
+        $dumpvars(0, simu09_tb);
         for(i = 0; i<16; i=i+1)
         begin
             $dumpvars(0, ctrl.cpu.registers[i]);

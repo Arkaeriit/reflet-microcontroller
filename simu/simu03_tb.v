@@ -1,4 +1,4 @@
-module simu3();
+module simu03();
 
     reg clk = 0;
     always #1 clk = !clk;
@@ -45,7 +45,7 @@ module simu3();
         .uart_int_in(1'b0),
         .timer_int_in(1'b0),
         .cpu_int(int));
-    rom3 rom(
+    rom03 rom(
         .clk(clk), 
         .enable(!addr[7]), 
         .addr(addr[6:0]), 
@@ -65,8 +65,8 @@ module simu3();
 
     initial
     begin
-        $dumpfile("simu3_tb.vcd");
-        $dumpvars(0, simu3);
+        $dumpfile("simu03_tb.vcd");
+        $dumpvars(0, simu03);
         #10;
         reset = 1;
         #2000;

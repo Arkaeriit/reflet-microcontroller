@@ -1,6 +1,6 @@
 //This small demonstration is ment to showcase the low power mode of
 //this microcontroller
-module simu6 ();
+module simu06 ();
 
     reg clk = 0;
     always #1 clk = !clk;
@@ -41,7 +41,7 @@ module simu6 ();
     wire [15:0] dout_periph_shift = (addr[0] ? {dout_periph, 8'h0} : {8'h0, dout_periph});
     assign data_in_cpu = dout_inst | dout_data | dout_periph_shift;
     //0x00 to 0x7FFF: instruction. Should be replaced with a ROM for real use
-    rom6 rom (
+    rom06 rom (
         .clk(clk),
         .enable(!addr[15]),
         .addr(addr[9:1]),
@@ -90,8 +90,8 @@ module simu6 ();
     integer i;
     initial
     begin
-        $dumpfile("simu6_tb.vcd");
-        $dumpvars(0, simu6);
+        $dumpfile("simu06_tb.vcd");
+        $dumpvars(0, simu06);
         for(i = 0; i<16; i=i+1)
             $dumpvars(0, cpu.registers[i]);
         #800000;
