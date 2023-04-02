@@ -25,6 +25,9 @@ module simu9_tb ();
         .enable_uart(1),
         .enable_pwm(0),
         .enable_segments(0),
+        .enable_synth(0),
+        .enable_ext_io(0),
+        .enable_vga(0),
         .enable_power_manager(0))
     ctrl (
         .clk(clk),

@@ -113,7 +113,9 @@ module simu8_mcu #(
         .enable_pwm(0),
         .enable_synth(1),
         .enable_segments(0),
+        .enable_synth(0),
         .enable_ext_io(0),
+        .enable_vga(0),
         .enable_power_manager(0)) 
     periph (
         .clk(clk),

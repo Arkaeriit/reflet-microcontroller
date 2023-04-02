@@ -91,6 +91,9 @@ module clock_cpu #(
         .enable_uart(enable_uart),
         .enable_pwm(enable_pwm),
         .enable_segments(enable_segments),
+        .enable_synth(0),
+        .enable_ext_io(0),
+        .enable_vga(0),
         .enable_power_manager(enable_power_manager)) 
     periph (
         .clk(clk),
