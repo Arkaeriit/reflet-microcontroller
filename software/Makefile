@@ -1,5 +1,5 @@
 
-all : basicInt.bin clock.bin bootloader16.bin helloWorld.bin simuGPIO.bin uartLoopBack.bin primes.bin low_power_mode.bin uartLoopBack_16bits.bin keyboard_synth.bin test_instructions.bin
+all : basicInt.bin clock.bin bootloader16.bin helloWorld.bin simuGPIO.bin uartLoopBack.bin primes.bin low_power_mode.bin uartLoopBack_16bits.bin keyboard_synth.bin test_instructions.bin vga_test.bin
 
 clean :
 	rm -f *.bin
@@ -52,4 +52,10 @@ test_instructions.bin : test_instructions.asm
 ../simu/simu9_tb.vh : test_instructions.bin
 	printf '`define test_instruction_bin_size %i\n' $$(wc --bytes < $<) > $@
 	printf "\`define test_instruction_bin %i'h%s\n" $$(echo $$(wc --bytes < $<) 8 '*' n | dc) $$(xxd -p -c1 < $< | tac | tr -d '\n') >> $@
+
+vga_test.bin : vga_test.asm libs/ctrl16addrMap.asm libs/math.asm libs/VGA/base_vga.asm libs/math.asm
+	reflet-asm $< -o $@ -word-size 16 -set-stack-to 32768
+
+../simu/rom10.v : vga_test.bin
+	ROM_maker -name rom10 -input_file $< -output_file $@ -wordsize 2 -min_addr_size 14
 
