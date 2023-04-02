@@ -17,6 +17,7 @@
 `define power_size         2
 `define synth_size         1
 `define extio_size         2
+`define vga_size           3
 //assigning addresses
 `define hwi_off   0
 `define interrupt_mux_off (`hwi_off   + `hwi_size)
@@ -29,8 +30,9 @@
 `define power_off         (`seg_off   + `seg_size)
 `define synth_off         (`power_off + `power_size)
 `define extio_off         (`synth_off + `synth_size)
+`define vga_off           (`extio_off + `extio_size)
 //sizes
-`define total_size (`hwi_size + `interrupt_mux_size + `gpio_size + `timer_size + `uart_size + `pwm_size + `seg_size + `timer2size + `power_size + `synth_size + `extio_off)
+`define total_size (`hwi_size + `interrupt_mux_size + `gpio_size + `timer_size + `uart_size + `pwm_size + `seg_size + `timer2size + `power_size + `synth_size + `extio_size + `vga_size)
 `define offset_size ($clog2(`total_size))
 
 module reflet_peripheral #(
@@ -48,6 +50,7 @@ module reflet_peripheral #(
     enable_power_manager = 1,
     enable_synth = 1,
     enable_ext_io = 1,
+    enable_vga = 1,
     ext_io_size = 128
     )(
     input clk,
@@ -77,7 +80,13 @@ module reflet_peripheral #(
     output synth_out,
     //extended IO
     input [ext_io_size-1:0] ext_io_in,
-    output [ext_io_size-1:0] ext_io_out
+    output [ext_io_size-1:0] ext_io_out,
+    //VGA output
+    output h_sync,
+    output v_sync,
+    output [1:0] R_out,
+    output [1:0] G_out,
+    output [1:0] B_out
     );
 
     //data_out
@@ -92,7 +101,8 @@ module reflet_peripheral #(
     wire [7:0] dout_power;
     wire [7:0] dout_synth;
     wire [7:0] dout_extio;
-    assign data_out = dout_hwi | dout_interrupt_mux | dout_gpio | dout_timer | dout_timer2 | dout_uart | dout_pwm | dout_segments | dout_power | dout_synth | dout_extio;
+    wire [7:0] dout_vga;
+    assign data_out = dout_hwi | dout_interrupt_mux | dout_gpio | dout_timer | dout_timer2 | dout_uart | dout_pwm | dout_segments | dout_power | dout_synth | dout_extio | dout_vga;
 
     //interrupts signals
     wire int_gpio, int_timer, int_uart, int_timer2;
@@ -319,6 +329,33 @@ module reflet_peripheral #(
             assign ext_io_out = 0;
         end
     endgenerate
+
+    generate
+        if (enable_vga)
+        reflet_vga_interface #(.base_addr_size(`offset_size), .base_addr(`vga_off), .clk_freq(clk_freq)) vga (
+            .clk(clk),
+            .reset(reset),
+            .enable(using_peripherals),
+            .addr(offset),
+            .data_in(data_in),
+            .data_out(dout_vga),
+            .write_en(write_en),
+            .h_sync(h_sync),
+            .v_sync(v_sync),
+            .R_out(R_out),
+            .G_out(G_out),
+            .B_out(B_out));
+        else
+        begin
+            assign h_sync   = 1'b0;
+            assign v_sync   = 1'b0;
+            assign R_out    = 2'b0;
+            assign G_out    = 2'b0;
+            assign B_out    = 2'b0;
+            assign dout_vga = 8'b0;
+        end
+    endgenerate
+
 
 endmodule
 

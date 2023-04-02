@@ -18,6 +18,7 @@ module reflet_16bit_controller #(
     enable_power_manager = 1,
     enable_synth = 1,
     enable_ext_io = 1,
+    enable_vga = 1,
     data_size = 100,
     inst_size = 128,
     mem_resetable = 0,
@@ -47,7 +48,13 @@ module reflet_16bit_controller #(
     output synth_out,
     //extended io
     input [ext_io_size-1:0] ext_io_in,
-    output [ext_io_size-1:0] ext_io_out
+    output [ext_io_size-1:0] ext_io_out,
+    //VGA output
+    output h_sync,
+    output v_sync,
+    output [1:0] R_out,
+    output [1:0] G_out,
+    output [1:0] B_out
     );
 
     //reset control
@@ -156,6 +163,7 @@ module reflet_16bit_controller #(
         .enable_power_manager(enable_power_manager),
         .enable_synth(enable_synth),
         .enable_ext_io(enable_ext_io),
+        .enable_vga(enable_vga),
         .ext_io_size(ext_io_size)) 
     periph (
         .clk(clk),
@@ -178,7 +186,12 @@ module reflet_16bit_controller #(
         .seg_colon(seg_colon),
         .synth_out(synth_out),
         .ext_io_in(ext_io_in),
-        .ext_io_out(ext_io_out));
+        .ext_io_out(ext_io_out),
+        .h_sync(h_sync),
+        .v_sync(v_sync),
+        .R_out(R_out),
+        .G_out(G_out),
+        .B_out(B_out));
 
 endmodule
 
