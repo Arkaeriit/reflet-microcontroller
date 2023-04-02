@@ -153,6 +153,7 @@ module reflet_16bit_controller #(
         .base_addr_size(15), 
         .base_addr(15'h7F00), 
         .clk_freq(clk_freq),
+        .mem_resetable(mem_resetable),
         .enable_interrupt_mux(enable_interrupt_mux),
         .enable_gpio(enable_gpio),
         .enable_timer(enable_timer),

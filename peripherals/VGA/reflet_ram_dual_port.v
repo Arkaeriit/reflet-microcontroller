@@ -27,7 +27,7 @@ module reflet_ram_dual_port #(
     reg [depth-1:0] data_out_array;
 
     //addr control
-    wire usable_read = enable && addr_read < size && reset;
+    reg usable_read;
     wire usable_write = enable && addr_write < size && reset;
 
 	generate
@@ -44,6 +44,7 @@ module reflet_ram_dual_port #(
 						if(usable_write && write_en)
 							 memory_ram[addr_write] <= data_in;
 						data_out_array <= memory_ram[addr_read];
+                        usable_read <= enable && addr_read < size && reset;
 				  end
 		end
 		else
@@ -53,6 +54,7 @@ module reflet_ram_dual_port #(
 					if(usable_write && write_en)
 						 memory_ram[addr_write] <= data_in;
 					data_out_array <= memory_ram[addr_read];
+                    usable_read <= enable && addr_read < size && reset;
 			  end
 		end
 	endgenerate

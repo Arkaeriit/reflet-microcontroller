@@ -1,7 +1,8 @@
 module reflet_vga_interface #(
     parameter base_addr_size = 16,
     base_addr = 16'hFF24,
-    clk_freq = 1000000
+    clk_freq = 1000000,
+    mem_resetable = 0
     )(
     input clk,
     input reset,
@@ -34,7 +35,7 @@ module reflet_vga_interface #(
     reflet_rw_register #(.addr_size(2), .reg_addr(0), .default_value(0)) reg_h (
         .clk(clk),
         .reset(reset),
-        .enable(using_pwm),
+        .enable(using_gpu),
         .addr(offset),
         .write_en(write_en),
         .data_in(data_in),
@@ -43,7 +44,7 @@ module reflet_vga_interface #(
     reflet_rw_register #(.addr_size(2), .reg_addr(1), .default_value(0)) reg_v (
         .clk(clk),
         .reset(reset),
-        .enable(using_pwm),
+        .enable(using_gpu),
         .addr(offset),
         .write_en(write_en),
         .data_in(data_in),
@@ -52,7 +53,7 @@ module reflet_vga_interface #(
     reflet_rw_register #(.addr_size(2), .reg_addr(2), .default_value(0)) reg_color (
         .clk(clk),
         .reset(reset),
-        .enable(using_pwm),
+        .enable(using_gpu),
         .addr(offset),
         .write_en(write_en),
         .data_in(data_in),
@@ -76,7 +77,7 @@ module reflet_vga_interface #(
         .v_sync_pulse(2),
         .v_back_porsh(33),
         .color_depth(2),
-        .ram_resetable(0),
+        .ram_resetable(mem_resetable),
         .bit_reduction(2)
         ) vga (
         .clk(clk),

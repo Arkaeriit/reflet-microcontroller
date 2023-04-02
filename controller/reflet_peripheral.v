@@ -40,6 +40,7 @@ module reflet_peripheral #(
     base_addr_size = 16,
     base_addr = 16'hFF00,
     clk_freq = 1000000,
+    mem_resetable = 0,
     enable_interrupt_mux = 1,
     enable_gpio = 1,
     enable_timer = 1,
@@ -332,7 +333,7 @@ module reflet_peripheral #(
 
     generate
         if (enable_vga)
-        reflet_vga_interface #(.base_addr_size(`offset_size), .base_addr(`vga_off), .clk_freq(clk_freq)) vga (
+        reflet_vga_interface #(.base_addr_size(`offset_size), .base_addr(`vga_off), .clk_freq(clk_freq), .mem_resetable(mem_resetable)) vga (
             .clk(clk),
             .reset(reset),
             .enable(using_peripherals),
