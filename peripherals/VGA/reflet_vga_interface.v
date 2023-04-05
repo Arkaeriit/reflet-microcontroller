@@ -61,9 +61,12 @@ module reflet_vga_interface #(
         .data(color));
 
     // GPU control
-    wire gpu_we = write_en && using_gpu && offset == 2;
     wire [$clog2(160)-1:0] h = _h[$clog2(160)-1:0];
     wire [$clog2(120)-1:0] v = _v[$clog2(120)-1:0];
+    wire _gpu_we = write_en && using_gpu && offset == 2;
+    reg gpu_we;
+    always @ (posedge clk)
+        gpu_we <= _gpu_we;
 
     reflet_VGA #(
         .clk_freq(clk_freq),
