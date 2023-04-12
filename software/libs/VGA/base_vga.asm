@@ -24,6 +24,25 @@ label gpu_get_field_from_context_16_bits
     ret
 
 ;---------------------------------------
+; Write in the working register the data at the offset from the context given in argument
+@define gpu_read_from_context 1
+    pushr. R1
+    set $1
+    cpy R1
+    load R10
+    call
+    load R1
+    popr R1
+@end
+
+;----------------------------------------
+; Call the function at the given offset in the context
+@define gpu_call_from_context 1
+    gpu_read_from_context $1
+    call
+@end
+
+;---------------------------------------
 ; Draw at coords width = R2 and height = R3 a pixel of color in R4
 label gpu_draw_pixel
     ; Hardware address
@@ -31,11 +50,9 @@ label gpu_draw_pixel
     set 1
     cpy R1
     load R10
-    debug
     call
     load R1
     cpy R1
-    debug
     ; Status register
     pushr. SR
     set 6
@@ -55,6 +72,12 @@ label gpu_draw_pixel
     popr. SR
     popr. R1
     ret
+
+;----------------------------------
+; Fetches the address of draw_pixel and calls it
+@define gpu_call_draw_pixel 0
+    gpu_call_from_context 2
+@end
     
 ;----------------------------------
 ; Initializes the GPU context in the memory in R10
@@ -63,27 +86,22 @@ label _gpu_init_context
     read R10
     cpy R1
     ; Field access function
-    debug
     setlab gpu_get_field_from_context_16_bits
     str R1
     ; Hardware address
     inc_ws. R1
-    debug
     set+ 0xFF24 ; TODO: cleanup
     str R1
     ; Set pixel function
     inc_ws. R1
-    debug
     setlab gpu_draw_pixel
     str R1
     ; Screen width
     inc_ws. R1
-    debug
     set8 160 ; TODO: cleanup
     str R1
     ; Screen height
     inc_ws. R1
-    debug
     set8 120 ; TODO: cleanup
     str R1
     ; Cleanup
@@ -109,4 +127,47 @@ label _gpu_init_context
     callf _gpu_init_context
 @end
 
+; Draw at coords width = R2 and height = R3 a pixel of color in R4
+
+
+;----------------------------
+; Fills the screen with the color in R1
+label gpu_fill
+    ; Init registers
+    pushr. R2
+    pushr. R3
+    pushr. R4
+    pushr. R5
+    pushr. R6
+    mov. R4 R1
+    set 0
+    cpy R2
+    setlab gpu_fill_width_loop
+    cpy R5
+    setlab gpu_fill_height_loop
+    cpy R6
+    label gpu_fill_width_loop
+        set 0
+        cpy R3
+        label gpu_fill_height_loop
+            gpu_call_draw_pixel
+            inc. R3
+            gpu_read_from_context 4
+            eq R3
+            cmpnot
+            read R6
+            jif
+        inc. R2
+        gpu_read_from_context 3
+        eq R2
+        cmpnot
+        read R5
+        jif
+    ; cleanup
+    popr. R6
+    popr. R5
+    popr. R4
+    popr. R3
+    popr. R2
+    ret
 
