@@ -5,15 +5,14 @@
 ;Prints the char in R1
 label printc
     pushr R2 ;addrs
-    pushr R4 ;waiting loop pointer
+    pushr R4 ;waiting loop pointer and tmp register for tx_data addr
     setlab UART ;UART tx_cmd addr
     load WR
-    tbm
     cpy R2
     setlab printcLoop
     cpy R4
     label printcLoop
-        load R2 ;testing that R2 is not 0 to see if we are ready to print
+        load8 R2 ;testing that R2 is not 0 to see if we are ready to print
         cpy R12
         set 0
         eq R12
@@ -21,12 +20,11 @@ label printc
         jif
     set 1    ;computing the data addr
     add R2
-    cpy R12
+    cpy R4
     read R1 ;writing the char
-    str R12
+    str8 R4
     set 0   ;sending command
-    str R2
-    tbm
+    str8 R2
     popr R4 ;restoring registers
     popr R2
     ret

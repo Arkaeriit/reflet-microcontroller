@@ -77,7 +77,7 @@ module reflet_8bit_ctrl_with_rom #(
     assign data_in_cpu = dout_inst | dout_data | dout_periph;
     wire enable_rom = !(addr[7]);
     //0x00 to 0xBF: instruction. A rom that make a UART loop-back
-    rom4 mem_inst (
+    rom04 mem_inst (
         .clk(clk),
         .enable(enable_rom),
         .addr(addr[6:0]),

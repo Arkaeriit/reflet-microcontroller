@@ -1,48 +1,53 @@
-// This is a test of the uart loopback in 16 bit mode
+// This is a test of the keyboard_synth.asm program
 
-module simu7_tb ();
+module simu10_tb ();
 
     reg clk = 0;
     always #1 clk <= !clk;
     reg reset_cpu = 0;
-    reg reset_uart = 0;
-    wire rx, tx;
 
-    simu7_mcu #(.clk_freq(1_000_000)) mcu (
+    wire h_sync;
+    wire v_sync;
+    wire [1:0] R_out;
+    wire [1:0] G_out;
+    wire [1:0] B_out;
+
+
+    simu10_mcu #(.clk_freq(20_000_000)) mcu (
         .clk(clk),
         .reset_in(reset_cpu),
-        .rx(rx),
-        .tx(tx));
-    
-    uart_sending #(.clk_freq(1_000_000), .baud_rate(9600), .wait_time(5000)) uart_s (
-        .clk(clk),
-        .reset(reset_uart),
-        .rx(tx),
-        .tx(rx));
+        .h_sync(h_sync),
+        .v_sync(v_sync),
+        .R_out(R_out),
+        .G_out(G_out),
+        .B_out(B_out));
 
     integer i;
     initial
     begin
-        $dumpfile("simu7_tb.vcd");
-        $dumpvars(0, simu7_tb);
-        #10;
+        $dumpfile("simu10_tb.vcd");
+        $dumpvars(0, simu10_tb);
+        for(i = 0; i<16; i=i+1)
+            $dumpvars(0, mcu.cpu.registers[i]);
+        #20;
         reset_cpu <= 1;
-        #4000;
-        reset_uart <= 1;
-        #400000;
+        #1000000;
         $finish;
     end
 
 endmodule
 
 
-module simu7_mcu #(
+module simu10_mcu #(
     parameter clk_freq = 1000000
     )(
     input clk,
     input reset_in,
-    input rx,
-    output tx
+    output h_sync,
+    output v_sync,
+    output [1:0] R_out,
+    output [1:0] G_out,
+    output [1:0] B_out
     );
 
     //reset control
@@ -78,11 +83,11 @@ module simu7_mcu #(
     wire [7:0] din_periph = (addr[0] ? data_out_cpu[15:8] : data_out_cpu[7:0]);
     wire [15:0] dout_periph_shift = (addr[0] ? {dout_periph, 8'h0} : {8'h0, dout_periph});
     assign data_in_cpu = dout_inst | dout_data | dout_periph_shift;
-    //0x00 to 0x7FFF: instruction. Should be replaced with a ROM for real use
-    rom7 rom (
+    //0x00 to 0x7FFF: instruction.
+    rom10 rom (
         .clk(clk),
         .enable(!addr[15]),
-        .addr(addr[8:1]),
+        .addr(addr[14:1]),
         .data(dout_inst));
 
     //0x8000 to 0xFEFF: data. Should stay as a regular RAM
@@ -101,27 +106,35 @@ module simu7_mcu #(
         .base_addr_size(15), 
         .base_addr(15'h7F00), 
         .clk_freq(clk_freq),
+        .mem_resetable(1),
         .enable_interrupt_mux(0),
         .enable_gpio(0),
         .enable_timer(0),
         .enable_timer2(0),
         .enable_uart(1),
         .enable_pwm(0),
+        .enable_synth(1),
         .enable_segments(0),
-        .enable_power_manager(1)) 
+        .enable_synth(0),
+        .enable_ext_io(0),
+        .enable_vga(1),
+        .enable_power_manager(0)) 
     periph (
         .clk(clk),
         .reset(reset),
         .enable(addr[15]),
         .interrupt_request(interrupt_request),
         .cpu_enable(cpu_enable),
+        .rx(1'b1),
         .addr(addr[14:0]),
         .data_in(din_periph),
         .data_out(dout_periph),
         .write_en(write_en),
-        .gpi(16'h0),
-        .tx(tx),
-        .rx(rx));
+        .h_sync(h_sync),
+        .v_sync(v_sync),
+        .R_out(R_out),
+        .G_out(G_out),
+        .B_out(B_out));
 
 endmodule
 

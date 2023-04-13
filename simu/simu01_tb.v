@@ -1,6 +1,6 @@
 //this simulation makes the MSB of gpo blink
 //and makes the 15 LSB of gpi being copied to gpo
-module simu1();
+module simu01();
 
     reg clk = 0;
     always #1 clk = !clk;
@@ -30,7 +30,7 @@ module simu1();
         .data_out(data_out_gpio), 
         .gpi(gpi), 
         .gpo(gpo));
-    rom1 rom(
+    rom01 rom(
         .clk(clk), 
         .enable_out(!addr[7]), 
         .addr(addr[5:0]), 
@@ -48,8 +48,8 @@ module simu1();
 
     initial
     begin
-        $dumpfile("simu1_tb.vcd");
-        $dumpvars(0, simu1);
+        $dumpfile("simu01_tb.vcd");
+        $dumpvars(0, simu01);
         #10;
         reset = 1;
         #1000;

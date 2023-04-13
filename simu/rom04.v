@@ -1,4 +1,4 @@
-module rom4(input clk, input enable, input [7-1:0] addr, output [8-1:0] data);
+module rom04(input clk, input enable, input [7-1:0] addr, output [8-1:0] data);
     reg [8-1:0] data_reg;
     always @ (posedge clk)
         case(addr)

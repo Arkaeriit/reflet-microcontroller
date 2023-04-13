@@ -1,5 +1,5 @@
 
-all : basicInt.bin clock.bin bootloader16.bin helloWorld.bin simuGPIO.bin uartLoopBack.bin primes.bin low_power_mode.bin uartLoopBack_16bits.bin keyboard_synth.bin test_instructions.bin
+all : basicInt.bin clock.bin bootloader16.bin helloWorld.bin simuGPIO.bin uartLoopBack.bin primes.bin low_power_mode.bin uartLoopBack_16bits.bin keyboard_synth.bin test_instructions.bin vga_test.bin
 
 clean :
 	rm -f *.bin
@@ -19,14 +19,14 @@ bootloader16.bin : bootloader16.asm
 helloWorld.bin : helloWorld.asm libs/ctrl16addrMap.asm libs/uart.asm libs/printing.asm libs/math.asm libs/string.asm
 	reflet-asm helloWorld.asm -o helloWorld.bin -word-size 16 -set-stack-to 32768 #Note: stack starts at 0x8000
 
-../simu/rom2.v : helloWorld.bin
-	ROM_maker -name rom2 -input_file $< -output_file $@ -wordsize 2 -min_addr_size 14
+../simu/rom02.v : helloWorld.bin
+	ROM_maker -name rom02 -input_file $< -output_file $@ -wordsize 2 -min_addr_size 14
 
-../simu/rom4.v : uartLoopBack.bin
-	ROM_maker -name rom4 -input_file $< -output_file $@ -wordsize 1 -min_addr_size 7
+../simu/rom04.v : uartLoopBack.bin
+	ROM_maker -name rom04 -input_file $< -output_file $@ -wordsize 1 -min_addr_size 7
 
-../simu/rom8.v : keyboard_synth.bin
-	ROM_maker -name rom8 -input_file $< -output_file $@ -wordsize 2 -min_addr_size 14
+../simu/rom08.v : keyboard_synth.bin
+	ROM_maker -name rom08 -input_file $< -output_file $@ -wordsize 2 -min_addr_size 14
 
 simuGPIO.bin : simuGPIO.asm
 	reflet-asm simuGPIO.asm -o simuGPIO.bin -no-stack-init -word-size 8 -ignore-start
@@ -52,4 +52,10 @@ test_instructions.bin : test_instructions.asm
 ../simu/simu9_tb.vh : test_instructions.bin
 	printf '`define test_instruction_bin_size %i\n' $$(wc --bytes < $<) > $@
 	printf "\`define test_instruction_bin %i'h%s\n" $$(echo $$(wc --bytes < $<) 8 '*' n | dc) $$(xxd -p -c1 < $< | tac | tr -d '\n') >> $@
+
+vga_test.bin : vga_test.asm libs/ctrl16addrMap.asm libs/math.asm libs/VGA/base_vga.asm libs/math.asm
+	reflet-asm $< -o $@ -word-size 16 -set-stack-to 32768
+
+../simu/rom10.v : vga_test.bin
+	ROM_maker -name rom10 -input_file $< -output_file $@ -wordsize 2 -min_addr_size 14
 

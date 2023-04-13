@@ -1,11 +1,49 @@
-//This small demonstration is ment to showcase the low power mode of
-//this microcontroller
-module simu6 ();
+// This is a test of the uart loopback in 16 bit mode
+
+module simu07_tb ();
 
     reg clk = 0;
-    always #1 clk = !clk;
-    wire reset_in = 1;
+    always #1 clk <= !clk;
+    reg reset_cpu = 0;
+    reg reset_uart = 0;
+    wire rx, tx;
+
+    simu7_mcu #(.clk_freq(1_000_000)) mcu (
+        .clk(clk),
+        .reset_in(reset_cpu),
+        .rx(rx),
+        .tx(tx));
     
+    uart_sending #(.clk_freq(1_000_000), .baud_rate(9600), .wait_time(5000)) uart_s (
+        .clk(clk),
+        .reset(reset_uart),
+        .rx(tx),
+        .tx(rx));
+
+    integer i;
+    initial
+    begin
+        $dumpfile("simu07_tb.vcd");
+        $dumpvars(0, simu07_tb);
+        #10;
+        reset_cpu <= 1;
+        #4000;
+        reset_uart <= 1;
+        #400000;
+        $finish;
+    end
+
+endmodule
+
+
+module simu7_mcu #(
+    parameter clk_freq = 1000000
+    )(
+    input clk,
+    input reset_in,
+    input rx,
+    output tx
+    );
 
     //reset control
     wire reset, blink;
@@ -41,10 +79,10 @@ module simu6 ();
     wire [15:0] dout_periph_shift = (addr[0] ? {dout_periph, 8'h0} : {8'h0, dout_periph});
     assign data_in_cpu = dout_inst | dout_data | dout_periph_shift;
     //0x00 to 0x7FFF: instruction. Should be replaced with a ROM for real use
-    rom6 rom (
+    rom07 rom (
         .clk(clk),
         .enable(!addr[15]),
-        .addr(addr[9:1]),
+        .addr(addr[8:1]),
         .data(dout_inst));
 
     //0x8000 to 0xFEFF: data. Should stay as a regular RAM
@@ -62,14 +100,17 @@ module simu6 ();
         .wordsize(16), 
         .base_addr_size(15), 
         .base_addr(15'h7F00), 
-        .clk_freq(1000000),
-        .enable_interrupt_mux(1),
+        .clk_freq(clk_freq),
+        .enable_interrupt_mux(0),
         .enable_gpio(0),
-        .enable_timer(1),
+        .enable_timer(0),
         .enable_timer2(0),
-        .enable_uart(0),
+        .enable_uart(1),
         .enable_pwm(0),
         .enable_segments(0),
+        .enable_synth(0),
+        .enable_ext_io(0),
+        .enable_vga(0),
         .enable_power_manager(1)) 
     periph (
         .clk(clk),
@@ -82,18 +123,8 @@ module simu6 ();
         .data_out(dout_periph),
         .write_en(write_en),
         .gpi(16'h0),
-        .rx(1'b1));
-
-    integer i;
-    initial
-    begin
-        $dumpfile("simu6_tb.vcd");
-        $dumpvars(0, simu6);
-        for(i = 0; i<16; i=i+1)
-            $dumpvars(0, cpu.registers[i]);
-        #800000;
-        $finish;
-    end
+        .tx(tx),
+        .rx(rx));
 
 endmodule
 

@@ -1,5 +1,5 @@
 //The cade used to make this rom om is in software/basicInt.asm
-module rom3(input clk, input enable, input [7-1:0] addr, output [8-1:0] dataOut);
+module rom03(input clk, input enable, input [7-1:0] addr, output [8-1:0] dataOut);
     reg [8-1:0] data_reg;
     always @ (posedge clk)
         case(addr)

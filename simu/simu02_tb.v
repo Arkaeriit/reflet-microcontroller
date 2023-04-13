@@ -1,5 +1,5 @@
 //This simulation print Hello, world! with the UART
-module simu2();
+module simu02();
 
     reg clk = 0;
     always #1 clk = !clk;
@@ -32,6 +32,8 @@ module simu2();
         .enable_uart(1),
         .enable_pwm(0),
         .enable_segments(0),
+        .enable_ext_io(0),
+        .enable_vga(0),
         .enable_power_manager(0),
         .enable_synth(0)
     ) periph (
@@ -48,7 +50,7 @@ module simu2();
     // Memory
     wire [15:0] data_out_rom;
     wire [15:0] data_out_ram;
-    rom2 rom(
+    rom02 rom(
         .clk(clk), 
         .enable(!addr[15]), 
         .addr(addr[14:1]),
@@ -76,8 +78,8 @@ module simu2();
 
     initial
     begin
-        $dumpfile("simu2_tb.vcd");
-        $dumpvars(0, simu2);
+        $dumpfile("simu02_tb.vcd");
+        $dumpvars(0, simu02);
         for(i = 0; i<16; i=i+1)
             $dumpvars(0, cpu.registers[i]);
         #10;

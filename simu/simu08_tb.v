@@ -1,6 +1,6 @@
 // This is a test of the keyboard_synth.asm program
 
-module simu8_tb ();
+module simu08_tb ();
 
     reg clk = 0;
     always #1 clk <= !clk;
@@ -24,8 +24,8 @@ module simu8_tb ();
     integer i;
     initial
     begin
-        $dumpfile("simu8_tb.vcd");
-        $dumpvars(0, simu8_tb);
+        $dumpfile("simu08_tb.vcd");
+        $dumpvars(0, simu08_tb);
         //for(i = 0; i<16; i=i+1)
             //$dumpvars(0, mcu.cpu.registers[i]);
         #20;
@@ -83,7 +83,7 @@ module simu8_mcu #(
     wire [15:0] dout_periph_shift = (addr[0] ? {dout_periph, 8'h0} : {8'h0, dout_periph});
     assign data_in_cpu = dout_inst | dout_data | dout_periph_shift;
     //0x00 to 0x7FFF: instruction.
-    rom8 rom (
+    rom08 rom (
         .clk(clk),
         .enable(!addr[15]),
         .addr(addr[14:1]),
@@ -114,6 +114,7 @@ module simu8_mcu #(
         .enable_synth(1),
         .enable_segments(0),
         .enable_ext_io(0),
+        .enable_vga(0),
         .enable_power_manager(0)) 
     periph (
         .clk(clk),

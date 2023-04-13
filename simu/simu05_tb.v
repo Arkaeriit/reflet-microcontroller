@@ -1,5 +1,5 @@
 
-module simu5_tb;
+module simu05_tb;
 
     reg clk = 0;
     always #1 clk = !clk;
@@ -29,8 +29,8 @@ module simu5_tb;
     integer i;
     initial
     begin
-        $dumpfile("simu5_tb.vcd");
-        $dumpvars(0, simu5_tb);
+        $dumpfile("simu05_tb.vcd");
+        $dumpvars(0, simu05_tb);
         for(i = 0; i<16; i=i+1)
             $dumpvars(0, cpu.cpu.registers[i]);
         #5000;
