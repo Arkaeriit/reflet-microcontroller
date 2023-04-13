@@ -1,6 +1,8 @@
 # Reflet microcontroller
 A micro-controller based on a Reflet CPU.
 
+Part of the system are included as submodules, so you should run `git submodule update --init --recursive` after cloning this repository.
+
 # The CPU
 The CPU is a Reflet CPU. More information and the toolchain can be found here: https://github.com/Arkaeriit/reflet.
 
