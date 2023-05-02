@@ -19,7 +19,7 @@ label start
     cpy R2
     set8 10
     cpy R3
-    setr R4 49
+    setr R4 0xF1
     callf gpu_draw_pixel
     inc R2
     gpu_call_draw_pixel

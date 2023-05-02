@@ -17,7 +17,7 @@
 `define power_size         2
 `define synth_size         1
 `define extio_size         2
-`define vga_size           3
+`define vga_size           5
 //assigning addresses
 `define hwi_off   0
 `define interrupt_mux_off (`hwi_off   + `hwi_size)

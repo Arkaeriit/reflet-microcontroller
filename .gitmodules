@@ -1,3 +1,6 @@
 [submodule "submodules/reflet"]
 	path = submodules/reflet
 	url = https://github.com/Arkaeriit/reflet.git
+[submodule "submodules/reflet-GPU"]
+	path = submodules/reflet-GPU
+	url = https://github.com/Arkaeriit/reflet-GPU.git

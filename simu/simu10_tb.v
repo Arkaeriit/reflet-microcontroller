@@ -1,4 +1,4 @@
-// This is a test of the keyboard_synth.asm program
+// This is a test of the GPU
 
 module simu10_tb ();
 
