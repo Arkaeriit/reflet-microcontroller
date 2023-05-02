@@ -29,6 +29,8 @@ label start
     gpu_call_draw_pixel
     callf gpu_draw_letter
     inc R2
+    set 0
+    cpy R6
     gpu_call_draw_pixel
     callf gpu_draw_letter
     inc R2

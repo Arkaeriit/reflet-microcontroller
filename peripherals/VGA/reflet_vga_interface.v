@@ -54,15 +54,15 @@ module reflet_vga_interface #(
         .data_in(data_in),
         .data_out(dout_v),
         .data(_v));
-    reflet_rw_register #(.addr_size(3), .reg_addr(2), .default_value(0)) reg_color (
+    reflet_rw_register #(.addr_size(3), .reg_addr(2), .default_value(0)) reg_char (
         .clk(clk),
         .reset(reset),
         .enable(using_gpu),
         .addr(offset),
         .write_en(write_en),
         .data_in(data_in),
-        .data_out(dout_color),
-        .data(color));
+        .data_out(dout_char),
+        .data(char));
     reflet_rw_register #(.addr_size(3), .reg_addr(3), .default_value(0)) reg_color_bg (
         .clk(clk),
         .reset(reset),
@@ -72,21 +72,21 @@ module reflet_vga_interface #(
         .data_in(data_in),
         .data_out(dout_color_bg),
         .data(color_bg));
-    reflet_rw_register #(.addr_size(3), .reg_addr(4), .default_value(0)) reg_char (
+    reflet_rw_register #(.addr_size(3), .reg_addr(4), .default_value(0)) reg_color (
         .clk(clk),
         .reset(reset),
         .enable(using_gpu),
         .addr(offset),
         .write_en(write_en),
         .data_in(data_in),
-        .data_out(dout_char),
-        .data(char));
+        .data_out(dout_color),
+        .data(color));
 
     // GPU control
     wire [$clog2(160)-1:0] h = _h[$clog2(160)-1:0];
     wire [$clog2(120)-1:0] v = _v[$clog2(120)-1:0];
-    wire _gpu_we_bitmap = write_en && using_gpu && offset == 2 && char == 8'h0;
-    wire _gpu_we_txt = write_en && using_gpu && offset == 2 && char != 8'h0;
+    wire _gpu_we_bitmap = write_en && using_gpu && offset == 4 && char == 8'h0;
+    wire _gpu_we_txt = write_en && using_gpu && offset == 4 && char != 8'h0;
     reg gpu_we_bitmap, gpu_we_txt;
     always @ (posedge clk)
     begin

@@ -57,14 +57,6 @@ label gpu_draw_pixel
     pushr. sr
     set 6
     cpy sr
-    ; Seting char to 0 to ensure that the bitmap layer is used and not the text one
-    pushr. R1
-    set 4
-    add R1
-    cpy R1
-    set 0
-    str R1
-    popr. R1
     ; Writing horizontal position
     read R2
     str R1
@@ -72,8 +64,13 @@ label gpu_draw_pixel
     inc. R1
     read R3
     str R1
-    ; Writing color
+    ; Seting char to 0 to ensure that the bitmap layer is used and not the text one
     inc. R1
+    set 0
+    str R1
+    ; Writing color
+    set 2
+    addup. R1
     read R4
     str R1
     ; Restoring registers
@@ -97,19 +94,6 @@ label gpu_draw_letter
     pushr. sr
     set 6
     cpy sr
-    ; setting background and char first to ensure that the text layer is used and not the bitmap one
-    ; background
-    pushr. R1
-    set 3
-    add R1
-    cpy R1
-    read R5
-    str R1
-    ; char
-    inc. R1
-    read R6
-    str R1
-    popr. R1
     ; Writing horizontal position
     read R2
     str R1
@@ -117,7 +101,15 @@ label gpu_draw_letter
     inc. R1
     read R3
     str R1
-    ; Writing color
+    ; char
+    inc. R1
+    read R6
+    str R1
+    ; background color
+    inc. R1
+    read R5
+    str R1
+    ; foreground color
     inc. R1
     read R4
     str R1
