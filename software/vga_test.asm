@@ -15,24 +15,34 @@ label start
     ;setr R1 1
     ;callf gpu_fill
 
-    set8 10
+    set 5
     cpy R2
-    set8 10
+    set 5
     cpy R3
-    setr R4 0xF1
+    setr R4 0xF0
+    setr R5 0xFF
+    set 2
+    cpy R6
     callf gpu_draw_pixel
+    callf gpu_draw_letter
     inc R2
     gpu_call_draw_pixel
+    callf gpu_draw_letter
     inc R2
     gpu_call_draw_pixel
+    callf gpu_draw_letter
     inc R2
     gpu_call_draw_pixel
+    callf gpu_draw_letter
     inc R2
     gpu_call_draw_pixel
+    callf gpu_draw_letter
     inc R2
     gpu_call_draw_pixel
+    callf gpu_draw_letter
     inc R2
     gpu_call_draw_pixel
+    callf gpu_draw_letter
     
     set8 10
     cpy R2

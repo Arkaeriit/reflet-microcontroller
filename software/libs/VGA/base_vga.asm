@@ -45,6 +45,46 @@ label gpu_get_field_from_context_16_bits
 ;---------------------------------------
 ; Draw at coords width = R2 and height = R3 a pixel of color in R4
 label gpu_draw_pixel
+    ; hardware address
+    pushr. r1
+    set 1
+    cpy r1
+    load r10
+    call
+    load r1
+    cpy r1
+    ; status register
+    pushr. sr
+    set 6
+    cpy sr
+    ; Seting char to 0 to ensure that the bitmap layer is used and not the text one
+    pushr. R1
+    set 4
+    add R1
+    cpy R1
+    set 0
+    str R1
+    popr. R1
+    ; Writing horizontal position
+    read R2
+    str R1
+    ; Writing vertical position
+    inc. R1
+    read R3
+    str R1
+    ; Writing color
+    inc. R1
+    read R4
+    str R1
+    ; Restoring registers
+    popr. SR
+    popr. R1
+    ret
+
+;-----------------------------------------
+; Draw a letter at coords width = R2, height = R3
+; The letter is of fg = R4, bg = R5, char = R6
+label gpu_draw_letter
     ; Hardware address
     pushr. R1
     set 1
@@ -53,10 +93,23 @@ label gpu_draw_pixel
     call
     load R1
     cpy R1
-    ; Status register
-    pushr. SR
+    ; status register
+    pushr. sr
     set 6
-    cpy SR
+    cpy sr
+    ; setting background and char first to ensure that the text layer is used and not the bitmap one
+    ; background
+    pushr. R1
+    set 3
+    add R1
+    cpy R1
+    read R5
+    str R1
+    ; char
+    inc. R1
+    read R6
+    str R1
+    popr. R1
     ; Writing horizontal position
     read R2
     str R1
