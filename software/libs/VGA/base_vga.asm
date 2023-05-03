@@ -64,7 +64,7 @@ label gpu_draw_pixel
     inc. R1
     read R3
     str R1
-    ; Seting char to 0 to ensure that the bitmap layer is used and not the text one
+    ; Setting char to 0 to ensure that the bitmap layer is used and not the text one
     inc. R1
     set 0
     str R1
@@ -172,11 +172,8 @@ label _gpu_init_context
     callf _gpu_init_context
 @end
 
-; Draw at coords width = R2 and height = R3 a pixel of color in R4
-
-
 ;----------------------------
-; Fills the screen with the color in R1
+; Fills the screen with the color in R1 on the bitmap layer
 label gpu_fill
     ; Init registers
     pushr. R2
@@ -214,5 +211,118 @@ label gpu_fill
     popr. R4
     popr. R3
     popr. R2
+    ret
+
+;------------------------------------------
+; Fill the line at height R3 with the letter
+; of fg = R4, bg = R5, char = R6
+label gpu_write_line
+    pushr. R1
+    pushr. R2
+    set 3
+    cpy R1
+    gpu_read_from_context 3 ; Screen width
+    lsr R1 ; Divide by 8 to have the number of char in a line
+    cpy R1
+    set 0
+    cpy R2 ; loop counter
+    label gpu_write_line_loop
+        callf gpu_draw_letter
+        inc. R2
+        read R1
+        eq R2
+        cmpnot
+        jifl gpu_write_line_loop
+    popr. R2
+    popr. R1
+    ret
+
+;------------------------------------------
+; Fill the screen with the letter
+; of fg = R4, bg = R5, char = R6
+label gpu_write_screen
+    pushr. R1
+    pushr. R3
+    set 3
+    cpy R1
+    gpu_read_from_context 4 ; Screen height
+    lsr R1 ; Divide by 8 to have the number of char in a column
+    cpy R1
+    set 0
+    cpy R3 ; loop counter
+    label gpu_write_screen_loop
+        callf gpu_write_line
+        inc. R3
+        read R1
+        eq R3
+        cmpnot
+        jifl gpu_write_screen_loop
+    popr. R3
+    popr. R1
+    ret
+
+;----------------------------
+; Fills the screen with the color in R1 on the text layer
+label gpu_fill_txt
+    pushr. R4
+    pushr. R5
+    pushr. R6
+    mov. R4 R1
+    mov. R5 R1
+    set 1 ; Any non 0 value works
+    cpy R6
+    callf gpu_write_screen
+    popr. R6
+    popr. R5
+    popr. R4
+    ret
+
+;---------------------------
+; Starting from width = R2 and height = R3, with letters of color fg = R4
+; bg = R5, write the text in R1 of length in R6
+label (gpu_print)
+    pushr. R1
+    pushr. R2 ; R2 will be used as the position to write and will thus be modified
+    pushr. R6
+    read R2
+    addup. R6 ; R6 is used as the end of loop value, it correspond to the position at which to stop to print
+    label (gpu_print)_loop
+        pushr. R6
+        load8 R1
+        cpy R6
+        callf gpu_draw_letter
+        popr. R6
+        inc. R1
+        inc. R2
+        read R2
+        eq R6
+        cmpnot
+        jifl (gpu_print)_loop
+    popr. R6
+    popr. R2
+    popr. R1
+    ret
+        
+;-------------------------
+; Same as (gpu_print) but compute the length of text
+label gpu_print
+    pushr. R6
+    pushr. R1
+    callf strlen
+    mov. R6 R1
+    popr. R1
+    callf (gpu_print)
+    popr. R6
+    ret
+
+;-------------------------
+; Fill the text layer with black and the bitmap layer with transparent pixels
+label gpu_black
+    pushr. R1
+    set 0
+    cpy R1
+    callf gpu_fill
+    callf gpu_fill_txt
+    popr. R1
     ret
 
