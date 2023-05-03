@@ -53,9 +53,12 @@ test_instructions.bin : test_instructions.asm
 	printf '`define test_instruction_bin_size %i\n' $$(wc --bytes < $<) > $@
 	printf "\`define test_instruction_bin %i'h%s\n" $$(echo $$(wc --bytes < $<) 8 '*' n | dc) $$(xxd -p -c1 < $< | tac | tr -d '\n') >> $@
 
-vga_test.bin : vga_test.asm libs/ctrl16addrMap.asm libs/math.asm libs/VGA/base_vga.asm libs/math.asm
+vga_test.bin : vga_test.asm libs/ctrl16addrMap.asm libs/math.asm libs/VGA/base_vga.asm libs/string.asm
 	reflet-asm $< -o $@ -word-size 16 -set-stack-to 32768
 
 ../simu/rom10.v : vga_test.bin
 	ROM_maker -name rom10 -input_file $< -output_file $@ -wordsize 2 -min_addr_size 14
+
+vga_hello_world.bin : vga_hello_world.asm libs/ctrl16addrMap.asm libs/math.asm libs/VGA/base_vga.asm libs/string.asm
+	reflet-asm $< -o $@ -word-size 16 -set-stack-to 32768
 
