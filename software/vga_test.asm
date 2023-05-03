@@ -21,28 +21,31 @@ label start
     cpy R3
     setr R4 0xF0
     setr R5 0xFF
-    set 2
-    cpy R6
+    setr R6 0x41
     callf gpu_draw_pixel
     callf gpu_draw_letter
     inc R2
+    inc R6
     gpu_call_draw_pixel
     callf gpu_draw_letter
     inc R2
-    set 0
-    cpy R6
+    inc R6
     gpu_call_draw_pixel
     callf gpu_draw_letter
     inc R2
+    inc R6
     gpu_call_draw_pixel
     callf gpu_draw_letter
     inc R2
+    inc R6
     gpu_call_draw_pixel
     callf gpu_draw_letter
     inc R2
+    inc R6
     gpu_call_draw_pixel
     callf gpu_draw_letter
     inc R2
+    inc R6
     gpu_call_draw_pixel
     callf gpu_draw_letter
     
