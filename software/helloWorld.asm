@@ -12,7 +12,7 @@
 
 @align_word
 label string
-@string Hello, world!
+@string "Hello, world!"
 @rawbytes D A 0
 
 label start

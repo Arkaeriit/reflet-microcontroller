@@ -6,7 +6,7 @@
 @import libs/string.asm
 
 label hello
-@string-0 Hello, world!
+@string-0 "Hello, world!"
 
 ; Pairs of x-y coordinates used to draw a hearth. 1-indexed, 0-terminated
 label hearth
