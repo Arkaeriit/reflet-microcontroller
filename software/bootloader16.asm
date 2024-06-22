@@ -124,7 +124,7 @@ setlab uartHandle
 setint 0
 setlab timHandle
 setint 1
-set+ 24
+set 6
 cpy SR ;we enable int 0 and 1
 setlab bootLoop
 cpy R10
@@ -205,46 +205,42 @@ set 4
 jmp ;jmp back to the start
 
 label uartHandle
-tbm
 cpy R4 ;protect WR
 read R6 ;Reset timeout
 cpy R1 
 set 0 ;clear int
-str R3
-load R7 ;reading the char
-str R2
+str8 R3
+load8 R7 ;reading the char
+str8 R2
 ;cpy R12 ;Uncomment this section for UART loop back.
 ;set 2
 ;cc2
 ;add R7
 ;cpy R11
 ;read R12
-;str R11
+;str8 R11
 ;set 1
 ;cc2
 ;add R11
 ;cpy R11
 ;set 0
-;str R11
+;str8 R11
 set 1 ;update the target addr
 add R2
 cpy R2
 read R4 ;reset WR
-tbm
 retint
 
 label timHandle
-tbm
 cpy R5 ;protect WR
 set 0
-str R3 ;clear int
+str8 R3 ;clear int
 set 1 ;sub 1 from the timeout
 cpy R9
 read R1
 sub R9
 cpy R1
 read R5
-tbm
 retint
 
 ;Importing symbols with needed address

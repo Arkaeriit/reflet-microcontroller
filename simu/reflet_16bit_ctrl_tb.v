@@ -35,7 +35,7 @@ module reflet_16bit_ctrl_tb ();
     uart_sending_msg #(.clk_freq(1000000), .msg_size_byte(6)) prg (
         .clk(clk),
         .reset(reset_uart_emmiter),
-        .msg(48'h0E0F01020304),
+        .msg(48'hE8E901020304), // 4 numbers, then debug instruction, then quit instruction.
         .rx(1'b1),
         .tx(rx));
 
@@ -50,7 +50,7 @@ module reflet_16bit_ctrl_tb ();
             $dumpvars(0, ctrl.cpu.registers[i]);
             $dumpvars(0, ctrl.mem_inst.ram.memory_ram[i]);
         end
-        #5000;
+        #10000;
         reset_uart_emmiter <= 1;
         #10000000;
         $finish;

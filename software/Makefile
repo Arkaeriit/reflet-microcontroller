@@ -11,7 +11,7 @@ clock.bin : clock.asm libs/ctrl16addrMap.asm
 	reflet-asm -word-size 16 -no-stack-init clock.asm -o clock.bin # Note: there is the argument `no-stack-init` as the stack pointer is initialized in the program
 
 bootloader16.bin : bootloader16.asm
-	reflet-asm -word-size 16 -no-prefix -no-stack-init -ignore-start -start-addr 32000 bootloader16.asm -o bootloader16.bin #start addr set to 0x7D00
+	reflet-asm -word-size 16 -no-prefix -no-stack-init -ignore-start -start-addr 32000 -ignore-compatibility-runtime bootloader16.asm -o bootloader16.bin #start addr set to 0x7D00
 
 ../controller/reflet_bootloader16_rom.v : bootloader16.bin
 	ROM_maker -name reflet_bootloader16_rom -input_file $< -output_file $@ -wordsize 2 -start_addr 16000 -min_addr_size 14
