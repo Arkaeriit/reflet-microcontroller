@@ -18,7 +18,7 @@ clock.bin : clock.asm libs/ctrl16addrMap.asm $(REFLET_ASM)
 	$(REFLET_ASM) -word-size 16 -no-stack-init clock.asm -o clock.bin # Note: there is the argument `no-stack-init` as the stack pointer is initialized in the program
 
 bootloader16.bin : bootloader16.asm $(REFLET_ASM)
-	$(REFLET_ASM) -word-size 16 -no-prefix -no-stack-init -ignore-start -start-addr 32000 bootloader16.asm -o bootloader16.bin #start addr set to 0x7D00
+	$(REFLET_ASM) -word-size 16 -no-prefix -no-stack-init -ignore-start -start-addr 32000 -ignore-compatibility-runtime bootloader16.asm -o bootloader16.bin #start addr set to 0x7D00
 
 ../controller/reflet_bootloader16_rom.v : bootloader16.bin
 	ROM_maker -name reflet_bootloader16_rom -input_file $< -output_file $@ -wordsize 2 -start_addr 16000 -min_addr_size 14
@@ -26,17 +26,39 @@ bootloader16.bin : bootloader16.asm $(REFLET_ASM)
 helloWorld.bin : helloWorld.asm libs/ctrl16addrMap.asm libs/uart.asm libs/printing.asm libs/math.asm libs/string.asm $(REFLET_ASM)
 	$(REFLET_ASM) helloWorld.asm -o helloWorld.bin -word-size 16 -set-stack-to 32768 #Note: stack starts at 0x8000
 
+../simu/rom01.v : simuGPIO.bin
+	ROM_maker -name rom01 -input_file $< -output_file $@ -wordsize 1 -min_addr_size 6
+
 ../simu/rom02.v : helloWorld.bin
 	ROM_maker -name rom02 -input_file $< -output_file $@ -wordsize 2 -min_addr_size 14
 
+../simu/rom03.v : basicInt.bin
+	ROM_maker -name rom03 -input_file $< -output_file $@ -wordsize 1 -min_addr_size 7
+
 ../simu/rom04.v : uartLoopBack.bin
-	ROM_maker -name rom04 -input_file $< -output_file $@ -wordsize 1 -min_addr_size 7
+	ROM_maker -name rom04 -input_file $< -output_file $@ -wordsize 1 -min_addr_size 8
+
+#../simu/rom05.v : clock.bin
+	#ROM_maker -name rom05 -input_file $< -output_file $@ -wordsize 2 -min_addr_size 14
+
+../simu/rom06.v : low_power_mode.bin
+	ROM_maker -name rom06 -input_file $< -output_file $@ -wordsize 2 -min_addr_size 14
+
+../simu/rom07.v : uartLoopBack_16bits.bin
+	ROM_maker -name rom07 -input_file $< -output_file $@ -wordsize 2 -min_addr_size 14
 
 ../simu/rom08.v : keyboard_synth.bin
 	ROM_maker -name rom08 -input_file $< -output_file $@ -wordsize 2 -min_addr_size 14
 
+../simu/simu9_tb.vh : test_instructions.bin
+	printf '`define test_instruction_bin_size %i\n' $$(wc --bytes < $<) > $@
+	printf "\`define test_instruction_bin %i'h%s\n" $$(echo $$(wc --bytes < $<) 8 '*' n | dc) $$(xxd -p -c1 < $< | tac | tr -d '\n') >> $@
+
+../simu/rom10.v : vga_test.bin
+	ROM_maker -name rom10 -input_file $< -output_file $@ -wordsize 2 -min_addr_size 14
+
 simuGPIO.bin : simuGPIO.asm $(REFLET_ASM)
-	$(REFLET_ASM) simuGPIO.asm -o simuGPIO.bin -no-stack-init -word-size 8 -ignore-start
+	$(REFLET_ASM) simuGPIO.asm -o simuGPIO.bin -no-stack-init -word-size 8 -ignore-start -ignore-compatibility-runtime
 
 uartLoopBack.bin : uartLoopBack.asm $(REFLET_ASM)
 	$(REFLET_ASM) -word-size 8 -no-stack-init uartLoopBack.asm -o uartLoopBack.bin
@@ -56,15 +78,8 @@ keyboard_synth.bin : keyboard_synth.asm libs/ctrl16addrMap.asm libs/uart.asm lib
 test_instructions.bin : test_instructions.asm $(REFLET_ASM)
 	$(REFLET_ASM) test_instructions.asm -o test_instructions.bin -word-size 16 -no-stack-init
 
-../simu/simu9_tb.vh : test_instructions.bin
-	printf '`define test_instruction_bin_size %i\n' $$(wc --bytes < $<) > $@
-	printf "\`define test_instruction_bin %i'h%s\n" $$(echo $$(wc --bytes < $<) 8 '*' n | dc) $$(xxd -p -c1 < $< | tac | tr -d '\n') >> $@
-
 vga_test.bin : vga_test.asm libs/ctrl16addrMap.asm libs/math.asm libs/VGA/base_vga.asm libs/string.asm $(REFLET_ASM)
 	$(REFLET_ASM) $< -o $@ -word-size 16 -set-stack-to 32768
-
-../simu/rom10.v : vga_test.bin
-	ROM_maker -name rom10 -input_file $< -output_file $@ -wordsize 2 -min_addr_size 14
 
 vga_hello_world.bin : vga_hello_world.asm libs/ctrl16addrMap.asm libs/math.asm libs/VGA/base_vga.asm libs/string.asm $(REFLET_ASM)
 	$(REFLET_ASM) $< -o $@ -word-size 16 -set-stack-to 32768

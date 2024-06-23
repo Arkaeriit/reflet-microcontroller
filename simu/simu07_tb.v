@@ -82,7 +82,7 @@ module simu7_mcu #(
     rom07 rom (
         .clk(clk),
         .enable(!addr[15]),
-        .addr(addr[8:1]),
+        .addr(addr[14:1]),
         .data(dout_inst));
 
     //0x8000 to 0xFEFF: data. Should stay as a regular RAM

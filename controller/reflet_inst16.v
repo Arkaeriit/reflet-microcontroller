@@ -44,8 +44,8 @@ module reflet_inst16 #(
     assign data_in_init = 
         ( addr_init == 3'h0 ? 16'h7D00 : //At addr 0, there is the addr of the bootloader
         ( addr_init == 3'h1 ? 16'h0000 :
-        ( addr_init == 3'h2 ? 16'hF010 : //set 0; load WR
-        ( addr_init == 3'h3 ? 16'h003E : //jmp
+        ( addr_init == 3'h2 ? 16'hd020 : //set 0; load WR
+        ( addr_init == 3'h3 ? 16'h001E : //jmp
           0))));
 
     //Input selection

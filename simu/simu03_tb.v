@@ -49,7 +49,7 @@ module simu03();
         .clk(clk), 
         .enable(!addr[7]), 
         .addr(addr[6:0]), 
-        .dataOut(data_out_rom));
+        .data(data_out_rom));
     assign data_in_cpu = data_out_rom | data_out_gpio | data_out_interrupt_mux;
     reflet_cpu #(.wordsize(8)) cpu(
         .clk(clk), 

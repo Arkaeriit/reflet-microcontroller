@@ -61,7 +61,7 @@ module simu09_tb ();
             $dumpvars(0, ctrl.mem_data.memory_ram[i]);
         #5000;
         reset_uart <= 1;
-        #10000000;
+        #20000000;
         $finish;
     end
 

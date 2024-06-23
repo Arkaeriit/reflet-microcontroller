@@ -44,7 +44,7 @@ module simu06 ();
     rom06 rom (
         .clk(clk),
         .enable(!addr[15]),
-        .addr(addr[9:1]),
+        .addr(addr[14:1]),
         .data(dout_inst));
 
     //0x8000 to 0xFEFF: data. Should stay as a regular RAM
@@ -94,7 +94,7 @@ module simu06 ();
         $dumpvars(0, simu06);
         for(i = 0; i<16; i=i+1)
             $dumpvars(0, cpu.registers[i]);
-        #800000;
+        #1000000;
         $finish;
     end
 
