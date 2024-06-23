@@ -12,7 +12,7 @@ str R1
 ;cofiguring the interrupt on the CPU
 setlab uart_int_routine
 setint 0
-set 8
+set 2
 cpy SR
 ;getting the base address of the UART
 set8 252 

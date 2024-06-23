@@ -36,7 +36,7 @@ module reflet_8bit_ctrl_tb ();
             $dumpvars(0, ctrl.cpu.registers[i]);
         #10;
         reset_cpu <= 1;
-        #1000;
+        #3000;
         reset_uart <= 1;
         #1000000;
         $finish;

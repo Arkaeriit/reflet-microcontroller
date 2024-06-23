@@ -9,7 +9,7 @@
 ;   - Set pixel function
 ;   - Screen width
 ;   - Screen height
-@define set_gpu_context_size 0
+@macro set_gpu_context_size 0
     set 5
 @end
 
@@ -25,7 +25,7 @@ label gpu_get_field_from_context_16_bits
 
 ;---------------------------------------
 ; Write in the working register the data at the offset from the context given in argument
-@define gpu_read_from_context 1
+@macro gpu_read_from_context 1
     pushr. R1
     set $1
     cpy R1
@@ -37,7 +37,7 @@ label gpu_get_field_from_context_16_bits
 
 ;----------------------------------------
 ; Call the function at the given offset in the context
-@define gpu_call_from_context 1
+@macro gpu_call_from_context 1
     gpu_read_from_context $1
     call
 @end
@@ -120,7 +120,7 @@ label gpu_draw_letter
 
 ;----------------------------------
 ; Fetches the address of draw_pixel and calls it
-@define gpu_call_draw_pixel 0
+@macro gpu_call_draw_pixel 0
     gpu_call_from_context 2
 @end
     
@@ -156,7 +156,7 @@ label _gpu_init_context
 ;----------------------------
 ; Allocate a bit of stack and initialize the context there
 ; This macro trashes R1 and R2
-@define gpu_init_context 0
+@macro gpu_init_context 0
     ; Compute stack size needed
     @set_wordsize_byte
     cpy R1

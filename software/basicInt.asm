@@ -46,7 +46,7 @@ add R1
 cpy R1 ;storing the value of the interrupt_mux status register in R1
 setlab intRoutine
 setint 2
-set8 32 ;enable the int2 flag
+set 8 ;enable the int2 flag
 cpy SR
 
 ;infinite loop
