@@ -16,6 +16,7 @@ module simu09_tb ();
     reflet_16bit_controller #(
         .clk_freq(1000000),
         .debug_output(1),
+        .swift_bootloader(1),
         .data_size('h2000),
         .inst_size(8192),
         .enable_interrupt_mux(1),
@@ -61,7 +62,7 @@ module simu09_tb ();
             $dumpvars(0, ctrl.mem_data.memory_ram[i]);
         #5000;
         reset_uart <= 1;
-        #20000000;
+        #3000000;
         $finish;
     end
 

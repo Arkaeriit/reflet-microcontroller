@@ -13,6 +13,7 @@ module reflet_16bit_ctrl_tb ();
     reflet_16bit_controller #(
         .clk_freq(1000000),
         .enable_interrupt_mux(1),
+        .swift_bootloader(1),
         .enable_gpio(0),
         .enable_timer(1),
         .enable_timer2(1),
@@ -52,7 +53,7 @@ module reflet_16bit_ctrl_tb ();
         end
         #10000;
         reset_uart_emmiter <= 1;
-        #10000000;
+        #200000;
         $finish;
     end
 
