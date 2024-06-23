@@ -52,7 +52,7 @@ helloWorld.bin : helloWorld.asm libs/ctrl16addrMap.asm libs/uart.asm libs/printi
 ../simu/rom08.v : keyboard_synth.bin
 	$(ROM_MAKER) -name rom08 -input_file $< -output_file $@ -wordsize 2 -min_addr_size 14
 
-../simu/simu9_tb.vh : test_instructions.bin
+../simu/simu09_tb.vh : test_instructions.bin
 	printf '`define test_instruction_bin_size %i\n' $$(wc --bytes < $<) > $@
 	printf "\`define test_instruction_bin %i'h%s\n" $$(echo $$(wc --bytes < $<) 8 '*' n | dc) $$(xxd -p -c1 < $< | tac | tr -d '\n') >> $@
 
