@@ -4,3 +4,6 @@
 [submodule "submodules/reflet-GPU"]
 	path = submodules/reflet-GPU
 	url = https://github.com/Arkaeriit/reflet-GPU.git
+[submodule "submodules/ROM_maker"]
+	path = submodules/ROM_maker
+	url = https://github.com/Arkaeriit/ROM_maker.git
