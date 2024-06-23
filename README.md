@@ -212,6 +212,7 @@ The parameters for this module are the following:
 |inst\_size| Size in bytes of the instruction memory.|128|
 |mem\_resetable| If not set to 0, the memories are reset to 0 when the reset signal is pulled down. This can be incompatible with some FPGA's memory blocks. |0|
 |ext\_io\_size|The size of the extended io ports.|128|
+|swift\_bootloader|Use a 50 ms bootloader timeout instead of 4 s.|0|
 
 The ports of this module are the following:
 
@@ -237,5 +238,5 @@ The ports of this module are the following:
 | ext\_io\_out | selectable size output | Output of the extended IO module. |
 
 ### Using the bootloader
-The bootloader is very easy to use. After the processor started, transmit the program through the UART connection and wait 4 seconds for the program to start.
+The bootloader is very easy to use. After the processor started, transmit the program through the UART connection and wait 4 seconds for the program to start. If 4 seconds is too long, you can use the parameter `swift_bootloader` to lower it to 50 ms.
 

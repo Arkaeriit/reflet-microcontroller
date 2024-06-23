@@ -3,6 +3,7 @@ all : basicInt.bin clock.bin bootloader16.bin helloWorld.bin simuGPIO.bin uartLo
 
 clean :
 	rm -f *.bin
+	rm -f *rom.v
 
 basicInt.bin : basicInt.asm
 	reflet-asm -word-size 8 -no-stack-init -ignore-start basicInt.asm -o basicInt.bin
@@ -10,11 +11,20 @@ basicInt.bin : basicInt.asm
 clock.bin : clock.asm libs/ctrl16addrMap.asm
 	reflet-asm -word-size 16 -no-stack-init clock.asm -o clock.bin # Note: there is the argument `no-stack-init` as the stack pointer is initialized in the program
 
-bootloader16.bin : bootloader16.asm
-	reflet-asm -word-size 16 -no-prefix -no-stack-init -ignore-start -start-addr 32000 -ignore-compatibility-runtime bootloader16.asm -o bootloader16.bin #start addr set to 0x7D00
+bootloader16.bin : bootloader16.asm # 4 sec timeout
+	reflet-asm -word-size 16 -no-prefix -no-stack-init -ignore-start -start-addr 32000 -ignore-compatibility-runtime $< -D TIMEOUT_CS=400 -o $@ #start addr set to 0x7D00
 
-../controller/reflet_bootloader16_rom.v : bootloader16.bin
+bootloader16_swift.bin : bootloader16.asm # 50 ms timeout
+	reflet-asm -word-size 16 -no-prefix -no-stack-init -ignore-start -start-addr 32000 -ignore-compatibility-runtime $< -D TIMEOUT_CS=5 -o $@
+
+reflet_bootloader16_rom.v : bootloader16.bin
 	ROM_maker -name reflet_bootloader16_rom -input_file $< -output_file $@ -wordsize 2 -start_addr 16000 -min_addr_size 14
+
+reflet_bootloader16_swift_rom.v : bootloader16_swift.bin
+	ROM_maker -name reflet_bootloader16_swift_rom -input_file $< -output_file $@ -wordsize 2 -start_addr 16000 -min_addr_size 14
+
+../controller/reflet_bootloader16_rom.v : reflet_bootloader16_rom.v reflet_bootloader16_swift_rom.v
+	cat $^ > $@
 
 helloWorld.bin : helloWorld.asm libs/ctrl16addrMap.asm libs/uart.asm libs/printing.asm libs/math.asm libs/string.asm
 	reflet-asm helloWorld.asm -o helloWorld.bin -word-size 16 -set-stack-to 32768 #Note: stack starts at 0x8000

@@ -101,7 +101,7 @@ add R3
 cpy R3 ;R3 is now the status register
 
 ;here, we configure the interrupt on the CPU level
-set+ 400
+set+ TIMEOUT_CS
 cpy R6
 cpy R1
 set+ 65305 ;RX data register

@@ -22,7 +22,8 @@ module reflet_16bit_controller #(
     data_size = 100,
     inst_size = 128,
     mem_resetable = 0,
-    ext_io_size = 128
+    ext_io_size = 128,
+    swift_bootloader = 0
     )(
     input clk,
     input reset, //Resets the all system
@@ -116,7 +117,7 @@ module reflet_16bit_controller #(
     wire [15:0] dout_periph_shift = (addr[0] ? {dout_periph, 8'h0} : {8'h0, dout_periph});
     assign data_in_cpu = dout_inst | dout_data | dout_periph_shift;
     //0x00 to 0x7FFF: instruction. Can be replaced with a ROM
-    reflet_inst16 #(.size(inst_size), .resetable(mem_resetable)) mem_inst (
+    reflet_inst16 #(.size(inst_size), .resetable(mem_resetable), .swift_bootloader(swift_bootloader)) mem_inst (
         .clk(clk),
         .reset(reset_full),
         .inst_ready(inst_ready),

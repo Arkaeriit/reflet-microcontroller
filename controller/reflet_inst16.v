@@ -9,7 +9,8 @@
 
 module reflet_inst16 #(
     parameter size = 10000,
-    resetable = 1
+    resetable = 1,
+    swift_bootloader = 0
     )(
     input clk,
     input reset,
@@ -73,11 +74,20 @@ module reflet_inst16 #(
         .data_out(ram_out),
         .write_en(write_en_used));
 
-    reflet_bootloader16_rom bootloader (
-        .clk(clk),
-        .enable(bl_en),
-        .addr(addr_used),
-        .data(bootlader_out));
+    generate
+        if (swift_bootloader)
+            reflet_bootloader16_swift_rom bootloader (
+                .clk(clk),
+                .enable(bl_en),
+                .addr(addr_used),
+                .data(bootlader_out));
+        else
+            reflet_bootloader16_rom bootloader (
+                .clk(clk),
+                .enable(bl_en),
+                .addr(addr_used),
+                .data(bootlader_out));
+    endgenerate
 
 endmodule
 
