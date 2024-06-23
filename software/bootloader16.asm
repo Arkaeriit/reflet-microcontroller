@@ -20,7 +20,7 @@ cpy R1
 setlab hardware_info ;Getting H I addr
 load WR
 cpy R3
-tbm ;Set byte mode as all we are going to read from HI and timer
+@set_sr_for 8 ;Set byte mode as all we are going to read from HI and timer
 load R3
 cpy R4
 set 1
@@ -34,9 +34,7 @@ cpy R5 ;R4 is clk_lsb R5 is clk_msb
 set 15
 add R3
 cpy R3 ;base addr for timer 1
-tbm
 set+ 99
-tbm
 str R3
 cpy R6 ;pre1 is set to 99
 set 1
@@ -52,9 +50,7 @@ str R3 ; mcnt is set to 1
 set 0
 eq R5
 cmpnot
-tbm
 setlab timerHF ;if there is a high frequency clock
-tbm
 jif
 
 ;low freq clock
@@ -68,11 +64,9 @@ add R3
 cpy R3
 read R4
 str R3
-tbm ;finished reading from HI and timer
 goto endTimer
 
 label timerHF
-tbm ;more timer config
 set 1
 add R3
 cpy R3 ; timer2
@@ -81,33 +75,27 @@ str R3 ;enable timer linking
 set 1
 add R3
 cpy R3
-tbm
 set+ 255
-tbm
 str R3 ;pre2 is now 255 to divide the clock speed by 256
 set 1
 add R3
 cpy R3
 read R5
 str R3
-tbm ;end timer config
 
 label endTimer
 ; interrupt manager config
 setlab interrupt_manager
-load WR
-tbm ;Starting to manipulate interrupt multiplexer
+cpy R3
+load16 R3
 cpy R3
 set 10
 str R3 ;enable tim2 int and UART int
 set 1
 add R3
 cpy R3
-tbm
 set+ 64
-tbm
 str R3 ;set tim2 int to level 1
-tbm ;finished interrupt multiplexer config
 set 2
 add R3
 cpy R3 ;R3 is now the status register
@@ -116,7 +104,7 @@ cpy R3 ;R3 is now the status register
 set+ 400
 cpy R6
 cpy R1
-set+ 65305 ;TX data register
+set+ 65305 ;RX data register
 cpy R7
 setlab endBoot
 cpy R8
@@ -125,6 +113,7 @@ setint 0
 setlab timHandle
 setint 1
 set 6
+or SR
 cpy SR ;we enable int 0 and 1
 setlab bootLoop
 cpy R10
@@ -139,10 +128,9 @@ jmp
 
 label endBoot
 ;clean the peripherals, reset the register and jump back to addr 4
-set 1
-cpy SR
+@get_sr_for 8
+cpy SR ; Go in byte mode but clears interrupt enable flags
 set+ 65284 ;0xFF04
-tbm ;about to reset peripherals
 cpy R1
 set 0 
 str R1
@@ -186,7 +174,6 @@ add R1
 cpy R1
 set 0 
 str R1 ;timer and timer2 are cleared
-tbm ;finished reset periph
 cpy R1
 cpy R2
 cpy R3
@@ -199,7 +186,7 @@ cpy R9
 cpy R10
 cpy R11
 cpy R12
-;cpy R13 SR is already set
+cpy SR ; Going back to normal word mode
 cpy R15
 set 4
 jmp ;jmp back to the start
@@ -209,22 +196,22 @@ cpy R4 ;protect WR
 read R6 ;Reset timeout
 cpy R1 
 set 0 ;clear int
-str8 R3
-load8 R7 ;reading the char
-str8 R2
+str R3
+load R7 ;reading the char
+str R2
 ;cpy R12 ;Uncomment this section for UART loop back.
 ;set 2
 ;cc2
 ;add R7
 ;cpy R11
 ;read R12
-;str8 R11
+;str R11
 ;set 1
 ;cc2
 ;add R11
 ;cpy R11
 ;set 0
-;str8 R11
+;str R11
 set 1 ;update the target addr
 add R2
 cpy R2
@@ -234,7 +221,7 @@ retint
 label timHandle
 cpy R5 ;protect WR
 set 0
-str8 R3 ;clear int
+str R3 ;clear int
 set 1 ;sub 1 from the timeout
 cpy R9
 read R1
