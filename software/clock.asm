@@ -16,7 +16,7 @@ str8 R1 ;enable it and activate the colon
 setlab timer ;0xFF10, the base address for the timer
 load WR
 cpy R2
-set+ 99 ; need to be changed to the correct value ;getting a division of 1 000 000 with the three prescalers
+set+ TIMER_CONFIG ; need to be changed to the correct value ;getting a division of 1 000 000 with the three prescalers
 str8 R2
 push
 set 1
@@ -57,7 +57,7 @@ add R3
 cpy R3 ;R3 now have the address of the status register of interrupt multiplexer
 setlab updateTime
 setint 0
-set 8
+set 2
 cpy SR ;We enable int0 with updateTime as the routine
 set 4
 cpy R2 ;R2 contain 4

@@ -17,8 +17,11 @@ clean :
 basicInt.bin : basicInt.asm $(REFLET_ASM)
 	$(REFLET_ASM) -word-size 8 -no-stack-init -ignore-start basicInt.asm -o basicInt.bin
 
-clock.bin : clock.asm libs/ctrl16addrMap.asm $(REFLET_ASM)
-	$(REFLET_ASM) -word-size 16 -no-stack-init clock.asm -o clock.bin # Note: there is the argument `no-stack-init` as the stack pointer is initialized in the program
+clock.bin : clock.asm libs/ctrl16addrMap.asm $(REFLET_ASM) # Normal timing clock
+	$(REFLET_ASM) -word-size 16 -no-stack-init $< -D TIMER_CONFIG=99 -o $@ # Note: there is the argument `no-stack-init` as the stack pointer is initialized in the program
+
+clock_test.bin : clock.asm libs/ctrl16addrMap.asm $(REFLET_ASM) # Faster clock for simulations.
+	$(REFLET_ASM) -word-size 16 -no-stack-init $< -D TIMER_CONFIG=4 -o $@
 
 bootloader16.bin : bootloader16.asm $(REFLET_ASM) # 4 sec timeout
 	$(REFLET_ASM) -word-size 16 -no-prefix -no-stack-init -ignore-start -start-addr 32000 -ignore-compatibility-runtime $< -D TIMEOUT_CS=400 -o $@ #start addr set to 0x7D00
@@ -50,8 +53,8 @@ helloWorld.bin : helloWorld.asm libs/ctrl16addrMap.asm libs/uart.asm libs/printi
 ../simu/rom04.v : uartLoopBack.bin
 	$(ROM_MAKER) -name rom04 -input_file $< -output_file $@ -wordsize 1 -min_addr_size 8
 
-#../simu/rom05.v : clock.bin
-	#$(ROM_MAKER) -name rom05 -input_file $< -output_file $@ -wordsize 2 -min_addr_size 14
+../simu/rom05.v : clock_test.bin
+	$(ROM_MAKER) -name rom05 -input_file $< -output_file $@ -wordsize 2 -min_addr_size 14
 
 ../simu/rom06.v : low_power_mode.bin
 	$(ROM_MAKER) -name rom06 -input_file $< -output_file $@ -wordsize 2 -min_addr_size 14
